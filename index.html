@@ -422,6 +422,20 @@
             display: none;
         }
 
+        .hosting-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 165, 0, 0.8);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 999;
+            display: none;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -444,6 +458,13 @@
                 margin: 10% auto;
                 padding: 20px;
                 width: 95%;
+            }
+
+            .hosting-info {
+                left: 10px;
+                bottom: 10px;
+                font-size: 10px;
+                max-width: 250px;
             }
         }
 
@@ -471,6 +492,12 @@
 </head>
 <body>
     <canvas id="matrix"></canvas>
+    
+    <!-- Hosting Info -->
+    <div class="hosting-info" id="hostingInfo">
+        💡 این صفحه فعلاً محلی است. برای دسترسی عمومی از اینترنت، آن را روی Netlify، Vercel یا GitHub Pages میزبانی کنید.
+        <button class="admin-btn" onclick="hideHostingInfo()" style="margin: 5px 0 0 0; padding: 3px 8px; font-size: 10px;">متوجه شدم</button>
+    </div>
     
     <!-- Admin Panel -->
     <div class="admin-panel" id="adminPanel">
@@ -608,17 +635,28 @@
             }
         };
 
-        // Storage functions - using variables instead of localStorage
-        let localStorageData = {};
-
+        // بازگشت به localStorage برای ذخیره‌سازی دائمی
         function saveToStorage(key, data) {
-            localStorageData[key] = JSON.stringify(data);
-            showSaveIndicator();
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                showSaveIndicator();
+                console.log('داده‌ها ذخیره شدند:', data);
+            } catch (error) {
+                console.error('خطا در ذخیره‌سازی:', error);
+                alert('خطا در ذخیره‌سازی داده‌ها!');
+            }
         }
 
         function loadFromStorage(key) {
-            const data = localStorageData[key];
-            return data ? JSON.parse(data) : null;
+            try {
+                const data = localStorage.getItem(key);
+                const parsed = data ? JSON.parse(data) : null;
+                console.log('داده‌ها بارگیری شدند:', parsed);
+                return parsed;
+            } catch (error) {
+                console.error('خطا در بارگیری:', error);
+                return null;
+            }
         }
 
         function showSaveIndicator() {
@@ -627,6 +665,22 @@
             setTimeout(() => {
                 indicator.style.display = 'none';
             }, 2000);
+        }
+
+        // Show hosting info on first visit
+        function showHostingInfoOnFirstVisit() {
+            const hasSeenInfo = localStorage.getItem('hosting_info_seen');
+            if (!hasSeenInfo && window.location.protocol === 'file:') {
+                document.getElementById('hostingInfo').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('hostingInfo').style.display = 'none';
+                }, 15000); // Auto hide after 15 seconds
+            }
+        }
+
+        function hideHostingInfo() {
+            document.getElementById('hostingInfo').style.display = 'none';
+            localStorage.setItem('hosting_info_seen', 'true');
         }
 
         // Double click on profile image for admin access
@@ -749,7 +803,15 @@
         function loadData() {
             const savedData = loadFromStorage(STORAGE_KEY);
             if (savedData) {
-                profileData = { ...profileData, ...savedData };
+                // Merge saved data with default data to ensure all properties exist
+                profileData = {
+                    ...profileData,
+                    ...savedData,
+                    contentData: {
+                        ...profileData.contentData,
+                        ...savedData.contentData
+                    }
+                };
             }
             updateUI();
         }
@@ -1049,7 +1111,7 @@
             e.target.value = '';
         });
 
-        // Save profile name and description
+        // Save profile name and description with immediate save
         document.getElementById('profileName').addEventListener('input', function() {
             if (isEditMode) {
                 profileData.profileName = this.textContent;
@@ -1064,7 +1126,7 @@
             }
         });
 
-        // Save editable titles
+        // Save editable titles with immediate save
         document.addEventListener('DOMContentLoaded', function() {
             const editableTitles = document.querySelectorAll('.editable-title');
             editableTitles.forEach(title => {
@@ -1085,28 +1147,60 @@
 
             // Load saved data on page load
             loadData();
+            
+            // Show hosting info if needed
+            showHostingInfoOnFirstVisit();
         });
 
-        // Auto-save functionality for better user experience
+        // Enhanced auto-save with better error handling
         setInterval(() => {
             if (isEditMode) {
-                // Auto-save current profile data
-                const currentName = document.getElementById('profileName').textContent;
-                const currentDesc = document.getElementById('profileDesc').textContent;
-                
-                if (currentName !== profileData.profileName) {
-                    profileData.profileName = currentName;
-                    saveData();
-                }
-                
-                if (currentDesc !== profileData.profileDesc) {
-                    profileData.profileDesc = currentDesc;
-                    saveData();
+                try {
+                    // Auto-save current profile data
+                    const currentName = document.getElementById('profileName').textContent;
+                    const currentDesc = document.getElementById('profileDesc').textContent;
+                    
+                    let hasChanges = false;
+                    
+                    if (currentName !== profileData.profileName) {
+                        profileData.profileName = currentName;
+                        hasChanges = true;
+                    }
+                    
+                    if (currentDesc !== profileData.profileDesc) {
+                        profileData.profileDesc = currentDesc;
+                        hasChanges = true;
+                    }
+                    
+                    if (hasChanges) {
+                        saveData();
+                    }
+                } catch (error) {
+                    console.error('خطا در ذخیره‌سازی خودکار:', error);
                 }
             }
-        }, 5000); // Auto-save every 5 seconds
+        }, 3000); // Auto-save every 3 seconds
+
+        // Add beforeunload event to ensure data is saved
+        window.addEventListener('beforeunload', function(e) {
+            if (isEditMode) {
+                // Force save current state
+                try {
+                    profileData.profileName = document.getElementById('profileName').textContent;
+                    profileData.profileDesc = document.getElementById('profileDesc').textContent;
+                    saveData();
+                } catch (error) {
+                    console.error('خطا در ذخیره‌سازی نهایی:', error);
+                }
+            }
+        });
+
+        // Storage event listener to sync changes across tabs
+        window.addEventListener('storage', function(e) {
+            if (e.key === STORAGE_KEY) {
+                loadData();
+            }
+        });
     </script>
 </body>
 </html>
-
-
