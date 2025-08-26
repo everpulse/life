@@ -295,6 +295,25 @@
             z-index: 1000;
         }
 
+        .save-indicator {
+            position: fixed;
+            top: 50px;
+            right: 10px;
+            background: rgba(0, 150, 255, 0.8);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            display: none;
+            z-index: 1000;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
         /* Audio Player Styles */
         .audio-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.3);
@@ -402,6 +421,7 @@
         #audioInput {
             display: none;
         }
+
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -455,11 +475,14 @@
     <!-- Admin Panel -->
     <div class="admin-panel" id="adminPanel">
         <button class="admin-btn" onclick="toggleEditMode()">حالت ویرایش</button>
+        <button class="admin-btn" onclick="exportData()">دانلود بکاپ</button>
+        <button class="admin-btn" onclick="importData()">بازگردانی بکاپ</button>
         <button class="admin-btn" onclick="logout()">خروج</button>
     </div>
     
     <!-- Edit Mode Indicator -->
     <div class="edit-indicator" id="editIndicator">حالت ویرایش فعال</div>
+    <div class="save-indicator" id="saveIndicator">ذخیره شد!</div>
     
     <!-- Password Modal -->
     <div id="passwordModal" class="password-modal">
@@ -471,6 +494,9 @@
             <button class="admin-btn" onclick="closePasswordModal()">انصراف</button>
         </div>
     </div>
+
+    <!-- Import Data Input -->
+    <input type="file" id="importInput" accept=".json" style="display: none;">
     
     <div class="container">
         <div class="profile-section">
@@ -556,8 +582,52 @@
         });
 
         // Admin system
-        const ADMIN_PASSWORD = "aeon2025"; // تغییر دهید
+        const ADMIN_PASSWORD = "aeon2025";
+        const STORAGE_KEY = "personal_page_data";
         let isEditMode = false;
+
+        // Default profile data
+        let profileData = {
+            profileName: "نام شما",
+            profileDesc: "توضیح کوتاه درباره شما",
+            profileImage: "",
+            contentData: {
+                biography: {
+                    title: "بیوگرافی",
+                    content: "اینجا بیوگرافی خود را بنویسید...\n\nمی‌توانید درباره تحصیلات، تجربیات کاری، علایق و هر چیز دیگری که می‌خواهید بنویسید."
+                },
+                tenrules: {
+                    title: "ده فرمان",
+                    content: "۱. فرمان اول...\n۲. فرمان دوم...\n۳. فرمان سوم...\n۴. فرمان چهارم...\n۵. فرمان پنجم...\n۶. فرمان ششم...\n۷. فرمان هفتم...\n۸. فرمان هشتم...\n۹. فرمان نهم...\n۱۰. فرمان دهم..."
+                },
+                playlist: {
+                    title: "پلی لیست",
+                    content: "آهنگ های خود را آپلود کنید...",
+                    audioFiles: []
+                }
+            }
+        };
+
+        // Storage functions - using variables instead of localStorage
+        let localStorageData = {};
+
+        function saveToStorage(key, data) {
+            localStorageData[key] = JSON.stringify(data);
+            showSaveIndicator();
+        }
+
+        function loadFromStorage(key) {
+            const data = localStorageData[key];
+            return data ? JSON.parse(data) : null;
+        }
+
+        function showSaveIndicator() {
+            const indicator = document.getElementById('saveIndicator');
+            indicator.style.display = 'block';
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 2000);
+        }
 
         // Double click on profile image for admin access
         let clickCount = 0;
@@ -602,32 +672,26 @@
         }
 
         function enableEditMode() {
-            // Enable contenteditable for profile elements
             document.getElementById('profileName').contentEditable = true;
             document.getElementById('profileDesc').contentEditable = true;
             
-            // Enable editable titles
             document.querySelectorAll('.editable-title').forEach(title => {
                 title.contentEditable = true;
                 title.classList.add('edit-mode');
             });
             
-            // Show edit icon
             document.getElementById('editIcon').style.display = 'flex';
         }
 
         function disableEditMode() {
-            // Disable contenteditable for profile elements
             document.getElementById('profileName').contentEditable = false;
             document.getElementById('profileDesc').contentEditable = false;
             
-            // Disable editable titles
             document.querySelectorAll('.editable-title').forEach(title => {
                 title.contentEditable = false;
                 title.classList.remove('edit-mode');
             });
             
-            // Hide edit icon
             document.getElementById('editIcon').style.display = 'none';
         }
 
@@ -649,6 +713,23 @@
             document.getElementById('editIndicator').style.display = 'none';
         }
 
+        function exportData() {
+            const dataToExport = JSON.stringify(profileData, null, 2);
+            const blob = new Blob([dataToExport], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'profile_backup.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            document.getElementById('importInput').click();
+        }
+
         // Password modal enter key
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -664,40 +745,13 @@
             }
         });
 
-        // Content data - will be loaded from JSON file
-        let profileData = {
-            profileName: "نام شما",
-            profileDesc: "توضیح کوتاه درباره شما",
-            profileImage: "",
-            contentData: {
-                biography: {
-                    title: "بیوگرافی",
-                    content: "اینجا بیوگرافی خود را بنویسید...\n\nمی‌توانید درباره تحصیلات، تجربیات کاری، علایق و هر چیز دیگری که می‌خواهید بنویسید."
-                },
-                tenrules: {
-                    title: "ده فرمان",
-                    content: "۱. فرمان اول...\n۲. فرمان دوم...\n۳. فرمان سوم...\n۴. فرمان چهارم...\n۵. فرمان پنجم...\n۶. فرمان ششم...\n۷. فرمان هفتم...\n۸. فرمان هشتم...\n۹. فرمان نهم...\n۱۰. فرمان دهم..."
-                },
-                playlist: {
-                    title: "پلی لیست",
-                    content: "آهنگ های خود را آپلود کنید...",
-                    audioFiles: []
-                }
+        // Load saved data
+        function loadData() {
+            const savedData = loadFromStorage(STORAGE_KEY);
+            if (savedData) {
+                profileData = { ...profileData, ...savedData };
             }
-        };
-
-        // Load data from JSON file
-        async function loadData() {
-            try {
-                const response = await fetch('data.json');
-                if (response.ok) {
-                    const data = await response.json();
-                    profileData = data;
-                    updateUI();
-                }
-            } catch (error) {
-                console.log('Using default data');
-            }
+            updateUI();
         }
 
         // Update UI with loaded data
@@ -709,7 +763,6 @@
                 document.getElementById('profileImg').src = profileData.profileImage;
             }
 
-            // Update titles
             document.querySelectorAll('.editable-title').forEach(title => {
                 const type = title.dataset.type;
                 if (profileData.contentData[type]) {
@@ -718,25 +771,9 @@
             });
         }
 
-        // Save data (this will show instructions to user)
+        // Save data to storage
         function saveData() {
-            const dataToSave = JSON.stringify(profileData, null, 2);
-            
-            // Create a download link for the updated JSON
-            if (isEditMode) {
-                const blob = new Blob([dataToSave], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'data.json';
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                alert('فایل data.json دانلود شد! آن را در پوشه سایت جایگزین کنید.');
-            }
+            saveToStorage(STORAGE_KEY, profileData);
         }
 
         let currentAudio = null;
@@ -756,7 +793,6 @@
                 body.innerHTML = profileData.contentData[type].content.replace(/\n/g, '<br>');
                 body.contentEditable = isEditMode;
                 
-                // Save content when user types (only in edit mode)
                 if (isEditMode) {
                     body.oninput = function() {
                         profileData.contentData[type].content = this.innerHTML.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
@@ -788,7 +824,6 @@
                 </div>
             `;
 
-            // Add event listener for file input only in edit mode
             if (isEditMode) {
                 const audioInput = document.getElementById('audioInput');
                 if (audioInput) {
@@ -855,13 +890,11 @@
             const playBtn = document.getElementById(`playBtn-${index}`);
             const progressBar = document.getElementById(`progress-${index}`);
 
-            // Stop current audio if playing
             if (currentAudio && !currentAudio.paused) {
                 currentAudio.pause();
                 currentPlayButton.textContent = '▶';
             }
 
-            // If clicking the same audio that's already loaded
             if (currentAudio && currentAudio.src === audio.data) {
                 if (currentAudio.paused) {
                     currentAudio.play();
@@ -873,7 +906,6 @@
                 return;
             }
 
-            // Load new audio
             currentAudio = new Audio(audio.data);
             currentPlayButton = playBtn;
 
@@ -905,7 +937,6 @@
             if (!isEditMode) return;
             
             if (confirm('آیا می‌خواهید این آهنگ را حذف کنید؟')) {
-                // Stop audio if it's currently playing
                 if (currentAudio && currentPlayButton && currentPlayButton.id === `playBtn-${index}`) {
                     currentAudio.pause();
                     currentAudio = null;
@@ -996,15 +1027,37 @@
             }
         });
 
-        // Save profile name and description (only in edit mode)
-        document.getElementById('profileName').addEventListener('blur', function() {
+        // Import data functionality
+        document.getElementById('importInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/json') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        profileData = importedData;
+                        saveData();
+                        updateUI();
+                        alert('بکاپ با موفقیت بازگردانی شد!');
+                        location.reload(); // Refresh page to show all changes
+                    } catch (error) {
+                        alert('خطا در بازگردانی بکاپ! فایل معتبر نیست.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+            e.target.value = '';
+        });
+
+        // Save profile name and description
+        document.getElementById('profileName').addEventListener('input', function() {
             if (isEditMode) {
                 profileData.profileName = this.textContent;
                 saveData();
             }
         });
 
-        document.getElementById('profileDesc').addEventListener('blur', function() {
+        document.getElementById('profileDesc').addEventListener('input', function() {
             if (isEditMode) {
                 profileData.profileDesc = this.textContent;
                 saveData();
@@ -1015,7 +1068,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const editableTitles = document.querySelectorAll('.editable-title');
             editableTitles.forEach(title => {
-                title.addEventListener('blur', function() {
+                title.addEventListener('input', function() {
                     if (isEditMode) {
                         const type = this.dataset.type;
                         profileData.contentData[type].title = this.textContent;
@@ -1023,24 +1076,37 @@
                     }
                 });
                 
-                // Prevent modal opening when editing title
                 title.addEventListener('click', function(e) {
                     if (isEditMode) {
                         e.stopPropagation();
                     }
                 });
             });
-        });
 
-        function saveData() {
-            // This function now downloads the updated JSON file
-        }
-
-        // Load saved data on page load
-        window.addEventListener('load', function() {
+            // Load saved data on page load
             loadData();
         });
+
+        // Auto-save functionality for better user experience
+        setInterval(() => {
+            if (isEditMode) {
+                // Auto-save current profile data
+                const currentName = document.getElementById('profileName').textContent;
+                const currentDesc = document.getElementById('profileDesc').textContent;
+                
+                if (currentName !== profileData.profileName) {
+                    profileData.profileName = currentName;
+                    saveData();
+                }
+                
+                if (currentDesc !== profileData.profileDesc) {
+                    profileData.profileDesc = currentDesc;
+                    saveData();
+                }
+            }
+        }, 5000); // Auto-save every 5 seconds
     </script>
 </body>
 </html>
+
 
