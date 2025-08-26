@@ -295,25 +295,6 @@
             z-index: 1000;
         }
 
-        .save-indicator {
-            position: fixed;
-            top: 50px;
-            right: 10px;
-            background: rgba(0, 150, 255, 0.8);
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            display: none;
-            z-index: 1000;
-            animation: fadeInOut 2s ease-in-out;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
-
         /* Audio Player Styles */
         .audio-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.3);
@@ -421,21 +402,6 @@
         #audioInput {
             display: none;
         }
-
-        .hosting-info {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(255, 165, 0, 0.8);
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-size: 12px;
-            max-width: 300px;
-            z-index: 999;
-            display: none;
-        }
-
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -458,13 +424,6 @@
                 margin: 10% auto;
                 padding: 20px;
                 width: 95%;
-            }
-
-            .hosting-info {
-                left: 10px;
-                bottom: 10px;
-                font-size: 10px;
-                max-width: 250px;
             }
         }
 
@@ -493,23 +452,14 @@
 <body>
     <canvas id="matrix"></canvas>
     
-    <!-- Hosting Info -->
-    <div class="hosting-info" id="hostingInfo">
-        💡 این صفحه فعلاً محلی است. برای دسترسی عمومی از اینترنت، آن را روی Netlify، Vercel یا GitHub Pages میزبانی کنید.
-        <button class="admin-btn" onclick="hideHostingInfo()" style="margin: 5px 0 0 0; padding: 3px 8px; font-size: 10px;">متوجه شدم</button>
-    </div>
-    
     <!-- Admin Panel -->
     <div class="admin-panel" id="adminPanel">
         <button class="admin-btn" onclick="toggleEditMode()">حالت ویرایش</button>
-        <button class="admin-btn" onclick="exportData()">دانلود بکاپ</button>
-        <button class="admin-btn" onclick="importData()">بازگردانی بکاپ</button>
         <button class="admin-btn" onclick="logout()">خروج</button>
     </div>
     
     <!-- Edit Mode Indicator -->
     <div class="edit-indicator" id="editIndicator">حالت ویرایش فعال</div>
-    <div class="save-indicator" id="saveIndicator">ذخیره شد!</div>
     
     <!-- Password Modal -->
     <div id="passwordModal" class="password-modal">
@@ -521,9 +471,6 @@
             <button class="admin-btn" onclick="closePasswordModal()">انصراف</button>
         </div>
     </div>
-
-    <!-- Import Data Input -->
-    <input type="file" id="importInput" accept=".json" style="display: none;">
     
     <div class="container">
         <div class="profile-section">
@@ -609,79 +556,8 @@
         });
 
         // Admin system
-        const ADMIN_PASSWORD = "aeon2025";
-        const STORAGE_KEY = "personal_page_data";
+        const ADMIN_PASSWORD = "aeon2025"; // تغییر دهید
         let isEditMode = false;
-
-        // Default profile data
-        let profileData = {
-            profileName: "نام شما",
-            profileDesc: "توضیح کوتاه درباره شما",
-            profileImage: "",
-            contentData: {
-                biography: {
-                    title: "بیوگرافی",
-                    content: "اینجا بیوگرافی خود را بنویسید...\n\nمی‌توانید درباره تحصیلات، تجربیات کاری، علایق و هر چیز دیگری که می‌خواهید بنویسید."
-                },
-                tenrules: {
-                    title: "ده فرمان",
-                    content: "۱. فرمان اول...\n۲. فرمان دوم...\n۳. فرمان سوم...\n۴. فرمان چهارم...\n۵. فرمان پنجم...\n۶. فرمان ششم...\n۷. فرمان هفتم...\n۸. فرمان هشتم...\n۹. فرمان نهم...\n۱۰. فرمان دهم..."
-                },
-                playlist: {
-                    title: "پلی لیست",
-                    content: "آهنگ های خود را آپلود کنید...",
-                    audioFiles: []
-                }
-            }
-        };
-
-        // بازگشت به localStorage برای ذخیره‌سازی دائمی
-        function saveToStorage(key, data) {
-            try {
-                localStorage.setItem(key, JSON.stringify(data));
-                showSaveIndicator();
-                console.log('داده‌ها ذخیره شدند:', data);
-            } catch (error) {
-                console.error('خطا در ذخیره‌سازی:', error);
-                alert('خطا در ذخیره‌سازی داده‌ها!');
-            }
-        }
-
-        function loadFromStorage(key) {
-            try {
-                const data = localStorage.getItem(key);
-                const parsed = data ? JSON.parse(data) : null;
-                console.log('داده‌ها بارگیری شدند:', parsed);
-                return parsed;
-            } catch (error) {
-                console.error('خطا در بارگیری:', error);
-                return null;
-            }
-        }
-
-        function showSaveIndicator() {
-            const indicator = document.getElementById('saveIndicator');
-            indicator.style.display = 'block';
-            setTimeout(() => {
-                indicator.style.display = 'none';
-            }, 2000);
-        }
-
-        // Show hosting info on first visit
-        function showHostingInfoOnFirstVisit() {
-            const hasSeenInfo = localStorage.getItem('hosting_info_seen');
-            if (!hasSeenInfo && window.location.protocol === 'file:') {
-                document.getElementById('hostingInfo').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('hostingInfo').style.display = 'none';
-                }, 15000); // Auto hide after 15 seconds
-            }
-        }
-
-        function hideHostingInfo() {
-            document.getElementById('hostingInfo').style.display = 'none';
-            localStorage.setItem('hosting_info_seen', 'true');
-        }
 
         // Double click on profile image for admin access
         let clickCount = 0;
@@ -726,26 +602,32 @@
         }
 
         function enableEditMode() {
+            // Enable contenteditable for profile elements
             document.getElementById('profileName').contentEditable = true;
             document.getElementById('profileDesc').contentEditable = true;
             
+            // Enable editable titles
             document.querySelectorAll('.editable-title').forEach(title => {
                 title.contentEditable = true;
                 title.classList.add('edit-mode');
             });
             
+            // Show edit icon
             document.getElementById('editIcon').style.display = 'flex';
         }
 
         function disableEditMode() {
+            // Disable contenteditable for profile elements
             document.getElementById('profileName').contentEditable = false;
             document.getElementById('profileDesc').contentEditable = false;
             
+            // Disable editable titles
             document.querySelectorAll('.editable-title').forEach(title => {
                 title.contentEditable = false;
                 title.classList.remove('edit-mode');
             });
             
+            // Hide edit icon
             document.getElementById('editIcon').style.display = 'none';
         }
 
@@ -767,23 +649,6 @@
             document.getElementById('editIndicator').style.display = 'none';
         }
 
-        function exportData() {
-            const dataToExport = JSON.stringify(profileData, null, 2);
-            const blob = new Blob([dataToExport], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'profile_backup.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function importData() {
-            document.getElementById('importInput').click();
-        }
-
         // Password modal enter key
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -799,44 +664,22 @@
             }
         });
 
-        // Load saved data
-        function loadData() {
-            const savedData = loadFromStorage(STORAGE_KEY);
-            if (savedData) {
-                // Merge saved data with default data to ensure all properties exist
-                profileData = {
-                    ...profileData,
-                    ...savedData,
-                    contentData: {
-                        ...profileData.contentData,
-                        ...savedData.contentData
-                    }
-                };
+        // Content data
+        const contentData = {
+            biography: {
+                title: "بیوگرافی",
+                content: "اینجا بیوگرافی خود را بنویسید...\n\nمی‌توانید درباره تحصیلات، تجربیات کاری، علایق و هر چیز دیگری که می‌خواهید بنویسید."
+            },
+            tenrules: {
+                title: "ده فرمان",
+                content: "۱. فرمان اول...\n۲. فرمان دوم...\n۳. فرمان سوم...\n۴. فرمان چهارم...\n۵. فرمان پنجم...\n۶. فرمان ششم...\n۷. فرمان هفتم...\n۸. فرمان هشتم...\n۹. فرمان نهم...\n۱۰. فرمان دهم..."
+            },
+            playlist: {
+                title: "پلی لیست",
+                content: "آهنگ های خود را آپلود کنید...",
+                audioFiles: []
             }
-            updateUI();
-        }
-
-        // Update UI with loaded data
-        function updateUI() {
-            document.getElementById('profileName').textContent = profileData.profileName;
-            document.getElementById('profileDesc').textContent = profileData.profileDesc;
-            
-            if (profileData.profileImage) {
-                document.getElementById('profileImg').src = profileData.profileImage;
-            }
-
-            document.querySelectorAll('.editable-title').forEach(title => {
-                const type = title.dataset.type;
-                if (profileData.contentData[type]) {
-                    title.textContent = profileData.contentData[type].title;
-                }
-            });
-        }
-
-        // Save data to storage
-        function saveData() {
-            saveToStorage(STORAGE_KEY, profileData);
-        }
+        };
 
         let currentAudio = null;
         let currentPlayButton = null;
@@ -847,18 +690,19 @@
             const title = document.getElementById('modalTitle');
             const body = document.getElementById('modalBody');
             
-            title.textContent = profileData.contentData[type].title;
+            title.textContent = contentData[type].title;
             
             if (type === 'playlist') {
                 createPlaylistModal(body);
             } else {
-                body.innerHTML = profileData.contentData[type].content.replace(/\n/g, '<br>');
+                body.innerHTML = contentData[type].content.replace(/\n/g, '<br>');
                 body.contentEditable = isEditMode;
                 
+                // Save content when user types (only in edit mode)
                 if (isEditMode) {
                     body.oninput = function() {
-                        profileData.contentData[type].content = this.innerHTML.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
-                        saveData();
+                        contentData[type].content = this.innerHTML.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
+                        localStorage.setItem('contentData', JSON.stringify(contentData));
                     };
                 } else {
                     body.oninput = null;
@@ -886,6 +730,7 @@
                 </div>
             `;
 
+            // Add event listener for file input only in edit mode
             if (isEditMode) {
                 const audioInput = document.getElementById('audioInput');
                 if (audioInput) {
@@ -895,11 +740,11 @@
         }
 
         function renderPlaylist() {
-            if (!profileData.contentData.playlist.audioFiles || profileData.contentData.playlist.audioFiles.length === 0) {
+            if (!contentData.playlist.audioFiles || contentData.playlist.audioFiles.length === 0) {
                 return '<p style="text-align: center; opacity: 0.7;">هنوز آهنگی آپلود نکرده‌اید</p>';
             }
 
-            return profileData.contentData.playlist.audioFiles.map((audio, index) => `
+            return contentData.playlist.audioFiles.map((audio, index) => `
                 <div class="audio-item">
                     <div class="audio-info">
                         <div class="audio-title">${audio.name}</div>
@@ -930,7 +775,7 @@
                             size: file.size,
                             type: file.type
                         };
-                        profileData.contentData.playlist.audioFiles.push(audioData);
+                        contentData.playlist.audioFiles.push(audioData);
                         updatePlaylist();
                         saveData();
                     };
@@ -948,15 +793,17 @@
         }
 
         function toggleAudio(index) {
-            const audio = profileData.contentData.playlist.audioFiles[index];
+            const audio = contentData.playlist.audioFiles[index];
             const playBtn = document.getElementById(`playBtn-${index}`);
             const progressBar = document.getElementById(`progress-${index}`);
 
+            // Stop current audio if playing
             if (currentAudio && !currentAudio.paused) {
                 currentAudio.pause();
                 currentPlayButton.textContent = '▶';
             }
 
+            // If clicking the same audio that's already loaded
             if (currentAudio && currentAudio.src === audio.data) {
                 if (currentAudio.paused) {
                     currentAudio.play();
@@ -968,6 +815,7 @@
                 return;
             }
 
+            // Load new audio
             currentAudio = new Audio(audio.data);
             currentPlayButton = playBtn;
 
@@ -999,13 +847,14 @@
             if (!isEditMode) return;
             
             if (confirm('آیا می‌خواهید این آهنگ را حذف کنید؟')) {
+                // Stop audio if it's currently playing
                 if (currentAudio && currentPlayButton && currentPlayButton.id === `playBtn-${index}`) {
                     currentAudio.pause();
                     currentAudio = null;
                     currentPlayButton = null;
                 }
                 
-                profileData.contentData.playlist.audioFiles.splice(index, 1);
+                contentData.playlist.audioFiles.splice(index, 1);
                 updatePlaylist();
                 saveData();
             }
@@ -1051,7 +900,7 @@
                             size: file.size,
                             type: file.type
                         };
-                        profileData.contentData.playlist.audioFiles.push(audioData);
+                        contentData.playlist.audioFiles.push(audioData);
                         updatePlaylist();
                         saveData();
                     };
@@ -1082,123 +931,78 @@
                 reader.onload = function(e) {
                     const img = document.getElementById('profileImg');
                     img.src = e.target.result;
-                    profileData.profileImage = e.target.result;
-                    saveData();
+                    localStorage.setItem('profileImage', e.target.result);
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Import data functionality
-        document.getElementById('importInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.type === 'application/json') {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        profileData = importedData;
-                        saveData();
-                        updateUI();
-                        alert('بکاپ با موفقیت بازگردانی شد!');
-                        location.reload(); // Refresh page to show all changes
-                    } catch (error) {
-                        alert('خطا در بازگردانی بکاپ! فایل معتبر نیست.');
-                    }
-                };
-                reader.readAsText(file);
-            }
-            e.target.value = '';
-        });
-
-        // Save profile name and description with immediate save
-        document.getElementById('profileName').addEventListener('input', function() {
+        // Save profile name and description (only in edit mode)
+        document.getElementById('profileName').addEventListener('blur', function() {
             if (isEditMode) {
-                profileData.profileName = this.textContent;
-                saveData();
+                localStorage.setItem('profileName', this.textContent);
             }
         });
 
-        document.getElementById('profileDesc').addEventListener('input', function() {
+        document.getElementById('profileDesc').addEventListener('blur', function() {
             if (isEditMode) {
-                profileData.profileDesc = this.textContent;
-                saveData();
+                localStorage.setItem('profileDesc', this.textContent);
             }
         });
 
-        // Save editable titles with immediate save
+        // Save editable titles
         document.addEventListener('DOMContentLoaded', function() {
             const editableTitles = document.querySelectorAll('.editable-title');
             editableTitles.forEach(title => {
-                title.addEventListener('input', function() {
+                title.addEventListener('blur', function() {
                     if (isEditMode) {
                         const type = this.dataset.type;
-                        profileData.contentData[type].title = this.textContent;
-                        saveData();
+                        contentData[type].title = this.textContent;
+                        localStorage.setItem('contentData', JSON.stringify(contentData));
                     }
                 });
                 
+                // Prevent modal opening when editing title
                 title.addEventListener('click', function(e) {
                     if (isEditMode) {
                         e.stopPropagation();
                     }
                 });
             });
+        });
 
-            // Load saved data on page load
-            loadData();
+        function saveData() {
+            localStorage.setItem('contentData', JSON.stringify(contentData));
+        }
+
+        // Load saved data
+        window.addEventListener('load', function() {
+            const savedImage = localStorage.getItem('profileImage');
+            if (savedImage) {
+                document.getElementById('profileImg').src = savedImage;
+            }
             
-            // Show hosting info if needed
-            showHostingInfoOnFirstVisit();
-        });
-
-        // Enhanced auto-save with better error handling
-        setInterval(() => {
-            if (isEditMode) {
-                try {
-                    // Auto-save current profile data
-                    const currentName = document.getElementById('profileName').textContent;
-                    const currentDesc = document.getElementById('profileDesc').textContent;
-                    
-                    let hasChanges = false;
-                    
-                    if (currentName !== profileData.profileName) {
-                        profileData.profileName = currentName;
-                        hasChanges = true;
-                    }
-                    
-                    if (currentDesc !== profileData.profileDesc) {
-                        profileData.profileDesc = currentDesc;
-                        hasChanges = true;
-                    }
-                    
-                    if (hasChanges) {
-                        saveData();
-                    }
-                } catch (error) {
-                    console.error('خطا در ذخیره‌سازی خودکار:', error);
-                }
+            const savedName = localStorage.getItem('profileName');
+            if (savedName) {
+                document.getElementById('profileName').textContent = savedName;
             }
-        }, 3000); // Auto-save every 3 seconds
-
-        // Add beforeunload event to ensure data is saved
-        window.addEventListener('beforeunload', function(e) {
-            if (isEditMode) {
-                // Force save current state
-                try {
-                    profileData.profileName = document.getElementById('profileName').textContent;
-                    profileData.profileDesc = document.getElementById('profileDesc').textContent;
-                    saveData();
-                } catch (error) {
-                    console.error('خطا در ذخیره‌سازی نهایی:', error);
-                }
+            
+            const savedDesc = localStorage.getItem('profileDesc');
+            if (savedDesc) {
+                document.getElementById('profileDesc').textContent = savedDesc;
             }
-        });
-
-        // Storage event listener to sync changes across tabs
-        window.addEventListener('storage', function(e) {
-            if (e.key === STORAGE_KEY) {
-                loadData();
+            
+            const savedContent = localStorage.getItem('contentData');
+            if (savedContent) {
+                Object.assign(contentData, JSON.parse(savedContent));
+                
+                // Update titles in DOM
+                document.querySelectorAll('.editable-title').forEach(title => {
+                    const type = title.dataset.type;
+                    if (contentData[type] && contentData[type].title) {
+                        title.textContent = contentData[type].title;
+                    }
+                });
             }
         });
     </script>
