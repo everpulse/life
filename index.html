@@ -923,6 +923,8 @@
 
         // Profile image upload
         document.getElementById('imageInput').addEventListener('change', function(e) {
+            if (!isEditMode) return;
+            
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -935,13 +937,17 @@
             }
         });
 
-        // Save profile name and description
+        // Save profile name and description (only in edit mode)
         document.getElementById('profileName').addEventListener('blur', function() {
-            localStorage.setItem('profileName', this.textContent);
+            if (isEditMode) {
+                localStorage.setItem('profileName', this.textContent);
+            }
         });
 
         document.getElementById('profileDesc').addEventListener('blur', function() {
-            localStorage.setItem('profileDesc', this.textContent);
+            if (isEditMode) {
+                localStorage.setItem('profileDesc', this.textContent);
+            }
         });
 
         // Save editable titles
@@ -949,14 +955,18 @@
             const editableTitles = document.querySelectorAll('.editable-title');
             editableTitles.forEach(title => {
                 title.addEventListener('blur', function() {
-                    const type = this.dataset.type;
-                    contentData[type].title = this.textContent;
-                    localStorage.setItem('contentData', JSON.stringify(contentData));
+                    if (isEditMode) {
+                        const type = this.dataset.type;
+                        contentData[type].title = this.textContent;
+                        localStorage.setItem('contentData', JSON.stringify(contentData));
+                    }
                 });
                 
                 // Prevent modal opening when editing title
                 title.addEventListener('click', function(e) {
-                    e.stopPropagation();
+                    if (isEditMode) {
+                        e.stopPropagation();
+                    }
                 });
             });
         });
@@ -998,3 +1008,4 @@
     </script>
 </body>
 </html>
+
