@@ -1040,6 +1040,67 @@
         window.addEventListener('load', function() {
             loadData();
         });
-    </script>
+    <script>
+    // Load data from JSON file
+    let profileData = {};
+
+    async function loadData() {
+        try {
+            const response = await fetch('data.json');
+            if (response.ok) {
+                profileData = await response.json();
+                updateUI();
+            } else {
+                console.error("data.json پیدا نشد");
+            }
+        } catch (err) {
+            console.error("خطا در لود data.json", err);
+        }
+    }
+
+    // Update UI with loaded data
+    function updateUI() {
+        document.getElementById('profileName').textContent = profileData.profileName;
+        document.getElementById('profileDesc').textContent = profileData.profileDesc;
+
+        if (profileData.profileImage) {
+            document.getElementById('profileImg').src = profileData.profileImage;
+        }
+
+        // Titles
+        document.querySelectorAll('.editable-title').forEach(title => {
+            const type = title.dataset.type;
+            if (profileData.contentData[type]) {
+                title.textContent = profileData.contentData[type].title;
+            }
+        });
+    }
+
+    // وقتی روی هر منو کلیک شد → متن داخل modal بیاد
+    function openModal(type) {
+        const modal = document.getElementById('modal');
+        const title = document.getElementById('modalTitle');
+        const body = document.getElementById('modalBody');
+
+        title.textContent = profileData.contentData[type].title;
+        body.innerHTML = profileData.contentData[type].content.replace(/\n/g, '<br>');
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('modal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    window.addEventListener("load", loadData);
+</script>
+
 </body>
 </html>
+
