@@ -295,6 +295,16 @@
             z-index: 1000;
         }
 
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 18px;
+            z-index: 2000;
+        }
+
         /* Audio Player Styles */
         .audio-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.3);
@@ -402,6 +412,7 @@
         #audioInput {
             display: none;
         }
+        
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -450,6 +461,7 @@
     </style>
 </head>
 <body>
+    <div class="loading" id="loading">در حال بارگذاری...</div>
     <canvas id="matrix"></canvas>
     
     <!-- Admin Panel -->
@@ -510,7 +522,26 @@
         </div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+
     <script>
+        // Firebase Configuration - کانفیگ شما
+        const firebaseConfig = {
+            apiKey: "AIzaSyDowZ-5e48zmJbT5cU7LzBmQpcWcqR5qhM",
+            authDomain: "personal-website-432a5.firebaseapp.com",
+            databaseURL: "https://personal-website-432a5-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "personal-website-432a5",
+            storageBucket: "personal-website-432a5.firebasestorage.app",
+            messagingSenderId: "350992508293",
+            appId: "1:350992508293:web:a693a7235ac29def1290ec"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         // Matrix Animation
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
@@ -549,7 +580,6 @@
 
         setInterval(drawMatrix, 35);
 
-        // Resize canvas when window resizes
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -558,6 +588,72 @@
         // Admin system
         const ADMIN_PASSWORD = "aeon2025"; // تغییر دهید
         let isEditMode = false;
+
+        // Content data - default values
+        let contentData = {
+            profileName: "نام شما",
+            profileDesc: "توضیح کوتاه درباره شما",
+            profileImage: "",
+            contentData: {
+                biography: {
+                    title: "بیوگرافی",
+                    content: "اینجا بیوگرافی خود را بنویسید..."
+                },
+                tenrules: {
+                    title: "ده فرمان",
+                    content: "۱. فرمان اول...\n۲. فرمان دوم..."
+                },
+                playlist: {
+                    title: "پلی لیست",
+                    content: "آهنگ های خود را آپلود کنید...",
+                    audioFiles: []
+                }
+            }
+        };
+
+        // Firebase functions
+        function saveToFirebase() {
+            database.ref('website').set(contentData)
+                .then(() => {
+                    console.log('Data saved successfully!');
+                })
+                .catch((error) => {
+                    console.error('Error saving data:', error);
+                });
+        }
+
+        function loadFromFirebase() {
+            return database.ref('website').once('value')
+                .then((snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        contentData = data;
+                        updateUI();
+                    }
+                    document.getElementById('loading').style.display = 'none';
+                })
+                .catch((error) => {
+                    console.error('Error loading data:', error);
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
+
+        function updateUI() {
+            document.getElementById('profileName').textContent = contentData.profileName;
+            document.getElementById('profileDesc').textContent = contentData.profileDesc;
+            
+            if (contentData.profileImage) {
+                document.getElementById('profileImg').src = contentData.profileImage;
+            }
+
+            // Update menu titles
+            document.querySelectorAll('.editable-title').forEach(title => {
+                const type = title.dataset.type;
+                if (contentData.contentData[type] && contentData.contentData[type].title) {
+                    title.textContent = contentData.contentData[type].title;
+                }
+            });
+        }
 
         // Double click on profile image for admin access
         let clickCount = 0;
@@ -602,32 +698,26 @@
         }
 
         function enableEditMode() {
-            // Enable contenteditable for profile elements
             document.getElementById('profileName').contentEditable = true;
             document.getElementById('profileDesc').contentEditable = true;
             
-            // Enable editable titles
             document.querySelectorAll('.editable-title').forEach(title => {
                 title.contentEditable = true;
                 title.classList.add('edit-mode');
             });
             
-            // Show edit icon
             document.getElementById('editIcon').style.display = 'flex';
         }
 
         function disableEditMode() {
-            // Disable contenteditable for profile elements
             document.getElementById('profileName').contentEditable = false;
             document.getElementById('profileDesc').contentEditable = false;
             
-            // Disable editable titles
             document.querySelectorAll('.editable-title').forEach(title => {
                 title.contentEditable = false;
                 title.classList.remove('edit-mode');
             });
             
-            // Hide edit icon
             document.getElementById('editIcon').style.display = 'none';
         }
 
@@ -656,53 +746,42 @@
             }
         });
 
-        // Close password modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('passwordModal');
-            if (event.target === modal) {
-                closePasswordModal();
+        // Profile name and description change handlers
+        document.getElementById('profileName').addEventListener('blur', function() {
+            if (isEditMode) {
+                contentData.profileName = this.textContent;
+                saveToFirebase();
             }
         });
 
-        // Content data
-        const contentData = {
-            biography: {
-                title: "بیوگرافی",
-                content: "اینجا بیوگرافی خود را بنویسید...\n\nمی‌توانید درباره تحصیلات، تجربیات کاری، علایق و هر چیز دیگری که می‌خواهید بنویسید."
-            },
-            tenrules: {
-                title: "ده فرمان",
-                content: "۱. فرمان اول...\n۲. فرمان دوم...\n۳. فرمان سوم...\n۴. فرمان چهارم...\n۵. فرمان پنجم...\n۶. فرمان ششم...\n۷. فرمان هفتم...\n۸. فرمان هشتم...\n۹. فرمان نهم...\n۱۰. فرمان دهم..."
-            },
-            playlist: {
-                title: "پلی لیست",
-                content: "آهنگ های خود را آپلود کنید...",
-                audioFiles: []
+        document.getElementById('profileDesc').addEventListener('blur', function() {
+            if (isEditMode) {
+                contentData.profileDesc = this.textContent;
+                saveToFirebase();
             }
-        };
-
-        let currentAudio = null;
-        let currentPlayButton = null;
+        });
 
         // Modal functions
+        let currentModalType = '';
+
         function openModal(type) {
+            currentModalType = type;
             const modal = document.getElementById('modal');
             const title = document.getElementById('modalTitle');
             const body = document.getElementById('modalBody');
             
-            title.textContent = contentData[type].title;
+            title.textContent = contentData.contentData[type].title;
             
             if (type === 'playlist') {
                 createPlaylistModal(body);
             } else {
-                body.innerHTML = contentData[type].content.replace(/\n/g, '<br>');
+                body.innerHTML = contentData.contentData[type].content.replace(/\n/g, '<br>');
                 body.contentEditable = isEditMode;
                 
-                // Save content when user types (only in edit mode)
                 if (isEditMode) {
                     body.oninput = function() {
-                        contentData[type].content = this.innerHTML.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
-                        localStorage.setItem('contentData', JSON.stringify(contentData));
+                        contentData.contentData[type].content = this.innerHTML.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
+                        saveToFirebase();
                     };
                 } else {
                     body.oninput = null;
@@ -730,7 +809,6 @@
                 </div>
             `;
 
-            // Add event listener for file input only in edit mode
             if (isEditMode) {
                 const audioInput = document.getElementById('audioInput');
                 if (audioInput) {
@@ -740,11 +818,12 @@
         }
 
         function renderPlaylist() {
-            if (!contentData.playlist.audioFiles || contentData.playlist.audioFiles.length === 0) {
+            const audioFiles = contentData.contentData.playlist.audioFiles || [];
+            if (audioFiles.length === 0) {
                 return '<p style="text-align: center; opacity: 0.7;">هنوز آهنگی آپلود نکرده‌اید</p>';
             }
 
-            return contentData.playlist.audioFiles.map((audio, index) => `
+            return audioFiles.map((audio, index) => `
                 <div class="audio-item">
                     <div class="audio-info">
                         <div class="audio-title">${audio.name}</div>
@@ -761,49 +840,20 @@
             `).join('');
         }
 
-        function handleAudioUpload(event) {
-            if (!isEditMode) return;
-            
-            const files = Array.from(event.target.files);
-            files.forEach(file => {
-                if (file.type.startsWith('audio/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const audioData = {
-                            name: file.name,
-                            data: e.target.result,
-                            size: file.size,
-                            type: file.type
-                        };
-                        contentData.playlist.audioFiles.push(audioData);
-                        updatePlaylist();
-                        saveData();
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-            event.target.value = '';
-        }
-
-        function updatePlaylist() {
-            const container = document.getElementById('playlistContainer');
-            if (container) {
-                container.innerHTML = renderPlaylist();
-            }
-        }
+        let currentAudio = null;
+        let currentPlayButton = null;
 
         function toggleAudio(index) {
-            const audio = contentData.playlist.audioFiles[index];
+            const audioFiles = contentData.contentData.playlist.audioFiles || [];
+            const audio = audioFiles[index];
             const playBtn = document.getElementById(`playBtn-${index}`);
             const progressBar = document.getElementById(`progress-${index}`);
 
-            // Stop current audio if playing
             if (currentAudio && !currentAudio.paused) {
                 currentAudio.pause();
                 currentPlayButton.textContent = '▶';
             }
 
-            // If clicking the same audio that's already loaded
             if (currentAudio && currentAudio.src === audio.data) {
                 if (currentAudio.paused) {
                     currentAudio.play();
@@ -815,7 +865,6 @@
                 return;
             }
 
-            // Load new audio
             currentAudio = new Audio(audio.data);
             currentPlayButton = playBtn;
 
@@ -843,20 +892,55 @@
             });
         }
 
+        function handleAudioUpload(event) {
+            if (!isEditMode) return;
+            
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                if (file.type.startsWith('audio/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const audioData = {
+                            name: file.name,
+                            data: e.target.result,
+                            size: file.size,
+                            type: file.type
+                        };
+                        
+                        if (!contentData.contentData.playlist.audioFiles) {
+                            contentData.contentData.playlist.audioFiles = [];
+                        }
+                        
+                        contentData.contentData.playlist.audioFiles.push(audioData);
+                        updatePlaylist();
+                        saveToFirebase();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            event.target.value = '';
+        }
+
         function deleteAudio(index) {
             if (!isEditMode) return;
             
             if (confirm('آیا می‌خواهید این آهنگ را حذف کنید؟')) {
-                // Stop audio if it's currently playing
                 if (currentAudio && currentPlayButton && currentPlayButton.id === `playBtn-${index}`) {
                     currentAudio.pause();
                     currentAudio = null;
                     currentPlayButton = null;
                 }
                 
-                contentData.playlist.audioFiles.splice(index, 1);
+                contentData.contentData.playlist.audioFiles.splice(index, 1);
                 updatePlaylist();
-                saveData();
+                saveToFirebase();
+            }
+        }
+
+        function updatePlaylist() {
+            const container = document.getElementById('playlistContainer');
+            if (container) {
+                container.innerHTML = renderPlaylist();
             }
         }
 
@@ -900,9 +984,14 @@
                             size: file.size,
                             type: file.type
                         };
-                        contentData.playlist.audioFiles.push(audioData);
+                        
+                        if (!contentData.contentData.playlist.audioFiles) {
+                            contentData.contentData.playlist.audioFiles = [];
+                        }
+                        
+                        contentData.contentData.playlist.audioFiles.push(audioData);
                         updatePlaylist();
-                        saveData();
+                        saveToFirebase();
                     };
                     reader.readAsDataURL(file);
                 }
@@ -911,14 +1000,6 @@
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('modal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
         }
 
         // Profile image upload
@@ -931,22 +1012,10 @@
                 reader.onload = function(e) {
                     const img = document.getElementById('profileImg');
                     img.src = e.target.result;
-                    localStorage.setItem('profileImage', e.target.result);
+                    contentData.profileImage = e.target.result;
+                    saveToFirebase();
                 };
                 reader.readAsDataURL(file);
-            }
-        });
-
-        // Save profile name and description (only in edit mode)
-        document.getElementById('profileName').addEventListener('blur', function() {
-            if (isEditMode) {
-                localStorage.setItem('profileName', this.textContent);
-            }
-        });
-
-        document.getElementById('profileDesc').addEventListener('blur', function() {
-            if (isEditMode) {
-                localStorage.setItem('profileDesc', this.textContent);
             }
         });
 
@@ -957,12 +1026,11 @@
                 title.addEventListener('blur', function() {
                     if (isEditMode) {
                         const type = this.dataset.type;
-                        contentData[type].title = this.textContent;
-                        localStorage.setItem('contentData', JSON.stringify(contentData));
+                        contentData.contentData[type].title = this.textContent;
+                        saveToFirebase();
                     }
                 });
                 
-                // Prevent modal opening when editing title
                 title.addEventListener('click', function(e) {
                     if (isEditMode) {
                         e.stopPropagation();
@@ -971,39 +1039,23 @@
             });
         });
 
-        function saveData() {
-            localStorage.setItem('contentData', JSON.stringify(contentData));
-        }
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('modal');
+            const passwordModal = document.getElementById('passwordModal');
+            
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+            
+            if (event.target === passwordModal) {
+                closePasswordModal();
+            }
+        });
 
-        // Load saved data
+        // Initialize app
         window.addEventListener('load', function() {
-            const savedImage = localStorage.getItem('profileImage');
-            if (savedImage) {
-                document.getElementById('profileImg').src = savedImage;
-            }
-            
-            const savedName = localStorage.getItem('profileName');
-            if (savedName) {
-                document.getElementById('profileName').textContent = savedName;
-            }
-            
-            const savedDesc = localStorage.getItem('profileDesc');
-            if (savedDesc) {
-                document.getElementById('profileDesc').textContent = savedDesc;
-            }
-            
-            const savedContent = localStorage.getItem('contentData');
-            if (savedContent) {
-                Object.assign(contentData, JSON.parse(savedContent));
-                
-                // Update titles in DOM
-                document.querySelectorAll('.editable-title').forEach(title => {
-                    const type = title.dataset.type;
-                    if (contentData[type] && contentData[type].title) {
-                        title.textContent = contentData[type].title;
-                    }
-                });
-            }
+            loadFromFirebase();
         });
     </script>
 </body>
