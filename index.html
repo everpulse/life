@@ -1,3 +1,6 @@
+I see the issue! The problem is with the text direction for mixed content (Persian and English). In RTL (right-to-left) layouts, English text gets repositioned incorrectly. Let me fix this by adding proper text direction handling.
+Here's the corrected code with proper bidirectional text support:
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -108,12 +111,20 @@
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 10px;
+            /* Fix for mixed text direction */
+            direction: ltr;
+            text-align: center;
+            unicode-bidi: plaintext;
         }
 
         .profile-desc {
             font-size: 14px;
             color: rgba(255, 255, 255, 0.7);
             margin-bottom: 20px;
+            /* Fix for mixed text direction */
+            direction: ltr;
+            text-align: center;
+            unicode-bidi: plaintext;
         }
 
         .menu-items {
@@ -144,6 +155,10 @@
         .menu-item h3 {
             font-size: 18px;
             font-weight: bold;
+            /* Fix for mixed text direction */
+            direction: ltr;
+            text-align: center;
+            unicode-bidi: plaintext;
         }
 
         /* Modal Styles */
@@ -190,11 +205,24 @@
             margin-bottom: 20px;
             color: #fff;
             text-align: center;
+            /* Fix for mixed text direction */
+            direction: ltr;
+            unicode-bidi: plaintext;
         }
 
         .modal-body {
             color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
+            /* Fix for mixed text direction in modal content */
+            direction: ltr;
+            text-align: left;
+            unicode-bidi: plaintext;
+        }
+
+        /* Persian text should be right-aligned */
+        .modal-body p:lang(fa),
+        .modal-body div:lang(fa) {
+            direction: rtl;
             text-align: right;
         }
 
@@ -359,6 +387,10 @@
         .audio-title {
             font-weight: bold;
             margin-bottom: 5px;
+            /* Fix for audio file names */
+            direction: ltr;
+            text-align: left;
+            unicode-bidi: plaintext;
         }
 
         .audio-controls {
@@ -561,21 +593,21 @@
             </div>
             <input type="file" id="imageInput" accept="image/*">
             
-            <div class="profile-name" id="profileName" dir="auto">Aeon</div>
-            <div class="profile-desc" id="profileDesc" dir="auto">逐梦未来—智慧为刃˚.ᐟ.</div>
+            <div class="profile-name" id="profileName">Aeon</div>
+            <div class="profile-desc" id="profileDesc">逐梦未来—智慧为刃˚.ᐟ.</div>
         </div>
 
         <div class="menu-items">
             <div class="menu-item" onclick="openModal('biography')">
-                <h3 class="editable-title" data-type="biography" dir="auto">ABOUT ME</h3>
+                <h3 class="editable-title" data-type="biography">ABOUT ME</h3>
             </div>
             
             <div class="menu-item" onclick="openModal('tenrules')">
-                <h3 class="editable-title" data-type="tenrules" dir="auto">COMMUNITY</h3>
+                <h3 class="editable-title" data-type="tenrules">COMMUNITY</h3>
             </div>
             
             <div class="menu-item" onclick="openModal('playlist')">
-                <h3 class="editable-title" data-type="playlist" dir="auto">PLAYLIST</h3>
+                <h3 class="editable-title" data-type="playlist">PLAYLIST</h3>
             </div>
         </div>
     </div>
@@ -585,7 +617,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
-            <div class="modal-body" id="modalBody" contenteditable="true" dir="auto">
+            <div class="modal-body" id="modalBody" contenteditable="true">
                 <!-- محتوا اینجا نمایش داده می‌شود -->
             </div>
         </div>
