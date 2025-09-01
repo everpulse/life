@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>صفحه شخصی</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
         * {
             margin: 0;
@@ -20,7 +22,7 @@
             position: relative;
         }
 
-        /* Matrix Background Animation */
+        /* Matrix Background Animation - Optimized */
         #matrix {
             position: fixed;
             top: 0;
@@ -29,6 +31,7 @@
             height: 100%;
             z-index: -1;
             opacity: 0.15;
+            will-change: transform;
         }
 
         .container {
@@ -59,6 +62,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             overflow: hidden;
+            will-change: transform;
         }
 
         .profile-image:hover {
@@ -71,6 +75,7 @@
             height: 100%;
             object-fit: cover;
             border-radius: 50%;
+            loading: lazy;
         }
 
         .edit-icon {
@@ -87,6 +92,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            will-change: transform;
         }
 
         .edit-icon:hover {
@@ -126,6 +132,7 @@
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
+            will-change: transform;
         }
 
         .menu-item:hover {
@@ -372,6 +379,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            will-change: transform;
         }
 
         .play-btn:hover {
@@ -407,6 +415,7 @@
             background: #fff;
             width: 0%;
             transition: width 0.1s ease;
+            will-change: width;
         }
 
         #audioInput {
@@ -438,7 +447,7 @@
             }
         }
 
-        /* Matrix Animation */
+        /* Matrix Animation - Optimized */
         .matrix-char {
             position: absolute;
             color: #fff;
@@ -446,6 +455,7 @@
             font-size: 14px;
             animation: matrix-fall linear infinite;
             opacity: 0.7;
+            will-change: transform;
         }
 
         @keyframes matrix-fall {
@@ -460,62 +470,62 @@
         }
 
         /* Link Styles */
-.modal-body a {
-    color: #4fc3f7;
-    text-decoration: underline;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
+        .modal-body a {
+            color: #4fc3f7;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
 
-.modal-body a:hover {
-    color: #81d4fa;
-}
+        .modal-body a:hover {
+            color: #81d4fa;
+        }
 
-.link-toolbar {
-    position: sticky;
-    top: 0;
-    background: rgba(0, 0, 0, 0.9);
-    padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 20px;
-    border-radius: 10px;
-    display: none;
-}
+        .link-toolbar {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+            border-radius: 10px;
+            display: none;
+        }
 
-.link-toolbar.visible {
-    display: block;
-}
+        .link-toolbar.visible {
+            display: block;
+        }
 
-.toolbar-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 0 5px;
-    font-size: 12px;
-    transition: all 0.3s ease;
-}
+        .toolbar-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
 
-.toolbar-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
+        .toolbar-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
 
-.link-input {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 14px;
-}
+        .link-input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 14px;
+        }
 
-.link-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
+        .link-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
         
     </style>
 </head>
@@ -546,7 +556,7 @@
     <div class="container">
         <div class="profile-section">
             <div class="profile-image" id="profileImageContainer">
-                <img id="profileImg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Im0zNSA4MGMwLTE1IDEwLTI1IDI1LTI1czI1IDEwIDI1IDI1IiBmaWxsPSIjNjY2Ii8+Cjwvc3ZnPgo=" alt="Profile">
+                <img id="profileImg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Im0zNSA4MGMwLTE1IDEwLTI1IDI1LTI1czI1IDEwIDI1IDI1IiBmaWxsPSIjNjY2Ii8+Cjwvc3ZnPgo=" alt="Profile" loading="lazy">
                 <div class="edit-icon" id="editIcon" style="display: none;">✏️</div>
             </div>
             <input type="file" id="imageInput" accept="image/*">
@@ -581,12 +591,13 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+    <!-- Optimized Firebase SDK v9 Modular -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+        import { getDatabase, ref, set, get, child } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js';
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js';
 
-    <script>
-        // Firebase Configuration - کانفیگ شما
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDowZ-5e48zmJbT5cU7LzBmQpcWcqR5qhM",
             authDomain: "personal-website-432a5.firebaseapp.com",
@@ -598,46 +609,81 @@
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const imageCache = new Map();
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const storage = getStorage(app);
+        
+        // Cache system with timestamps
+        const cache = new Map();
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-        // Matrix Animation
+        function isCacheValid(timestamp) {
+            return Date.now() - timestamp < CACHE_DURATION;
+        }
+
+        // Optimized Matrix Animation - Reduced frequency
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        let matrixAnimationId;
+        let isMatrixRunning = false;
 
-        const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()";
-        const matrixArray = matrix.split("");
+        function initMatrix() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
 
-        const fontSize = 10;
-        const columns = canvas.width / fontSize;
+            const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()";
+            const matrixArray = matrix.split("");
 
-        const drops = [];
-        for(let x = 0; x < columns; x++) {
-            drops[x] = 1;
-        }
+            const fontSize = 10;
+            const columns = canvas.width / fontSize;
 
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#fff';
-            ctx.font = fontSize + 'px monospace';
-
-            for(let i = 0; i < drops.length; i++) {
-                const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
+            const drops = [];
+            for(let x = 0; x < columns; x++) {
+                drops[x] = 1;
             }
+
+            function drawMatrix() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#fff';
+                ctx.font = fontSize + 'px monospace';
+
+                for(let i = 0; i < drops.length; i++) {
+                    const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+
+                if (isMatrixRunning) {
+                    matrixAnimationId = requestAnimationFrame(() => {
+                        setTimeout(drawMatrix, 80); // Increased from 35ms to 80ms
+                    });
+                }
+            }
+
+            isMatrixRunning = true;
+            drawMatrix();
         }
 
-        setInterval(drawMatrix, 35);
+        // Pause matrix when not visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                isMatrixRunning = false;
+                if (matrixAnimationId) {
+                    cancelAnimationFrame(matrixAnimationId);
+                }
+            } else {
+                if (!isMatrixRunning) {
+                    initMatrix();
+                }
+            }
+        });
 
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
@@ -645,7 +691,7 @@
         });
 
         // Admin system
-        const ADMIN_PASSWORD = "aeon2025"; // تغییر دهید
+        const ADMIN_PASSWORD = "aeon2025";
         let isEditMode = false;
 
         // Content data - default values
@@ -670,67 +716,125 @@
             }
         };
 
-        // Firebase functions
-        function saveToFirebase() {
-            return database.ref('website').set(contentData)
-                .then(() => {
-                    console.log('Data saved successfully!');
-                })
-                .catch((error) => {
-                    console.error('Error saving data:', error);
-                    throw error;
+        // Optimized Firebase functions with batching
+        async function saveToFirebase() {
+            try {
+                await set(ref(database, 'website'), contentData);
+                console.log('Data saved successfully!');
+                
+                // Update cache
+                cache.set('website', {
+                    data: contentData,
+                    timestamp: Date.now()
                 });
+            } catch (error) {
+                console.error('Error saving data:', error);
+                throw error;
+            }
         }
 
-        function loadFromFirebase() {
-    Promise.all([
-        database.ref('website/basic/profileName').once('value'),
-        database.ref('website/basic/profileDesc').once('value'),
-        database.ref('website/basic/menuTitles').once('value')
-    ]).then(results => {
-        if (results[0].val()) contentData.profileName = results[0].val();
-        if (results[1].val()) contentData.profileDesc = results[1].val();
-        
-        const menuTitles = results[2].val();
-        if (menuTitles) {
-            Object.keys(menuTitles).forEach(key => {
-                contentData.contentData[key].title = menuTitles[key];
-            });
+        // Optimized loading with single batch query
+        async function loadFromFirebase() {
+            try {
+                // Check cache first
+                const cached = cache.get('website');
+                if (cached && isCacheValid(cached.timestamp)) {
+                    contentData = cached.data;
+                    updateBasicUI();
+                    document.getElementById('loading').style.display = 'none';
+                    await loadProfileImage();
+                    return;
+                }
+
+                // Single batch query instead of multiple queries
+                const snapshot = await get(ref(database, 'website'));
+                const data = snapshot.val();
+                
+                if (data) {
+                    // Merge with defaults to ensure all properties exist
+                    contentData = {
+                        ...contentData,
+                        ...data,
+                        contentData: {
+                            ...contentData.contentData,
+                            ...data.contentData
+                        }
+                    };
+                }
+                
+                // Cache the data
+                cache.set('website', {
+                    data: contentData,
+                    timestamp: Date.now()
+                });
+                
+                updateBasicUI();
+                document.getElementById('loading').style.display = 'none';
+                await loadProfileImage();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').style.display = 'none';
+            }
         }
-        
-        updateBasicUI();
-        document.getElementById('loading').style.display = 'none';
-        
-        loadProfileImage();
-    });
-}
 
         function updateBasicUI() {
-    document.getElementById('profileName').textContent = contentData.profileName;
-    document.getElementById('profileDesc').textContent = contentData.profileDesc;
-    
-    document.querySelectorAll('.editable-title').forEach(title => {
-        const type = title.dataset.type;
-        if (contentData.contentData[type] && contentData.contentData[type].title) {
-            title.textContent = contentData.contentData[type].title;
+            document.getElementById('profileName').textContent = contentData.profileName;
+            document.getElementById('profileDesc').textContent = contentData.profileDesc;
+            
+            document.querySelectorAll('.editable-title').forEach(title => {
+                const type = title.dataset.type;
+                if (contentData.contentData[type] && contentData.contentData[type].title) {
+                    title.textContent = contentData.contentData[type].title;
+                }
+            });
         }
-    });
-}
-        function loadProfileImage() {
-    if (imageCache.has('profileImage')) {
-        document.getElementById('profileImg').src = imageCache.get('profileImage');
-        return;
-    }
-    
-    database.ref('website/media/profileImage').once('value').then(snapshot => {
-        const imageData = snapshot.val();
-        if (imageData) {
-            imageCache.set('profileImage', imageData);
-            document.getElementById('profileImg').src = imageData;
-            contentData.profileImage = imageData;
+
+        // Optimized image loading with compression
+        async function loadProfileImage() {
+            const cacheKey = 'profileImage';
+            const cached = cache.get(cacheKey);
+            
+            if (cached && isCacheValid(cached.timestamp)) {
+                document.getElementById('profileImg').src = cached.data;
+                return;
+            }
+            
+            try {
+                const snapshot = await get(ref(database, 'website/profileImage'));
+                const imageData = snapshot.val();
+                if (imageData) {
+                    cache.set(cacheKey, {
+                        data: imageData,
+                        timestamp: Date.now()
+                    });
+                    document.getElementById('profileImg').src = imageData;
+                    contentData.profileImage = imageData;
+                }
+            } catch (error) {
+                console.error('Error loading profile image:', error);
+            }
         }
-    });
-}
+
+        // Optimized image compression
+        function compressImage(file, maxWidth = 400, quality = 0.8) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+                    canvas.width = img.width * ratio;
+                    canvas.height = img.height * ratio;
+                    
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    canvas.toBlob(resolve, 'image/webp', quality);
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+        }
 
         // Double click on profile image for admin access
         let clickCount = 0;
@@ -823,95 +927,111 @@
             }
         });
 
+        // Debounced save functions
+        let saveTimeout;
+        function debouncedSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveToFirebase, 1000);
+        }
+
         // Profile name and description change handlers
         document.getElementById('profileName').addEventListener('blur', function() {
             if (isEditMode) {
                 contentData.profileName = this.textContent;
-                saveToFirebase();
+                debouncedSave();
             }
         });
 
         document.getElementById('profileDesc').addEventListener('blur', function() {
             if (isEditMode) {
                 contentData.profileDesc = this.textContent;
-                saveToFirebase();
+                debouncedSave();
             }
         });
 
         // Modal functions
         let currentModalType = '';
 
-
         function openModal(type) {
-    currentModalType = type;
-    const modal = document.getElementById('modal');
-    const title = document.getElementById('modalTitle');
-    const body = document.getElementById('modalBody');
-    
-    title.textContent = contentData.contentData[type].title;
-    body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">در حال بارگذاری...</div>';
-    
-    modal.style.display = 'block';
-    
-    loadModalContent(type, body);
-}
-
-        function loadModalContent(type, body) {
-    const contentPath = type === 'playlist' ? 
-        `website/contentData/${type}` : 
-        `website/contentData/${type}`;
-        
-    database.ref(contentPath).once('value').then(snapshot => {
-        let data = snapshot.val();
-
-        if (!data) {
-            // اگر محتوایی نبود، مقدار پیش‌فرض بساز
-            data = {
-                title: contentData.contentData[type]?.title || '',
-                content: type === 'playlist' ? "آهنگ های خود را آپلود کنید..." : "محتوایی وجود ندارد...",
-                audioFiles: type === 'playlist' ? [] : undefined
-            };
-            contentData.contentData[type] = data;
-        } else {
-            contentData.contentData[type] = data;
+            currentModalType = type;
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            
+            title.textContent = contentData.contentData[type].title;
+            body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">در حال بارگذاری...</div>';
+            
+            modal.style.display = 'block';
+            
+            loadModalContent(type, body);
         }
 
-        if (type === 'playlist') {
-            createPlaylistModal(body);
-            return;
+        async function loadModalContent(type, body) {
+            try {
+                // Check cache first
+                const cacheKey = `content_${type}`;
+                const cached = cache.get(cacheKey);
+                
+                let data;
+                if (cached && isCacheValid(cached.timestamp)) {
+                    data = cached.data;
+                } else {
+                    const snapshot = await get(ref(database, `website/contentData/${type}`));
+                    data = snapshot.val();
+                    
+                    if (!data) {
+                        data = {
+                            title: contentData.contentData[type]?.title || '',
+                            content: type === 'playlist' ? "آهنگ های خود را آپلود کنید..." : "محتوایی وجود ندارد...",
+                            audioFiles: type === 'playlist' ? [] : undefined
+                        };
+                    }
+                    
+                    // Cache the data
+                    cache.set(cacheKey, {
+                        data: data,
+                        timestamp: Date.now()
+                    });
+                }
+                
+                contentData.contentData[type] = data;
+
+                if (type === 'playlist') {
+                    createPlaylistModal(body);
+                    return;
+                }
+
+                // For other content types
+                const toolbar = createLinkToolbar();
+                body.innerHTML = toolbar + (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
+                body.contentEditable = isEditMode;
+
+                const toolbarElement = body.querySelector('.link-toolbar');
+                if (isEditMode && toolbarElement) {
+                    toolbarElement.classList.add('visible');
+                }
+
+                if (isEditMode) {
+                    body.oninput = function() {
+                        const toolbarHTML = this.querySelector('.link-toolbar') ? this.querySelector('.link-toolbar').outerHTML : '';
+                        const content = this.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
+                        contentData.contentData[type].content = content;
+                        debouncedSave();
+                    };
+
+                    body.addEventListener('mouseup', handleTextSelection);
+                    body.addEventListener('keyup', handleTextSelection);
+                } else {
+                    body.oninput = null;
+                    body.removeEventListener('mouseup', handleTextSelection);
+                    body.removeEventListener('keyup', handleTextSelection);
+                }
+                
+            } catch (error) {
+                console.error('خطا در بارگذاری محتوا:', error);
+                body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,100,100,0.7);">خطا در بارگذاری محتوا</div>';
+            }
         }
-
-        // برای سایر محتواها
-        const toolbar = createLinkToolbar();
-        body.innerHTML = toolbar + (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
-        body.contentEditable = isEditMode;
-
-        const toolbarElement = body.querySelector('.link-toolbar');
-        if (isEditMode && toolbarElement) {
-            toolbarElement.classList.add('visible');
-        }
-
-        if (isEditMode) {
-            body.oninput = function() {
-                const toolbarHTML = this.querySelector('.link-toolbar') ? this.querySelector('.link-toolbar').outerHTML : '';
-                const content = this.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
-                contentData.contentData[type].content = content;
-                saveToFirebase();
-            };
-
-            body.addEventListener('mouseup', handleTextSelection);
-            body.addEventListener('keyup', handleTextSelection);
-        } else {
-            body.oninput = null;
-            body.removeEventListener('mouseup', handleTextSelection);
-            body.removeEventListener('keyup', handleTextSelection);
-        }
-    }).catch(error => {
-        console.error('خطا در بارگذاری محتوا:', error);
-        body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,100,100,0.7);">خطا در بارگذاری محتوا</div>';
-    });
-}
-
 
         function createPlaylistModal(body) {
             body.contentEditable = false;
@@ -920,7 +1040,7 @@
                      ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
                     <p>🎵 کلیک کنید یا فایل صوتی را اینجا بکشید</p>
                     <p style="font-size: 12px; margin-top: 5px; opacity: 0.7;">فرمت های پشتیبانی شده: MP3, WAV, M4A, OGG</p>
-                    <p style="font-size: 10px; margin-top: 3px; opacity: 0.5;">حداکثر حجم هر فایل: 3MB</p>
+                    <p style="font-size: 10px; margin-top: 3px; opacity: 0.5;">حداکثر حجم هر فایل: 5MB</p>
                 </div>
                 <input type="file" id="audioInput" accept="audio/*" multiple>
             ` : '';
@@ -972,7 +1092,7 @@
             const playBtn = document.getElementById(`playBtn-${index}`);
             const progressBar = document.getElementById(`progress-${index}`);
 
-            // اگر آهنگ جاری همان آهنگ کلیک شده است
+            // If current audio is the same as clicked
             if (currentAudio && currentAudio.getAttribute('data-index') == index) {
                 if (currentAudio.paused) {
                     currentAudio.play().catch(() => {
@@ -987,12 +1107,12 @@
                 return;
             }
 
-            // توقف کامل آهنگ قبلی
+            // Stop previous audio completely
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
                 
-                // پاک کردن event listener های قبلی
+                // Clean up event listeners
                 currentAudio.removeEventListener('loadedmetadata', currentAudio.loadedmetadataHandler);
                 currentAudio.removeEventListener('timeupdate', currentAudio.timeupdateHandler);
                 currentAudio.removeEventListener('ended', currentAudio.endedHandler);
@@ -1008,14 +1128,14 @@
                 }
             }
 
-            // کمی صبر قبل از شروع آهنگ جدید
+            // Wait a bit before starting new audio
             setTimeout(() => {
-                // ساخت آهنگ جدید
+                // Create new audio
                 currentAudio = new Audio();
                 currentAudio.setAttribute('data-index', index);
                 currentPlayButton = playBtn;
 
-                // تعریف handler ها
+                // Define handlers
                 currentAudio.loadedmetadataHandler = () => {
                     currentAudio.play().catch((error) => {
                         console.error('Play error:', error);
@@ -1057,7 +1177,7 @@
                     currentPlayButton = null;
                 };
 
-                // اضافه کردن event listener ها
+                // Add event listeners
                 currentAudio.addEventListener('loadedmetadata', currentAudio.loadedmetadataHandler);
                 currentAudio.addEventListener('timeupdate', currentAudio.timeupdateHandler);
                 currentAudio.addEventListener('ended', currentAudio.endedHandler);
@@ -1065,29 +1185,38 @@
                 currentAudio.addEventListener('play', currentAudio.playHandler);
                 currentAudio.addEventListener('error', currentAudio.errorHandler);
 
-                // تنظیم src آهنگ
-                currentAudio.src = audio.data;
+                // Set audio source - check if it's a URL or base64
+                if (audio.url) {
+                    currentAudio.src = audio.url; // Firebase Storage URL
+                } else {
+                    currentAudio.src = audio.data; // Base64 fallback
+                }
             }, 100);
         }
 
-        function handleAudioUpload(event) {
+        // Optimized audio upload with Firebase Storage
+        async function handleAudioUpload(event) {
             if (!isEditMode) return;
             
             const files = Array.from(event.target.files);
             
-            files.forEach(file => {
+            for (const file of files) {
                 if (file.type.startsWith('audio/')) {
-                    // بررسی حجم فایل (حداکثر 3MB)
-                    if (file.size > 3 * 1024 * 1024) {
-                        alert(`فایل ${file.name} بیش از 3MB است و نمی‌تواند آپلود شود.`);
-                        return;
+                    // Check file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert(`فایل ${file.name} بیش از 5MB است و نمی‌تواند آپلود شود.`);
+                        continue;
                     }
                     
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
+                    try {
+                        // Upload to Firebase Storage
+                        const audioRef = storageRef(storage, `audio/${Date.now()}-${file.name}`);
+                        const snapshot = await uploadBytes(audioRef, file);
+                        const downloadURL = await getDownloadURL(snapshot.ref);
+                        
                         const audioData = {
                             name: file.name,
-                            data: e.target.result,
+                            url: downloadURL, // Use Storage URL instead of base64
                             size: file.size,
                             type: file.type,
                             id: Date.now() + '-' + Math.random().toString(36).substr(2, 9)
@@ -1097,45 +1226,31 @@
                             contentData.contentData.playlist.audioFiles = [];
                         }
                         
-                        // اضافه کردن آهنگ جدید به لیست
+                        // Add new audio to list
                         contentData.contentData.playlist.audioFiles.push(audioData);
                         
-                        // بروزرسانی نمایش
+                        // Update display
                         updatePlaylist();
                         
-                        // ذخیره در Firebase
-                        database.ref('website/contentData/playlist/audioFiles').set(contentData.contentData.playlist.audioFiles)
-                            .then(() => {
-                                console.log(`آهنگ ${file.name} با موفقیت ذخیره شد`);
-                            })
-                            .catch((error) => {
-                                console.error('خطا در ذخیره:', error);
-                                alert('خطا در ذخیره آهنگ. لطفاً دوباره تلاش کنید.');
-                                // حذف آهنگ از لیست محلی در صورت خطا
-                                const index = contentData.contentData.playlist.audioFiles.findIndex(a => a.id === audioData.id);
-                                if (index > -1) {
-                                    contentData.contentData.playlist.audioFiles.splice(index, 1);
-                                    updatePlaylist();
-                                }
-                            });
-                    };
-                    
-                    reader.onerror = function() {
-                        alert(`خطا در خواندن فایل ${file.name}`);
-                    };
-                    
-                    reader.readAsDataURL(file);
+                        // Save to Firebase Database
+                        await set(ref(database, 'website/contentData/playlist/audioFiles'), contentData.contentData.playlist.audioFiles);
+                        console.log(`آهنگ ${file.name} با موفقیت ذخیره شد`);
+                        
+                    } catch (error) {
+                        console.error('خطا در آپلود:', error);
+                        alert(`خطا در آپلود ${file.name}. لطفاً دوباره تلاش کنید.`);
+                    }
                 }
-            });
+            }
             
             event.target.value = '';
         }
 
-        function deleteAudio(index) {
+        async function deleteAudio(index) {
             if (!isEditMode) return;
             
             if (confirm('آیا می‌خواهید این آهنگ را حذف کنید؟')) {
-                // اگر آهنگ در حال پخش است، متوقف کن
+                // Stop if currently playing
                 if (currentAudio && currentAudio.getAttribute('data-index') == index) {
                     currentAudio.pause();
                     currentAudio.src = '';
@@ -1143,21 +1258,20 @@
                     currentPlayButton = null;
                 }
                 
-                // حذف از آرایه محلی
+                // Remove from local array
                 contentData.contentData.playlist.audioFiles.splice(index, 1);
                 
-                // بروزرسانی نمایش
+                // Update display
                 updatePlaylist();
                 
-                // ذخیره در Firebase
-                database.ref('website/contentData/playlist/audioFiles').set(contentData.contentData.playlist.audioFiles)
-                    .then(() => {
-                        console.log('آهنگ با موفقیت حذف شد');
-                    })
-                    .catch((error) => {
-                        console.error('خطا در حذف:', error);
-                        alert('خطا در حذف آهنگ');
-                    });
+                // Save to Firebase
+                try {
+                    await set(ref(database, 'website/contentData/playlist/audioFiles'), contentData.contentData.playlist.audioFiles);
+                    console.log('آهنگ با موفقیت حذف شد');
+                } catch (error) {
+                    console.error('خطا در حذف:', error);
+                    alert('خطا در حذف آهنگ');
+                }
             }
         }
 
@@ -1191,7 +1305,7 @@
             e.target.closest('.audio-upload-area').classList.remove('dragover');
         }
 
-        function handleDrop(e) {
+        async function handleDrop(e) {
             if (!isEditMode) return;
             
             e.preventDefault();
@@ -1199,19 +1313,21 @@
             
             const files = Array.from(e.dataTransfer.files);
             
-            files.forEach(file => {
+            for (const file of files) {
                 if (file.type.startsWith('audio/')) {
-                    // بررسی حجم فایل (حداکثر 3MB)
-                    if (file.size > 3 * 1024 * 1024) {
-                        alert(`فایل ${file.name} بیش از 3MB است و نمی‌تواند آپلود شود.`);
-                        return;
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert(`فایل ${file.name} بیش از 5MB است و نمی‌تواند آپلود شود.`);
+                        continue;
                     }
                     
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
+                    try {
+                        const audioRef = storageRef(storage, `audio/${Date.now()}-${file.name}`);
+                        const snapshot = await uploadBytes(audioRef, file);
+                        const downloadURL = await getDownloadURL(snapshot.ref);
+                        
                         const audioData = {
                             name: file.name,
-                            data: e.target.result,
+                            url: downloadURL,
                             size: file.size,
                             type: file.type,
                             id: Date.now() + '-' + Math.random().toString(36).substr(2, 9)
@@ -1224,56 +1340,67 @@
                         contentData.contentData.playlist.audioFiles.push(audioData);
                         updatePlaylist();
                         
-                        database.ref('website/contentData/playlist/audioFiles').set(contentData.contentData.playlist.audioFiles)
-                            .then(() => {
-                                console.log(`آهنگ ${file.name} با موفقیت ذخیره شد`);
-                            })
-                            .catch((error) => {
-                                console.error('خطا در ذخیره:', error);
-                                alert('خطا در ذخیره آهنگ. لطفاً دوباره تلاش کنید.');
-                                const index = contentData.contentData.playlist.audioFiles.findIndex(a => a.id === audioData.id);
-                                if (index > -1) {
-                                    contentData.contentData.playlist.audioFiles.splice(index, 1);
-                                    updatePlaylist();
-                                }
-                            });
-                    };
-                    
-                    reader.onerror = function() {
-                        alert(`خطا در خواندن فایل ${file.name}`);
-                    };
-                    
-                    reader.readAsDataURL(file);
+                        await set(ref(database, 'website/contentData/playlist/audioFiles'), contentData.contentData.playlist.audioFiles);
+                        console.log(`آهنگ ${file.name} با موفقیت ذخیره شد`);
+                        
+                    } catch (error) {
+                        console.error('خطا در آپلود:', error);
+                        alert(`خطا در آپلود ${file.name}`);
+                    }
                 }
-            });
+            }
         }
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
         }
 
-        // Profile image upload
-        document.getElementById('imageInput').addEventListener('change', function(e) {
-    if (!isEditMode) return;
-    
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const imageData = e.target.result;
+        // Optimized profile image upload with compression
+        document.getElementById('imageInput').addEventListener('change', async function(e) {
+            if (!isEditMode) return;
             
-            imageCache.set('profileImage', imageData);
-            
-            const img = document.getElementById('profileImg');
-            img.src = imageData;
-            contentData.profileImage = imageData;
-            saveToFirebase();
-        };
-        reader.readAsDataURL(file);
-    }
-});
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    // Compress image
+                    const compressedFile = await compressImage(file);
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageData = e.target.result;
+                        
+                        // Update cache
+                        cache.set('profileImage', {
+                            data: imageData,
+                            timestamp: Date.now()
+                        });
+                        
+                        const img = document.getElementById('profileImg');
+                        img.src = imageData;
+                        contentData.profileImage = imageData;
+                        debouncedSave();
+                    };
+                    reader.readAsDataURL(compressedFile);
+                } catch (error) {
+                    console.error('Error compressing image:', error);
+                    // Fallback to original file
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageData = e.target.result;
+                        cache.set('profileImage', {
+                            data: imageData,
+                            timestamp: Date.now()
+                        });
+                        document.getElementById('profileImg').src = imageData;
+                        contentData.profileImage = imageData;
+                        debouncedSave();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
 
-        // Save editable titles
+        // Save editable titles with debouncing
         document.addEventListener('DOMContentLoaded', function() {
             const editableTitles = document.querySelectorAll('.editable-title');
             editableTitles.forEach(title => {
@@ -1281,7 +1408,7 @@
                     if (isEditMode) {
                         const type = this.dataset.type;
                         contentData.contentData[type].title = this.textContent;
-                        saveToFirebase();
+                        debouncedSave();
                     }
                 });
                 
@@ -1308,134 +1435,153 @@
         });
 
         // Link functionality
-function createLinkToolbar() {
-    return `
-        <div class="link-toolbar" id="linkToolbar">
-            <button class="toolbar-btn" onclick="addLink()">🔗 افزودن لینک</button>
-            <button class="toolbar-btn" onclick="removeLink()">❌ حذف لینک</button>
-            <div id="linkInputSection" style="display: none; margin-top: 10px;">
-                <input type="text" class="link-input" id="linkURL" placeholder="آدرس لینک (مثال: https://wikipedia.org)">
-                <input type="text" class="link-input" id="linkText" placeholder="متن نمایشی (اختیاری)">
-                <button class="toolbar-btn" onclick="insertLink()">✅ درج لینک</button>
-                <button class="toolbar-btn" onclick="cancelLink()">❌ انصراف</button>
-            </div>
-        </div>
-    `;
-}
-
-let selectedText = '';
-let selectedRange = null;
-
-function handleTextSelection() {
-    if (!isEditMode) return;
-    
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0 && selection.toString().trim()) {
-        selectedText = selection.toString();
-        selectedRange = selection.getRangeAt(0);
-    }
-}
-
-function addLink() {
-    if (!selectedText) {
-        alert('ابتدا متنی را انتخاب کنید');
-        return;
-    }
-    
-    document.getElementById('linkInputSection').style.display = 'block';
-    document.getElementById('linkText').value = selectedText;
-    document.getElementById('linkURL').focus();
-}
-
-function removeLink() {
-    if (!selectedText) {
-        alert('ابتدا یک لینک را انتخاب کنید');
-        return;
-    }
-    
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const parentElement = range.commonAncestorContainer.parentElement;
-        
-        if (parentElement && parentElement.tagName === 'A') {
-            const linkText = parentElement.textContent;
-            const textNode = document.createTextNode(linkText);
-            parentElement.parentNode.replaceChild(textNode, parentElement);
-            
-            // ذخیره تغییرات
-            const body = document.getElementById('modalBody');
-            const toolbarHTML = body.querySelector('.link-toolbar').outerHTML;
-            const content = body.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
-            contentData.contentData[currentModalType].content = content;
-            saveToFirebase();
+        function createLinkToolbar() {
+            return `
+                <div class="link-toolbar" id="linkToolbar">
+                    <button class="toolbar-btn" onclick="addLink()">🔗 افزودن لینک</button>
+                    <button class="toolbar-btn" onclick="removeLink()">❌ حذف لینک</button>
+                    <div id="linkInputSection" style="display: none; margin-top: 10px;">
+                        <input type="text" class="link-input" id="linkURL" placeholder="آدرس لینک (مثال: https://wikipedia.org)">
+                        <input type="text" class="link-input" id="linkText" placeholder="متن نمایشی (اختیاری)">
+                        <button class="toolbar-btn" onclick="insertLink()">✅ درج لینک</button>
+                        <button class="toolbar-btn" onclick="cancelLink()">❌ انصراف</button>
+                    </div>
+                </div>
+            `;
         }
-    }
-}
 
-function insertLink() {
-    const url = document.getElementById('linkURL').value.trim();
-    const text = document.getElementById('linkText').value.trim() || selectedText;
-    
-    if (!url) {
-        alert('لطفاً آدرس لینک را وارد کنید');
-        return;
-    }
-    
-    // بررسی فرمت URL
-    let finalURL = url;
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        finalURL = 'https://' + url;
-    }
-    
-    if (selectedRange) {
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(selectedRange);
-        
-        // ایجاد لینک
-        const link = document.createElement('a');
-        link.href = finalURL;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = text;
-        link.style.color = '#4fc3f7';
-        link.style.textDecoration = 'underline';
-        
-        try {
-            selectedRange.deleteContents();
-            selectedRange.insertNode(link);
+        let selectedText = '';
+        let selectedRange = null;
+
+        function handleTextSelection() {
+            if (!isEditMode) return;
             
-            // ذخیره تغییرات
-            const body = document.getElementById('modalBody');
-            const toolbarHTML = body.querySelector('.link-toolbar').outerHTML;
-            const content = body.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
-            contentData.contentData[currentModalType].content = content;
-            saveToFirebase();
-            
-        } catch (error) {
-            console.error('خطا در درج لینک:', error);
-            alert('خطا در درج لینک. لطفاً دوباره تلاش کنید.');
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0 && selection.toString().trim()) {
+                selectedText = selection.toString();
+                selectedRange = selection.getRangeAt(0);
+            }
         }
-    }
-    
-    cancelLink();
-}
 
-function cancelLink() {
-    document.getElementById('linkInputSection').style.display = 'none';
-    document.getElementById('linkURL').value = '';
-    document.getElementById('linkText').value = '';
-    selectedText = '';
-    selectedRange = null;
-    
-    // پاک کردن انتخاب
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-}
+        function addLink() {
+            if (!selectedText) {
+                alert('ابتدا متنی را انتخاب کنید');
+                return;
+            }
+            
+            document.getElementById('linkInputSection').style.display = 'block';
+            document.getElementById('linkText').value = selectedText;
+            document.getElementById('linkURL').focus();
+        }
+
+        function removeLink() {
+            if (!selectedText) {
+                alert('ابتدا یک لینک را انتخاب کنید');
+                return;
+            }
+            
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                const parentElement = range.commonAncestorContainer.parentElement;
+                
+                if (parentElement && parentElement.tagName === 'A') {
+                    const linkText = parentElement.textContent;
+                    const textNode = document.createTextNode(linkText);
+                    parentElement.parentNode.replaceChild(textNode, parentElement);
+                    
+                    // Save changes
+                    const body = document.getElementById('modalBody');
+                    const toolbarHTML = body.querySelector('.link-toolbar').outerHTML;
+                    const content = body.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
+                    contentData.contentData[currentModalType].content = content;
+                    debouncedSave();
+                }
+            }
+        }
+
+        function insertLink() {
+            const url = document.getElementById('linkURL').value.trim();
+            const text = document.getElementById('linkText').value.trim() || selectedText;
+            
+            if (!url) {
+                alert('لطفاً آدرس لینک را وارد کنید');
+                return;
+            }
+            
+            // Check URL format
+            let finalURL = url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                finalURL = 'https://' + url;
+            }
+            
+            if (selectedRange) {
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(selectedRange);
+                
+                // Create link
+                const link = document.createElement('a');
+                link.href = finalURL;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.textContent = text;
+                link.style.color = '#4fc3f7';
+                link.style.textDecoration = 'underline';
+                
+                try {
+                    selectedRange.deleteContents();
+                    selectedRange.insertNode(link);
+                    
+                    // Save changes
+                    const body = document.getElementById('modalBody');
+                    const toolbarHTML = body.querySelector('.link-toolbar').outerHTML;
+                    const content = body.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
+                    contentData.contentData[currentModalType].content = content;
+                    debouncedSave();
+                    
+                } catch (error) {
+                    console.error('خطا در درج لینک:', error);
+                    alert('خطا در درج لینک. لطفاً دوباره تلاش کنید.');
+                }
+            }
+            
+            cancelLink();
+        }
+
+        function cancelLink() {
+            document.getElementById('linkInputSection').style.display = 'none';
+            document.getElementById('linkURL').value = '';
+            document.getElementById('linkText').value = '';
+            selectedText = '';
+            selectedRange = null;
+            
+            // Clear selection
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+        }
+
+        // Make functions global for onclick handlers
+        window.toggleEditMode = toggleEditMode;
+        window.logout = logout;
+        window.checkPassword = checkPassword;
+        window.closePasswordModal = closePasswordModal;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.toggleAudio = toggleAudio;
+        window.deleteAudio = deleteAudio;
+        window.handleDragOver = handleDragOver;
+        window.handleDragEnter = handleDragEnter;
+        window.handleDragLeave = handleDragLeave;
+        window.handleDrop = handleDrop;
+        window.addLink = addLink;
+        window.removeLink = removeLink;
+        window.insertLink = insertLink;
+        window.cancelLink = cancelLink;
 
         // Initialize app
         window.addEventListener('load', function() {
+            initMatrix();
             loadFromFirebase();
         });
     </script>
