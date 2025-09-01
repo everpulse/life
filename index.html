@@ -599,7 +599,7 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const imageCache = new Map();
 
         // Matrix Animation
         const canvas = document.getElementById('matrix');
@@ -683,37 +683,60 @@
         }
 
         function loadFromFirebase() {
-            return database.ref('website').once('value')
-                .then((snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        contentData = data;
-                        updateUI();
+    Promise.all([
+        database.ref('website/profileName').once('value'),
+        database.ref('website/profileDesc').once('value'),
+        database.ref('website/contentData').once('value').then(snapshot => {
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    if (data[key] && data[key].title) {
+                        contentData.contentData[key].title = data[key].title;
                     }
-                    document.getElementById('loading').style.display = 'none';
-                })
-                .catch((error) => {
-                    console.error('Error loading data:', error);
-                    document.getElementById('loading').style.display = 'none';
                 });
-        }
-
-        function updateUI() {
-            document.getElementById('profileName').textContent = contentData.profileName;
-            document.getElementById('profileDesc').textContent = contentData.profileDesc;
-            
-            if (contentData.profileImage) {
-                document.getElementById('profileImg').src = contentData.profileImage;
             }
+        })
+    ]).then(results => {
+        if (results[0].val()) contentData.profileName = results[0].val();
+        if (results[1].val()) contentData.profileDesc = results[1].val();
+        
+        updateBasicUI();
+        document.getElementById('loading').style.display = 'none';
+        
+        loadProfileImage();
+    }).catch((error) => {
+        console.error('Error loading data:', error);
+        document.getElementById('loading').style.display = 'none';
+    });
+}
 
-            // Update menu titles
-            document.querySelectorAll('.editable-title').forEach(title => {
-                const type = title.dataset.type;
-                if (contentData.contentData[type] && contentData.contentData[type].title) {
-                    title.textContent = contentData.contentData[type].title;
-                }
-            });
+        function updateBasicUI() {
+    document.getElementById('profileName').textContent = contentData.profileName;
+    document.getElementById('profileDesc').textContent = contentData.profileDesc;
+    
+    document.querySelectorAll('.editable-title').forEach(title => {
+        const type = title.dataset.type;
+        if (contentData.contentData[type] && contentData.contentData[type].title) {
+            title.textContent = contentData.contentData[type].title;
         }
+    });
+}
+        function loadProfileImage() {
+    if (imageCache.has('profileImage')) {
+        document.getElementById('profileImg').src = imageCache.get('profileImage');
+        contentData.profileImage = imageCache.get('profileImage');
+        return;
+    }
+    
+    database.ref('website/profileImage').once('value').then(snapshot => {
+        const imageData = snapshot.val();
+        if (imageData) {
+            imageCache.set('profileImage', imageData);
+            document.getElementById('profileImg').src = imageData;
+            contentData.profileImage = imageData;
+        }
+    });
+}
 
         // Double click on profile image for admin access
         let clickCount = 0;
@@ -832,40 +855,86 @@
     const body = document.getElementById('modalBody');
     
     title.textContent = contentData.contentData[type].title;
-    
-    if (type === 'playlist') {
-        createPlaylistModal(body);
-    } else {
-        // اضافه کردن toolbar برای لینک
-        const toolbar = createLinkToolbar();
-        body.innerHTML = toolbar + contentData.contentData[type].content.replace(/\n/g, '<br>');
-        body.contentEditable = isEditMode;
-        
-        // نمایش toolbar در حالت ویرایش
-        const toolbarElement = body.querySelector('.link-toolbar');
-        if (isEditMode && toolbarElement) {
-            toolbarElement.classList.add('visible');
-        }
-        
-        if (isEditMode) {
-            body.oninput = function() {
-                const toolbarHTML = this.querySelector('.link-toolbar') ? this.querySelector('.link-toolbar').outerHTML : '';
-                const content = this.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
-                contentData.contentData[type].content = content;
-                saveToFirebase();
-            };
-            
-            // اضافه کردن event listener برای انتخاب متن
-            body.addEventListener('mouseup', handleTextSelection);
-            body.addEventListener('keyup', handleTextSelection);
-        } else {
-            body.oninput = null;
-            body.removeEventListener('mouseup', handleTextSelection);
-            body.removeEventListener('keyup', handleTextSelection);
-        }
-    }
+    body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">در حال بارگذاری...</div>';
     
     modal.style.display = 'block';
+    
+    loadModalContent(type, body);
+}
+
+        function loadModalContent(type, body) {
+    database.ref(`website/contentData/${type}`).once('value').then(snapshot => {
+        const data = snapshot.val();
+        if (data) {
+            contentData.contentData[type] = data;
+            
+            if (type === 'playlist') {
+                createPlaylistModal(body);
+            } else {
+                const toolbar = createLinkToolbar();
+                body.innerHTML = toolbar + (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
+                body.contentEditable = isEditMode;
+                
+                const toolbarElement = body.querySelector('.link-toolbar');
+                if (isEditMode && toolbarElement) {
+                    toolbarElement.classList.add('visible');
+                }
+                
+                if (isEditMode) {
+                    body.oninput = function() {
+                        const toolbarHTML = this.querySelector('.link-toolbar') ? this.querySelector('.link-toolbar').outerHTML : '';
+                        const content = this.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
+                        contentData.contentData[type].content = content;
+                        saveToFirebase();
+                    };
+                    
+                    body.addEventListener('mouseup', handleTextSelection);
+                    body.addEventListener('keyup', handleTextSelection);
+                } else {
+                    body.oninput = null;
+                    body.removeEventListener('mouseup', handleTextSelection);
+                    body.removeEventListener('keyup', handleTextSelection);
+                }
+            }
+        } else {
+            if (type === 'playlist') {
+                contentData.contentData[type] = {
+                    title: contentData.contentData[type].title,
+                    content: "آهنگ های خود را آپلود کنید...",
+                    audioFiles: []
+                };
+                createPlaylistModal(body);
+            } else {
+                contentData.contentData[type] = {
+                    title: contentData.contentData[type].title,
+                    content: "محتوایی وجود ندارد..."
+                };
+                const toolbar = createLinkToolbar();
+                body.innerHTML = toolbar + contentData.contentData[type].content.replace(/\n/g, '<br>');
+                body.contentEditable = isEditMode;
+                
+                if (isEditMode) {
+                    const toolbarElement = body.querySelector('.link-toolbar');
+                    if (toolbarElement) {
+                        toolbarElement.classList.add('visible');
+                    }
+                    
+                    body.oninput = function() {
+                        const toolbarHTML = this.querySelector('.link-toolbar') ? this.querySelector('.link-toolbar').outerHTML : '';
+                        const content = this.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
+                        contentData.contentData[type].content = content;
+                        saveToFirebase();
+                    };
+                    
+                    body.addEventListener('mouseup', handleTextSelection);
+                    body.addEventListener('keyup', handleTextSelection);
+                }
+            }
+        }
+    }).catch(error => {
+        console.error('خطا در بارگذاری محتوا:', error);
+        body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,100,100,0.7);">خطا در بارگذاری محتوا</div>';
+    });
 }
 
         function createPlaylistModal(body) {
@@ -1209,20 +1278,24 @@
 
         // Profile image upload
         document.getElementById('imageInput').addEventListener('change', function(e) {
-            if (!isEditMode) return;
+    if (!isEditMode) return;
+    
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageData = e.target.result;
             
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.getElementById('profileImg');
-                    img.src = e.target.result;
-                    contentData.profileImage = e.target.result;
-                    saveToFirebase();
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+            imageCache.set('profileImage', imageData);
+            
+            const img = document.getElementById('profileImg');
+            img.src = imageData;
+            contentData.profileImage = imageData;
+            saveToFirebase();
+        };
+        reader.readAsDataURL(file);
+    }
+});
 
         // Save editable titles
         document.addEventListener('DOMContentLoaded', function() {
