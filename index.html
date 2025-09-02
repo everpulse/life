@@ -965,15 +965,24 @@
 
         // Function to convert URLs in text to clickable links
         function convertTextToLinks(text) {
-            // Regex to match text in format: "Text (http://url)" or "Text (https://url)"
-            const linkPattern = /([^(]+)\s*\(((https?:\/\/[^\s)]+))\)/gi;
-            
-            return text.replace(linkPattern, (match, linkText, fullUrl, url) => {
-                const cleanText = linkText.trim();
-                const cleanUrl = fullUrl.trim();
-                return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
-            });
+    // Split text by lines to process each line separately
+    const lines = text.split('<br>');
+    
+    return lines.map(line => {
+        // Only convert lines that contain the pattern "Text (http://url)"
+        // This allows other text to remain as normal text
+        const linkPattern = /^([^(]+)\s*\(((https?:\/\/[^\s)]+))\)$/;
+        const match = line.match(linkPattern);
+        
+        if (match) {
+            const cleanText = match[1].trim();
+            const cleanUrl = match[2].trim();
+            return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
         }
+        
+        return line; // Return unchanged if no link pattern found
+    }).join('<br>');
+}
 
         async function loadModalContent(type, body) {
             try {
