@@ -1032,7 +1032,7 @@
 
                 // For other content types
                 const toolbar = createLinkToolbar();
-                body.innerHTML = toolbar + (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
+                body.innerHTML = toolbar + processTextWithLinks(data.content || 'محتوایی وجود ندارد');
                 body.contentEditable = isEditMode;
 
                 const toolbarElement = body.querySelector('.link-toolbar');
@@ -1047,7 +1047,7 @@
                         clearTimeout(saveTimeout);
                         saveTimeout = setTimeout(() => {
                             const toolbarHTML = this.querySelector('.link-toolbar') ? this.querySelector('.link-toolbar').outerHTML : '';
-                            const content = this.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
+                            const content = cleanContentForSave(this.innerHTML.replace(toolbarHTML, ''));
                             contentData.contentData[type].content = content;
                             saveToFirebase();
                         }, 500); // Reduced debounce time
@@ -1296,6 +1296,35 @@
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
+
+        function processTextWithLinks(text) {
+    // URL pattern برای تشخیص لینک‌ها
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    
+    // تبدیل خطوط جدید به <br>
+    let processedText = text.replace(/\n/g, '<br>');
+    
+    // تبدیل URL ها به لینک
+    processedText = processedText.replace(urlPattern, (url) => {
+        // پاک کردن علائم اضافی از انتهای URL
+        let cleanUrl = url.replace(/[,.;!?]*$/, '');
+        let punctuation = url.substring(cleanUrl.length);
+        
+        return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" style="color: #4fc3f7; text-decoration: underline;">${cleanUrl}</a>${punctuation}`;
+    });
+    
+    return processedText;
+}
+
+        function cleanContentForSave(html) {
+    // تبدیل <br> به خط جدید
+    let text = html.replace(/<br>/g, '\n');
+    
+    // استخراج متن از لینک‌ها و حفظ URL
+    text = text.replace(/<a[^>]+href="([^"]+)"[^>]*>([^<]+)<\/a>/g, '$1');
+    
+    return text;
+}
 
         function handleDragOver(e) {
             e.preventDefault();
