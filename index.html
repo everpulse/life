@@ -1032,7 +1032,7 @@
 
                 // For other content types
                 const toolbar = createLinkToolbar();
-                body.innerHTML = toolbar + (data.content || 'محتوایی وجود ندارد');
+                body.innerHTML = toolbar + (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
                 body.contentEditable = isEditMode;
 
                 const toolbarElement = body.querySelector('.link-toolbar');
@@ -1044,14 +1044,14 @@
                     // Immediate save on input - no debouncing
                     let saveTimeout;
                     body.oninput = function() {
-    clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => {
-        const toolbarHTML = this.querySelector('.link-toolbar') ? this.querySelector('.link-toolbar').outerHTML : '';
-        const content = this.innerHTML.replace(toolbarHTML, '');
-        contentData.contentData[type].content = content;
-        saveToFirebase();
-    }, 100); // خیلی سریع‌تر
-};
+                        clearTimeout(saveTimeout);
+                        saveTimeout = setTimeout(() => {
+                            const toolbarHTML = this.querySelector('.link-toolbar') ? this.querySelector('.link-toolbar').outerHTML : '';
+                            const content = this.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
+                            contentData.contentData[type].content = content;
+                            saveToFirebase();
+                        }, 500); // Reduced debounce time
+                    };
 
                     body.addEventListener('mouseup', handleTextSelection);
                     body.addEventListener('keyup', handleTextSelection);
@@ -1490,53 +1490,50 @@
         }
 
         function insertLink() {
-    const url = document.getElementById('linkURL').value.trim();
-    const text = document.getElementById('linkText').value.trim() || selectedText;
-    
-    if (!url) {
-        alert('لطفاً آدرس لینک را وارد کنید');
-        return;
-    }
-    
-    let finalURL = url;
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        finalURL = 'https://' + url;
-    }
-    
-    if (selectedRange) {
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(selectedRange);
-        
-        const link = document.createElement('a');
-        link.href = finalURL;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = text;
-        link.style.color = '#4fc3f7';
-        link.style.textDecoration = 'underline';
-        
-        try {
-            selectedRange.deleteContents();
-            selectedRange.insertNode(link);
+            const url = document.getElementById('linkURL').value.trim();
+            const text = document.getElementById('linkText').value.trim() || selectedText;
             
-            // فوری ذخیره کن
-            const body = document.getElementById('modalBody');
-            const toolbarHTML = body.querySelector('.link-toolbar').outerHTML;
-            const content = body.innerHTML.replace(toolbarHTML, '');
-            contentData.contentData[currentModalType].content = content;
+            if (!url) {
+                alert('لطفاً آدرس لینک را وارد کنید');
+                return;
+            }
             
-            // ذخیره فوری بدون تاخیر
-            saveToFirebase();
+            let finalURL = url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                finalURL = 'https://' + url;
+            }
             
-        } catch (error) {
-            console.error('خطا در درج لینک:', error);
-            alert('خطا در درج لینک. لطفاً دوباره تلاش کنید.');
+            if (selectedRange) {
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(selectedRange);
+                
+                const link = document.createElement('a');
+                link.href = finalURL;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.textContent = text;
+                link.style.color = '#4fc3f7';
+                link.style.textDecoration = 'underline';
+                
+                try {
+                    selectedRange.deleteContents();
+                    selectedRange.insertNode(link);
+                    
+                    const body = document.getElementById('modalBody');
+                    const toolbarHTML = body.querySelector('.link-toolbar').outerHTML;
+                    const content = body.innerHTML.replace(toolbarHTML, '').replace(/<br>/g, '\n');
+                    contentData.contentData[currentModalType].content = content;
+                    saveToFirebase();
+                    
+                } catch (error) {
+                    console.error('خطا در درج لینک:', error);
+                    alert('خطا در درج لینک. لطفاً دوباره تلاش کنید.');
+                }
+            }
+            
+            cancelLink();
         }
-    }
-    
-    cancelLink();
-}
 
         function cancelLink() {
             document.getElementById('linkInputSection').style.display = 'none';
