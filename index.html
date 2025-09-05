@@ -39,11 +39,9 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.25;
+            opacity: 0.15;
             will-change: transform;
             pointer-events: none;
-            transform: translateZ(0);
-            backface-visibility: hidden;
         }
 
         .container {
@@ -499,12 +497,6 @@
             color: #81d4fa;
         }
 
-        @media (max-width: 768px) {
-            #matrix {
-                opacity: 0.25;
-            }
-        }
-
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -641,36 +633,27 @@
             }
         };
 
-        // FIXED: Highly optimized Matrix animation with proper state management
+        // Highly optimized Matrix animation
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d', { alpha: false });
         let matrixAnimationId;
         let isMatrixRunning = false;
         let drops = [];
-        let isInitialized = false;
 
         const initMatrix = () => {
-            if (isInitialized && isMatrixRunning) return;
-            
             const { innerWidth: width, innerHeight: height } = window;
             canvas.width = width;
             canvas.height = height;
 
             const fontSize = 10;
             const columns = Math.floor(width / fontSize);
-            
-            if (!isInitialized || drops.length !== columns) {
-                drops = new Array(columns).fill(1);
-            }
-            
-            isInitialized = true;
+            drops.length = columns;
+            drops.fill(1);
 
             const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()";
             
             const drawMatrix = () => {
-                if (!isMatrixRunning) return;
-                
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.02);'
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
                 ctx.fillRect(0, 0, width, height);
                 ctx.fillStyle = '#fff';
                 ctx.font = `${fontSize}px monospace`;
@@ -685,56 +668,40 @@
                     drops[i]++;
                 }
 
-                matrixAnimationId = requestAnimationFrame(() => setTimeout(drawMatrix, 80));
+                if (isMatrixRunning) {
+                    matrixAnimationId = requestAnimationFrame(() => setTimeout(drawMatrix, 80));
+                }
             };
 
-            if (!isMatrixRunning) {
-                isMatrixRunning = true;
-                drawMatrix();
-            }
+            isMatrixRunning = true;
+            drawMatrix();
         };
 
-        const stopMatrix = () => {
-            isMatrixRunning = false;
-            if (matrixAnimationId) {
-                cancelAnimationFrame(matrixAnimationId);
-                matrixAnimationId = null;
-            }
-        };
-
-        // FIXED: More stable Intersection Observer
+        // Intersection Observer for performance
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    if (!isMatrixRunning) {
-                        initMatrix();
-                    }
-                } else {
-                    if (entry.intersectionRatio === 0) {
-                        stopMatrix();
-                    }
+                if (entry.isIntersecting && !isMatrixRunning) {
+                    initMatrix();
+                } else if (!entry.isIntersecting && isMatrixRunning) {
+                    isMatrixRunning = false;
+                    cancelAnimationFrame(matrixAnimationId);
                 }
             });
-        }, {
-            threshold: [0, 0.1],
-            rootMargin: '50px'
         });
 
         observer.observe(canvas);
 
-        // FIXED: Optimized resize handler with proper cleanup
+        // Optimized resize handler
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
                 if (isMatrixRunning) {
-                    stopMatrix();
-                    setTimeout(() => {
-                        isInitialized = false;
-                        initMatrix();
-                    }, 100);
+                    initMatrix();
                 }
-            }, 150);
+            }, 100);
         });
 
         // Admin system
@@ -830,6 +797,7 @@
                     
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
+                    // Try WebP first, fallback to JPEG
                     canvas.toBlob(resolve, 'image/webp', quality) || 
                     canvas.toBlob(resolve, 'image/jpeg', quality);
                 };
@@ -1297,8 +1265,9 @@
             handleDragOver, handleDragEnter, handleDragLeave, handleDrop
         });
 
-        // FIXED: Clean initialization without immediate matrix start
+        // Initialize app with performance optimization
         const initApp = () => {
+            initMatrix();
             loadFromFirebase();
         };
 
