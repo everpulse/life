@@ -4,18 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>صفحه شخصی</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://personal-website-432a5-default-rtdb.europe-west1.firebasedatabase.app" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
-        :root {
-            --bg-color: #000;
-            --text-color: #fff;
-            --border-color: rgba(255, 255, 255, 0.2);
-            --hover-bg: rgba(255, 255, 255, 0.1);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -23,15 +14,15 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
             overflow-x: hidden;
             min-height: 100vh;
             position: relative;
-            font-display: swap;
         }
 
+        /* Matrix Background Animation - Optimized */
         #matrix {
             position: fixed;
             top: 0;
@@ -41,7 +32,6 @@
             z-index: -1;
             opacity: 0.15;
             will-change: transform;
-            pointer-events: none;
         }
 
         .container {
@@ -68,12 +58,11 @@
             border-radius: 50%;
             margin: 0 auto 20px;
             position: relative;
-            border: 3px solid var(--border-color);
+            border: 3px solid rgba(255, 255, 255, 0.3);
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             overflow: hidden;
             will-change: transform;
-            contain: layout style paint;
         }
 
         .profile-image:hover {
@@ -87,7 +76,6 @@
             object-fit: cover;
             border-radius: 50%;
             loading: lazy;
-            decoding: async;
         }
 
         .edit-icon {
@@ -95,7 +83,7 @@
             bottom: 5px;
             right: 5px;
             background: rgba(255, 255, 255, 0.9);
-            color: var(--bg-color);
+            color: #000;
             border-radius: 50%;
             width: 30px;
             height: 30px;
@@ -103,12 +91,12 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             will-change: transform;
         }
 
         .edit-icon:hover {
-            background: var(--text-color);
+            background: #fff;
             transform: scale(1.1);
         }
 
@@ -141,17 +129,16 @@
         }
 
         .menu-item {
-            background: var(--hover-bg);
-            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             padding: 20px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
             will-change: transform;
-            contain: layout style paint;
         }
 
         .menu-item:hover {
@@ -168,6 +155,7 @@
             unicode-bidi: plaintext;
         }
 
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -182,7 +170,7 @@
 
         .modal-content {
             background: rgba(0, 0, 0, 0.95);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             margin: 5% auto;
             padding: 30px;
@@ -204,12 +192,12 @@
         }
 
         .close:hover {
-            color: var(--text-color);
+            color: #fff;
         }
 
         .modal h2 {
             margin-bottom: 20px;
-            color: var(--text-color);
+            color: #fff;
             text-align: center;
             direction: ltr;
             unicode-bidi: plaintext;
@@ -234,7 +222,7 @@
             border: none;
             background: transparent;
             cursor: default;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .editable-title.edit-mode {
@@ -242,7 +230,7 @@
         }
 
         .editable-title.edit-mode:hover {
-            background: var(--hover-bg);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 5px;
             padding: 2px 5px;
         }
@@ -268,12 +256,12 @@
         .admin-btn {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            color: var(--text-color);
+            color: #fff;
             padding: 8px 15px;
             border-radius: 5px;
             cursor: pointer;
             margin: 5px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .admin-btn:hover {
@@ -294,7 +282,7 @@
 
         .password-content {
             background: rgba(0, 0, 0, 0.95);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             margin: 20% auto;
             padding: 30px;
@@ -310,8 +298,8 @@
             margin: 10px 0;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 5px;
-            background: var(--hover-bg);
-            color: var(--text-color);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
             font-size: 16px;
             text-align: center;
         }
@@ -325,7 +313,7 @@
             top: 10px;
             right: 10px;
             background: rgba(0, 255, 0, 0.3);
-            color: var(--text-color);
+            color: #fff;
             padding: 5px 10px;
             border-radius: 15px;
             font-size: 12px;
@@ -338,11 +326,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: var(--text-color);
+            color: #fff;
             font-size: 18px;
             z-index: 2000;
         }
 
+        /* Save Status Indicator */
         .save-status {
             position: fixed;
             top: 10px;
@@ -353,27 +342,28 @@
             font-size: 12px;
             z-index: 1001;
             display: none;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .save-status.saving {
             background: rgba(255, 165, 0, 0.8);
-            color: var(--text-color);
+            color: #fff;
             display: block;
         }
 
         .save-status.saved {
             background: rgba(0, 255, 0, 0.8);
-            color: var(--text-color);
+            color: #fff;
             display: block;
         }
 
         .save-status.error {
             background: rgba(255, 0, 0, 0.8);
-            color: var(--text-color);
+            color: #fff;
             display: block;
         }
 
+        /* Audio Player Styles */
         .audio-upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.3);
             border-radius: 10px;
@@ -381,7 +371,7 @@
             margin: 20px 0;
             text-align: center;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .audio-upload-area:hover {
@@ -390,8 +380,8 @@
         }
 
         .audio-upload-area.dragover {
-            border-color: var(--text-color);
-            background: var(--hover-bg);
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .playlist-container {
@@ -401,7 +391,7 @@
         }
 
         .audio-item {
-            background: var(--hover-bg);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 15px;
             margin: 10px 0;
@@ -437,12 +427,12 @@
             border-radius: 50%;
             width: 40px;
             height: 40px;
-            color: var(--text-color);
+            color: #fff;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             will-change: transform;
         }
 
@@ -455,10 +445,10 @@
             background: rgba(255, 0, 0, 0.3);
             border: none;
             border-radius: 5px;
-            color: var(--text-color);
+            color: #fff;
             padding: 5px 10px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .delete-btn:hover {
@@ -476,7 +466,7 @@
 
         .audio-progress-bar {
             height: 100%;
-            background: var(--text-color);
+            background: #fff;
             width: 0%;
             transition: width 0.1s ease;
             will-change: width;
@@ -485,18 +475,7 @@
         #audioInput {
             display: none;
         }
-
-        .modal-body a {
-            color: #4fc3f7;
-            text-decoration: underline;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .modal-body a:hover {
-            color: #81d4fa;
-        }
-
+        
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -522,6 +501,17 @@
             }
         }
 
+        /* Matrix Animation - Optimized */
+        .matrix-char {
+            position: absolute;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            animation: matrix-fall linear infinite;
+            opacity: 0.7;
+            will-change: transform;
+        }
+
         @keyframes matrix-fall {
             0% {
                 transform: translateY(-100vh);
@@ -532,6 +522,19 @@
                 opacity: 0;
             }
         }
+
+        /* Link Styles */
+        .modal-body a {
+            color: #4fc3f7;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-body a:hover {
+            color: #81d4fa;
+        }
+        
     </style>
 </head>
 <body>
@@ -539,13 +542,16 @@
     <div class="save-status" id="saveStatus">در حال ذخیره...</div>
     <canvas id="matrix"></canvas>
     
+    <!-- Admin Panel -->
     <div class="admin-panel" id="adminPanel">
         <button class="admin-btn" onclick="toggleEditMode()">حالت ویرایش</button>
         <button class="admin-btn" onclick="logout()">خروج</button>
     </div>
     
+    <!-- Edit Mode Indicator -->
     <div class="edit-indicator" id="editIndicator">حالت ویرایش فعال</div>
     
+    <!-- Password Modal -->
     <div id="passwordModal" class="password-modal">
         <div class="password-content">
             <h2>ورود به پنل مدیریت</h2>
@@ -559,7 +565,7 @@
     <div class="container">
         <div class="profile-section">
             <div class="profile-image" id="profileImageContainer">
-                <img id="profileImg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Im0zNSA4MGMwLTE1IDEwLTI1IDI1LTI1czI1IDEwIDI1IDI1IiBmaWxsPSIjNjY2Ii8+Cjwvc3ZnPgo=" alt="Profile" loading="lazy" decoding="async">
+                <img id="profileImg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Im0zNSA4MGMwLTE1IDEwLTI1IDI1LTI1czI1IDEwIDI1IDI1IiBmaWxsPSIjNjY2Ii8+Cjwvc3ZnPgo=" alt="Profile" loading="lazy">
                 <div class="edit-icon" id="editIcon" style="display: none;">✏️</div>
             </div>
             <input type="file" id="imageInput" accept="image/*">
@@ -583,21 +589,24 @@
         </div>
     </div>
 
+    <!-- Modal -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
-            <div class="modal-body" id="modalBody" contenteditable="true"></div>
+            <div class="modal-body" id="modalBody" contenteditable="true">
+                <!-- محتوا اینجا نمایش داده می‌شود -->
+            </div>
         </div>
     </div>
 
+    <!-- Optimized Firebase SDK v9 Modular -->
     <script type="module">
-        // Optimized Firebase imports - only what's needed
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+        import { getDatabase, ref, set, get, child } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js';
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js';
 
-        // Firebase config
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDowZ-5e48zmJbT5cU7LzBmQpcWcqR5qhM",
             authDomain: "personal-website-432a5.firebaseapp.com",
@@ -608,169 +617,197 @@
             appId: "1:350992508293:web:a693a7235ac29def1290ec"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const storage = getStorage(app);
         
-        // Optimized cache with WeakMap for better memory management
+        // Simplified cache system - no timestamps to avoid conflicts
         const cache = new Map();
-        const debounceTimers = new Map();
 
-        // Performance-optimized debounce
-        const debounce = (key, func, delay) => {
-            clearTimeout(debounceTimers.get(key));
-            debounceTimers.set(key, setTimeout(func, delay));
-        };
-
-        // Optimized save status
-        const showSaveStatus = (status, message) => {
+        // Save status indicator
+        function showSaveStatus(status, message) {
             const saveStatus = document.getElementById('saveStatus');
             saveStatus.className = `save-status ${status}`;
             saveStatus.textContent = message;
             
-            if (status !== 'saving') {
-                setTimeout(() => saveStatus.style.display = 'none', 2000);
+            if (status === 'saved' || status === 'error') {
+                setTimeout(() => {
+                    saveStatus.style.display = 'none';
+                }, 2000);
             }
-        };
+        }
 
-        // Highly optimized Matrix animation
+        // Optimized Matrix Animation - Reduced frequency
         const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d', { alpha: false });
+        const ctx = canvas.getContext('2d');
+
         let matrixAnimationId;
         let isMatrixRunning = false;
-        let drops = [];
 
-        const initMatrix = () => {
-            const { innerWidth: width, innerHeight: height } = window;
-            canvas.width = width;
-            canvas.height = height;
-
-            const fontSize = 10;
-            const columns = Math.floor(width / fontSize);
-            drops.length = columns;
-            drops.fill(1);
+        function initMatrix() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
 
             const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()";
-            
-            const drawMatrix = () => {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-                ctx.fillRect(0, 0, width, height);
-                ctx.fillStyle = '#fff';
-                ctx.font = `${fontSize}px monospace`;
+            const matrixArray = matrix.split("");
 
-                for (let i = 0; i < drops.length; i++) {
-                    const text = matrix[Math.floor(Math.random() * matrix.length)];
+            const fontSize = 10;
+            const columns = canvas.width / fontSize;
+
+            const drops = [];
+            for(let x = 0; x < columns; x++) {
+                drops[x] = 1;
+            }
+
+            function drawMatrix() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#fff';
+                ctx.font = fontSize + 'px monospace';
+
+                for(let i = 0; i < drops.length; i++) {
+                    const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
                     ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-                    if (drops[i] * fontSize > height && Math.random() > 0.975) {
+                    if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                         drops[i] = 0;
                     }
                     drops[i]++;
                 }
 
                 if (isMatrixRunning) {
-                    matrixAnimationId = requestAnimationFrame(() => setTimeout(drawMatrix, 80));
+                    matrixAnimationId = requestAnimationFrame(() => {
+                        setTimeout(drawMatrix, 80);
+                    });
                 }
-            };
+            }
 
             isMatrixRunning = true;
             drawMatrix();
-        };
+        }
 
-        // Intersection Observer for performance
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !isMatrixRunning) {
-                    initMatrix();
-                } else if (!entry.isIntersecting && isMatrixRunning) {
-                    isMatrixRunning = false;
+        // Pause matrix when not visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                isMatrixRunning = false;
+                if (matrixAnimationId) {
                     cancelAnimationFrame(matrixAnimationId);
                 }
-            });
-        });
-
-        observer.observe(canvas);
-
-        // Optimized resize handler
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                if (isMatrixRunning) {
+            } else {
+                if (!isMatrixRunning) {
                     initMatrix();
                 }
-            }, 100);
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         });
 
         // Admin system
         const ADMIN_PASSWORD = "aeon2025";
         let isEditMode = false;
 
-        // Optimized content data structure
+        // Content data - default values
         let contentData = {
             profileName: "Aeon",
             profileDesc: "逐梦未来—智慧为刃˚.ᐟ.",
             profileImage: "",
             contentData: {
-                biography: { title: "ABOUT ME", content: "اینجا بیوگرافی خود را بنویسید..." },
-                tenrules: { title: "Longevity Institutions", content: "۱. فرمان اول...\n۲. فرمان دوم..." },
-                playlist: { title: "PLAYLIST", content: "آهنگ های خود را آپلود کنید...", audioFiles: [] }
+                biography: {
+                    title: "ABOUT ME",
+                    content: "اینجا بیوگرافی خود را بنویسید..."
+                },
+                tenrules: {
+                    title: "Longevity Institutions",
+                    content: "۱. فرمان اول...\n۲. فرمان دوم..."
+                },
+                playlist: {
+                    title: "PLAYLIST",
+                    content: "آهنگ های خود را آپلود کنید...",
+                    audioFiles: []
+                }
             }
         };
 
-        // Optimized Firebase operations with retry and caching
-        const saveToFirebase = async (retryCount = 0) => {
+        // Reliable Firebase save function with retry mechanism
+        async function saveToFirebase(retryCount = 0) {
             const maxRetries = 3;
             
             try {
                 showSaveStatus('saving', 'در حال ذخیره...');
+                
+                // Always save to Firebase, ignore cache
                 await set(ref(database, 'website'), contentData);
-                cache.set('website', structuredClone(contentData));
+                
+                // Update cache only after successful save
+                cache.set('website', JSON.parse(JSON.stringify(contentData)));
+                
                 showSaveStatus('saved', 'ذخیره شد ✓');
+                console.log('Data saved successfully!');
+                
             } catch (error) {
-                console.error('Save error:', error);
+                console.error('Error saving data:', error);
+                
                 if (retryCount < maxRetries) {
+                    console.log(`Retrying save... (${retryCount + 1}/${maxRetries})`);
                     setTimeout(() => saveToFirebase(retryCount + 1), 1000);
                 } else {
                     showSaveStatus('error', 'خطا در ذخیره!');
+                    throw error;
                 }
             }
-        };
+        }
 
-        const loadFromFirebase = async () => {
+        // Reliable loading function - always fetch fresh data
+        async function loadFromFirebase() {
             try {
+                // Always load fresh data from Firebase, ignore cache on initial load
                 const snapshot = await get(ref(database, 'website'));
                 const data = snapshot.val();
                 
                 if (data) {
-                    contentData = { ...contentData, ...data, contentData: { ...contentData.contentData, ...data.contentData } };
+                    // Merge with defaults to ensure all properties exist
+                    contentData = {
+                        ...contentData,
+                        ...data,
+                        contentData: {
+                            ...contentData.contentData,
+                            ...data.contentData
+                        }
+                    };
                 }
                 
-                cache.set('website', structuredClone(contentData));
+                // Update cache with fresh data
+                cache.set('website', JSON.parse(JSON.stringify(contentData)));
+                
                 updateBasicUI();
+                document.getElementById('loading').style.display = 'none';
                 await loadProfileImage();
+                
             } catch (error) {
-                console.error('Load error:', error);
-            } finally {
+                console.error('Error loading data:', error);
                 document.getElementById('loading').style.display = 'none';
             }
-        };
+        }
 
-        const updateBasicUI = () => {
+        function updateBasicUI() {
             document.getElementById('profileName').textContent = contentData.profileName;
             document.getElementById('profileDesc').textContent = contentData.profileDesc;
             
             document.querySelectorAll('.editable-title').forEach(title => {
                 const type = title.dataset.type;
-                if (contentData.contentData[type]?.title) {
+                if (contentData.contentData[type] && contentData.contentData[type].title) {
                     title.textContent = contentData.contentData[type].title;
                 }
             });
-        };
+        }
 
-        const loadProfileImage = async () => {
+        // Reliable image loading
+        async function loadProfileImage() {
             try {
                 const snapshot = await get(ref(database, 'website/profileImage'));
                 const imageData = snapshot.val();
@@ -779,12 +816,12 @@
                     contentData.profileImage = imageData;
                 }
             } catch (error) {
-                console.error('Image load error:', error);
+                console.error('Error loading profile image:', error);
             }
-        };
+        }
 
-        // Optimized image compression with WebP support
-        const compressImage = (file, maxWidth = 400, quality = 0.8) => {
+        // Optimized image compression
+        function compressImage(file, maxWidth = 400, quality = 0.8) {
             return new Promise((resolve) => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -796,45 +833,42 @@
                     canvas.height = img.height * ratio;
                     
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
-                    // Try WebP first, fallback to JPEG
-                    canvas.toBlob(resolve, 'image/webp', quality) || 
-                    canvas.toBlob(resolve, 'image/jpeg', quality);
+                    canvas.toBlob(resolve, 'image/webp', quality);
                 };
                 
                 img.src = URL.createObjectURL(file);
             });
-        };
+        }
 
-        // Optimized click handling
+        // Double click on profile image for admin access
         let clickCount = 0;
-        let clickTimeout;
-
-        document.getElementById('profileImageContainer').addEventListener('click', () => {
+        document.getElementById('profileImageContainer').addEventListener('click', function() {
             if (!isEditMode) {
                 clickCount++;
-                clearTimeout(clickTimeout);
-                clickTimeout = setTimeout(() => {
-                    if (clickCount === 2) showPasswordModal();
-                    clickCount = 0;
+                setTimeout(() => {
+                    if (clickCount === 1) {
+                        clickCount = 0;
+                    } else if (clickCount === 2) {
+                        showPasswordModal();
+                        clickCount = 0;
+                    }
                 }, 400);
             } else {
                 document.getElementById('imageInput').click();
             }
         });
 
-        // Modal functions
-        const showPasswordModal = () => {
+        function showPasswordModal() {
             document.getElementById('passwordModal').style.display = 'block';
             document.getElementById('passwordInput').focus();
-        };
+        }
 
-        const closePasswordModal = () => {
+        function closePasswordModal() {
             document.getElementById('passwordModal').style.display = 'none';
             document.getElementById('passwordInput').value = '';
-        };
+        }
 
-        const checkPassword = () => {
+        function checkPassword() {
             const password = document.getElementById('passwordInput').value;
             if (password === ADMIN_PASSWORD) {
                 isEditMode = true;
@@ -846,12 +880,11 @@
                 alert('رمز عبور نادرست است!');
                 document.getElementById('passwordInput').value = '';
             }
-        };
+        }
 
-        const enableEditMode = () => {
-            ['profileName', 'profileDesc'].forEach(id => {
-                document.getElementById(id).contentEditable = true;
-            });
+        function enableEditMode() {
+            document.getElementById('profileName').contentEditable = true;
+            document.getElementById('profileDesc').contentEditable = true;
             
             document.querySelectorAll('.editable-title').forEach(title => {
                 title.contentEditable = true;
@@ -859,12 +892,11 @@
             });
             
             document.getElementById('editIcon').style.display = 'flex';
-        };
+        }
 
-        const disableEditMode = () => {
-            ['profileName', 'profileDesc'].forEach(id => {
-                document.getElementById(id).contentEditable = false;
-            });
+        function disableEditMode() {
+            document.getElementById('profileName').contentEditable = false;
+            document.getElementById('profileDesc').contentEditable = false;
             
             document.querySelectorAll('.editable-title').forEach(title => {
                 title.contentEditable = false;
@@ -872,39 +904,52 @@
             });
             
             document.getElementById('editIcon').style.display = 'none';
-        };
+        }
 
-        const toggleEditMode = () => {
+        function toggleEditMode() {
             isEditMode = !isEditMode;
-            isEditMode ? enableEditMode() : disableEditMode();
-            document.getElementById('editIndicator').style.display = isEditMode ? 'block' : 'none';
-        };
+            if (isEditMode) {
+                enableEditMode();
+                document.getElementById('editIndicator').style.display = 'block';
+            } else {
+                disableEditMode();
+                document.getElementById('editIndicator').style.display = 'none';
+            }
+        }
 
-        const logout = () => {
+        function logout() {
             isEditMode = false;
             disableEditMode();
             document.getElementById('adminPanel').style.display = 'none';
             document.getElementById('editIndicator').style.display = 'none';
-        };
+        }
 
-        // Optimized event listeners with debouncing
-        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkPassword();
+        // Password modal enter key
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
         });
 
-        ['profileName', 'profileDesc'].forEach(id => {
-            document.getElementById(id).addEventListener('blur', function() {
-                if (isEditMode) {
-                    contentData[id === 'profileName' ? 'profileName' : 'profileDesc'] = this.textContent;
-                    debounce('profile', () => saveToFirebase(), 500);
-                }
-            });
+        // Immediate save functions - no debouncing for reliability
+        document.getElementById('profileName').addEventListener('blur', function() {
+            if (isEditMode) {
+                contentData.profileName = this.textContent;
+                saveToFirebase();
+            }
+        });
+
+        document.getElementById('profileDesc').addEventListener('blur', function() {
+            if (isEditMode) {
+                contentData.profileDesc = this.textContent;
+                saveToFirebase();
+            }
         });
 
         // Modal functions
         let currentModalType = '';
 
-        const openModal = (type) => {
+        function openModal(type) {
             currentModalType = type;
             const modal = document.getElementById('modal');
             const title = document.getElementById('modalTitle');
@@ -912,30 +957,46 @@
             
             title.textContent = contentData.contentData[type].title;
             body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">در حال بارگذاری...</div>';
+            
             modal.style.display = 'block';
             
-            requestAnimationFrame(() => loadModalContent(type, body));
-        };
+            loadModalContent(type, body);
+        }
 
-        const convertTextToLinks = (text) => {
-            const lines = text.split('<br>');
-            return lines.map(line => {
-                const linkPattern = /^([^(]+)\s*\(((https?:\/\/[^\s)]+))\)$/;
-                const match = line.match(linkPattern);
-                return match ? 
-                    `<a href="${match[2].trim()}" target="_blank" rel="noopener noreferrer">${match[1].trim()}</a>` : 
-                    line;
-            }).join('<br>');
-        };
+        // Function to convert URLs in text to clickable links
+        function convertTextToLinks(text) {
+    // Split text by lines to process each line separately
+    const lines = text.split('<br>');
+    
+    return lines.map(line => {
+        // Only convert lines that contain the pattern "Text (http://url)"
+        // This allows other text to remain as normal text
+        const linkPattern = /^([^(]+)\s*\(((https?:\/\/[^\s)]+))\)$/;
+        const match = line.match(linkPattern);
+        
+        if (match) {
+            const cleanText = match[1].trim();
+            const cleanUrl = match[2].trim();
+            return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
+        }
+        
+        return line; // Return unchanged if no link pattern found
+    }).join('<br>');
+}
 
-        const loadModalContent = async (type, body) => {
+        async function loadModalContent(type, body) {
             try {
+                // Always load fresh data for modal content
                 const snapshot = await get(ref(database, `website/contentData/${type}`));
-                let data = snapshot.val() || {
-                    title: contentData.contentData[type]?.title || '',
-                    content: type === 'playlist' ? "آهنگ های خود را آپلود کنید..." : "محتوایی وجود ندارد...",
-                    audioFiles: type === 'playlist' ? [] : undefined
-                };
+                let data = snapshot.val();
+                
+                if (!data) {
+                    data = {
+                        title: contentData.contentData[type]?.title || '',
+                        content: type === 'playlist' ? "آهنگ های خود را آپلود کنید..." : "محتوایی وجود ندارد...",
+                        audioFiles: type === 'playlist' ? [] : undefined
+                    };
+                }
                 
                 contentData.contentData[type] = data;
 
@@ -944,8 +1005,10 @@
                     return;
                 }
 
+                // For other content types - convert links and display
                 let displayContent = (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
                 
+                // Convert text links to clickable links only for display
                 if (!isEditMode) {
                     displayContent = convertTextToLinks(displayContent);
                 }
@@ -954,10 +1017,15 @@
                 body.contentEditable = isEditMode;
 
                 if (isEditMode) {
+                    // Show raw text for editing (without converted links)
                     body.innerHTML = (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
-                    body.oninput = () => {
-                        debounce('modal', () => {
-                            const content = body.innerHTML.replace(/<br>/g, '\n');
+                    
+                    // Immediate save on input - no debouncing
+                    let saveTimeout;
+                    body.oninput = function() {
+                        clearTimeout(saveTimeout);
+                        saveTimeout = setTimeout(() => {
+                            const content = this.innerHTML.replace(/<br>/g, '\n');
                             contentData.contentData[type].content = content;
                             saveToFirebase();
                         }, 500);
@@ -967,12 +1035,12 @@
                 }
                 
             } catch (error) {
-                console.error('Modal load error:', error);
+                console.error('خطا در بارگذاری محتوا:', error);
                 body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,100,100,0.7);">خطا در بارگذاری محتوا</div>';
             }
-        };
+        }
 
-        const createPlaylistModal = (body) => {
+        function createPlaylistModal(body) {
             body.contentEditable = false;
             const uploadSection = isEditMode ? `
                 <div class="audio-upload-area" onclick="document.getElementById('audioInput').click()" 
@@ -993,11 +1061,13 @@
 
             if (isEditMode) {
                 const audioInput = document.getElementById('audioInput');
-                audioInput?.addEventListener('change', handleAudioUpload);
+                if (audioInput) {
+                    audioInput.addEventListener('change', handleAudioUpload);
+                }
             }
-        };
+        }
 
-        const renderPlaylist = () => {
+        function renderPlaylist() {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (audioFiles.length === 0) {
                 return '<p style="text-align: center; opacity: 0.7;">هنوز آهنگی آپلود نکرده‌اید</p>';
@@ -1018,19 +1088,18 @@
                     </div>
                 </div>
             `).join('');
-        };
+        }
 
-        // Audio player optimization
         let currentAudio = null;
         let currentPlayButton = null;
 
-        const toggleAudio = (index) => {
+        function toggleAudio(index) {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             const audio = audioFiles[index];
             const playBtn = document.getElementById(`playBtn-${index}`);
             const progressBar = document.getElementById(`progress-${index}`);
 
-            if (currentAudio?.getAttribute('data-index') == index) {
+            if (currentAudio && currentAudio.getAttribute('data-index') == index) {
                 if (currentAudio.paused) {
                     currentAudio.play().catch(() => {
                         alert('خطا در پخش آهنگ');
@@ -1047,9 +1116,20 @@
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
+                
+                currentAudio.removeEventListener('loadedmetadata', currentAudio.loadedmetadataHandler);
+                currentAudio.removeEventListener('timeupdate', currentAudio.timeupdateHandler);
+                currentAudio.removeEventListener('ended', currentAudio.endedHandler);
+                currentAudio.removeEventListener('pause', currentAudio.pauseHandler);
+                currentAudio.removeEventListener('play', currentAudio.playHandler);
+                currentAudio.removeEventListener('error', currentAudio.errorHandler);
+                
                 currentAudio.src = '';
                 currentAudio = null;
-                if (currentPlayButton) currentPlayButton.textContent = '▶';
+                
+                if (currentPlayButton) {
+                    currentPlayButton.textContent = '▶';
+                }
             }
 
             setTimeout(() => {
@@ -1057,49 +1137,74 @@
                 currentAudio.setAttribute('data-index', index);
                 currentPlayButton = playBtn;
 
-                const handlers = {
-                    loadedmetadata: () => {
-                        currentAudio.play().catch(() => {
-                            alert('خطا در پخش آهنگ');
-                            playBtn.textContent = '▶';
-                            currentAudio = null;
-                        });
-                        playBtn.textContent = '⏸';
-                    },
-                    timeupdate: () => {
-                        if (currentAudio?.duration) {
-                            progressBar.style.width = `${(currentAudio.currentTime / currentAudio.duration) * 100}%`;
-                        }
-                    },
-                    ended: () => {
-                        playBtn.textContent = '▶';
-                        progressBar.style.width = '0%';
-                        currentAudio = null;
-                    },
-                    pause: () => playBtn.textContent = '▶',
-                    play: () => playBtn.textContent = '⏸',
-                    error: () => {
+                currentAudio.loadedmetadataHandler = () => {
+                    currentAudio.play().catch((error) => {
+                        console.error('Play error:', error);
                         alert('خطا در پخش آهنگ');
                         playBtn.textContent = '▶';
                         currentAudio = null;
+                        currentPlayButton = null;
+                    });
+                    playBtn.textContent = '⏸';
+                };
+
+                currentAudio.timeupdateHandler = () => {
+                    if (currentAudio && currentAudio.duration) {
+                        const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+                        progressBar.style.width = progress + '%';
                     }
                 };
 
-                Object.entries(handlers).forEach(([event, handler]) => {
-                    currentAudio.addEventListener(event, handler);
-                });
+                currentAudio.endedHandler = () => {
+                    playBtn.textContent = '▶';
+                    progressBar.style.width = '0%';
+                    currentAudio = null;
+                    currentPlayButton = null;
+                };
 
-                currentAudio.src = audio.url || audio.data;
+                currentAudio.pauseHandler = () => {
+                    playBtn.textContent = '▶';
+                };
+
+                currentAudio.playHandler = () => {
+                    playBtn.textContent = '⏸';
+                };
+
+                currentAudio.errorHandler = (error) => {
+                    console.error('Audio error:', error);
+                    alert('خطا در پخش آهنگ');
+                    playBtn.textContent = '▶';
+                    currentAudio = null;
+                    currentPlayButton = null;
+                };
+
+                currentAudio.addEventListener('loadedmetadata', currentAudio.loadedmetadataHandler);
+                currentAudio.addEventListener('timeupdate', currentAudio.timeupdateHandler);
+                currentAudio.addEventListener('ended', currentAudio.endedHandler);
+                currentAudio.addEventListener('pause', currentAudio.pauseHandler);
+                currentAudio.addEventListener('play', currentAudio.playHandler);
+                currentAudio.addEventListener('error', currentAudio.errorHandler);
+
+                if (audio.url) {
+                    currentAudio.src = audio.url;
+                } else {
+                    currentAudio.src = audio.data;
+                }
             }, 100);
-        };
+        }
 
-        const handleAudioUpload = async (event) => {
+        async function handleAudioUpload(event) {
             if (!isEditMode) return;
             
             const files = Array.from(event.target.files);
             
             for (const file of files) {
-                if (file.type.startsWith('audio/') && file.size <= 5 * 1024 * 1024) {
+                if (file.type.startsWith('audio/')) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert(`فایل ${file.name} بیش از 5MB است و نمی‌تواند آپلود شود.`);
+                        continue;
+                    }
+                    
                     try {
                         const audioRef = storageRef(storage, `audio/${Date.now()}-${file.name}`);
                         const snapshot = await uploadBytes(audioRef, file);
@@ -1110,65 +1215,76 @@
                             url: downloadURL,
                             size: file.size,
                             type: file.type,
-                            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+                            id: Date.now() + '-' + Math.random().toString(36).substr(2, 9)
                         };
                         
-                        contentData.contentData.playlist.audioFiles = contentData.contentData.playlist.audioFiles || [];
+                        if (!contentData.contentData.playlist.audioFiles) {
+                            contentData.contentData.playlist.audioFiles = [];
+                        }
+                        
                         contentData.contentData.playlist.audioFiles.push(audioData);
                         updatePlaylist();
+                        
                         await saveToFirebase();
                         
                     } catch (error) {
-                        console.error('Upload error:', error);
-                        alert(`خطا در آپلود ${file.name}`);
+                        console.error('خطا در آپلود:', error);
+                        alert(`خطا در آپلود ${file.name}. لطفاً دوباره تلاش کنید.`);
                     }
-                } else if (file.size > 5 * 1024 * 1024) {
-                    alert(`فایل ${file.name} بیش از 5MB است`);
                 }
             }
             
             event.target.value = '';
-        };
+        }
 
-        const deleteAudio = async (index) => {
-            if (!isEditMode || !confirm('آیا می‌خواهید این آهنگ را حذف کنید؟')) return;
+        async function deleteAudio(index) {
+            if (!isEditMode) return;
             
-            if (currentAudio?.getAttribute('data-index') == index) {
-                currentAudio.pause();
-                currentAudio.src = '';
-                currentAudio = null;
+            if (confirm('آیا می‌خواهید این آهنگ را حذف کنید؟')) {
+                if (currentAudio && currentAudio.getAttribute('data-index') == index) {
+                    currentAudio.pause();
+                    currentAudio.src = '';
+                    currentAudio = null;
+                    currentPlayButton = null;
+                }
+                
+                contentData.contentData.playlist.audioFiles.splice(index, 1);
+                updatePlaylist();
+                
+                await saveToFirebase();
             }
-            
-            contentData.contentData.playlist.audioFiles.splice(index, 1);
-            updatePlaylist();
-            await saveToFirebase();
-        };
+        }
 
-        const updatePlaylist = () => {
+        function updatePlaylist() {
             const container = document.getElementById('playlistContainer');
-            if (container) container.innerHTML = renderPlaylist();
-        };
+            if (container) {
+                container.innerHTML = renderPlaylist();
+            }
+        }
 
-        const formatFileSize = (bytes) => {
+        function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-        };
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
 
-        // Drag and drop handlers
-        const handleDragOver = (e) => e.preventDefault();
-        const handleDragEnter = (e) => {
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDragEnter(e) {
             e.preventDefault();
             e.target.closest('.audio-upload-area').classList.add('dragover');
-        };
-        const handleDragLeave = (e) => {
+        }
+
+        function handleDragLeave(e) {
             e.preventDefault();
             e.target.closest('.audio-upload-area').classList.remove('dragover');
-        };
+        }
 
-        const handleDrop = async (e) => {
+        async function handleDrop(e) {
             if (!isEditMode) return;
             
             e.preventDefault();
@@ -1177,7 +1293,12 @@
             const files = Array.from(e.dataTransfer.files);
             
             for (const file of files) {
-                if (file.type.startsWith('audio/') && file.size <= 5 * 1024 * 1024) {
+                if (file.type.startsWith('audio/')) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert(`فایل ${file.name} بیش از 5MB است و نمی‌تواند آپلود شود.`);
+                        continue;
+                    }
+                    
                     try {
                         const audioRef = storageRef(storage, `audio/${Date.now()}-${file.name}`);
                         const snapshot = await uploadBytes(audioRef, file);
@@ -1188,95 +1309,113 @@
                             url: downloadURL,
                             size: file.size,
                             type: file.type,
-                            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+                            id: Date.now() + '-' + Math.random().toString(36).substr(2, 9)
                         };
                         
-                        contentData.contentData.playlist.audioFiles = contentData.contentData.playlist.audioFiles || [];
+                        if (!contentData.contentData.playlist.audioFiles) {
+                            contentData.contentData.playlist.audioFiles = [];
+                        }
+                        
                         contentData.contentData.playlist.audioFiles.push(audioData);
                         updatePlaylist();
+                        
                         await saveToFirebase();
                         
                     } catch (error) {
-                        console.error('Drop upload error:', error);
+                        console.error('خطا در آپلود:', error);
                         alert(`خطا در آپلود ${file.name}`);
                     }
                 }
             }
-        };
+        }
 
-        const closeModal = () => {
+        function closeModal() {
             document.getElementById('modal').style.display = 'none';
-        };
+        }
 
-        // Optimized image upload
-        document.getElementById('imageInput').addEventListener('change', async (e) => {
+        document.getElementById('imageInput').addEventListener('change', async function(e) {
             if (!isEditMode) return;
             
             const file = e.target.files[0];
-            if (!file) return;
-
-            try {
-                const compressedFile = await compressImage(file);
-                const reader = new FileReader();
-                
-                reader.onload = (e) => {
-                    const imageData = e.target.result;
-                    document.getElementById('profileImg').src = imageData;
-                    contentData.profileImage = imageData;
-                    debounce('image', () => saveToFirebase(), 500);
-                };
-                
-                reader.readAsDataURL(compressedFile);
-            } catch (error) {
-                console.error('Image processing error:', error);
+            if (file) {
+                try {
+                    const compressedFile = await compressImage(file);
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageData = e.target.result;
+                        
+                        const img = document.getElementById('profileImg');
+                        img.src = imageData;
+                        contentData.profileImage = imageData;
+                        saveToFirebase();
+                    };
+                    reader.readAsDataURL(compressedFile);
+                } catch (error) {
+                    console.error('Error compressing image:', error);
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageData = e.target.result;
+                        document.getElementById('profileImg').src = imageData;
+                        contentData.profileImage = imageData;
+                        saveToFirebase();
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
         });
 
-        // Optimized title editing
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.editable-title').forEach(title => {
+        document.addEventListener('DOMContentLoaded', function() {
+            const editableTitles = document.querySelectorAll('.editable-title');
+            editableTitles.forEach(title => {
                 title.addEventListener('blur', function() {
                     if (isEditMode) {
                         const type = this.dataset.type;
                         contentData.contentData[type].title = this.textContent;
-                        debounce('title', () => saveToFirebase(), 500);
+                        saveToFirebase();
                     }
                 });
                 
-                title.addEventListener('click', (e) => {
-                    if (isEditMode) e.stopPropagation();
+                title.addEventListener('click', function(e) {
+                    if (isEditMode) {
+                        e.stopPropagation();
+                    }
                 });
             });
         });
 
-        // Optimized modal click handling
-        window.addEventListener('click', (event) => {
+        window.addEventListener('click', function(event) {
             const modal = document.getElementById('modal');
             const passwordModal = document.getElementById('passwordModal');
             
-            if (event.target === modal) modal.style.display = 'none';
-            if (event.target === passwordModal) closePasswordModal();
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+            
+            if (event.target === passwordModal) {
+                closePasswordModal();
+            }
         });
 
-        // Global function assignments
-        Object.assign(window, {
-            toggleEditMode, logout, checkPassword, closePasswordModal,
-            openModal, closeModal, toggleAudio, deleteAudio,
-            handleDragOver, handleDragEnter, handleDragLeave, handleDrop
-        });
+        // Make functions global for onclick handlers
+        window.toggleEditMode = toggleEditMode;
+        window.logout = logout;
+        window.checkPassword = checkPassword;
+        window.closePasswordModal = closePasswordModal;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.toggleAudio = toggleAudio;
+        window.deleteAudio = deleteAudio;
+        window.handleDragOver = handleDragOver;
+        window.handleDragEnter = handleDragEnter;
+        window.handleDragLeave = handleDragLeave;
+        window.handleDrop = handleDrop;
 
-        // Initialize app with performance optimization
-        const initApp = () => {
+        // Initialize app
+        window.addEventListener('load', function() {
             initMatrix();
             loadFromFirebase();
-        };
-
-        // Use requestIdleCallback for non-critical initialization
-        if ('requestIdleCallback' in window) {
-            requestIdleCallback(initApp);
-        } else {
-            setTimeout(initApp, 0);
-        }
+        });
     </script>
 </body>
 </html>
