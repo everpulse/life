@@ -1201,22 +1201,28 @@
                 currentAudio.addEventListener('play', currentAudio.playHandler);
                 currentAudio.addEventListener('error', currentAudio.errorHandler);
 
-                if (audio.url) {
-                    currentAudio.src = audio.url;
-                } else {
-                    currentAudio.src = audio.data;
-                }
+                currentAudio.src = audio.data || audio.url;
             }, 100);
         }
 
+
+        function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+        
         async function handleAudioUpload(event) {
     if (!isEditMode) return;
     
     const files = Array.from(event.target.files);
-    console.log('Files selected:', files.length); // برای دیباگ
+    console.log('Files selected:', files.length);
     
     for (const file of files) {
-        console.log('Processing file:', file.name, file.type, file.size); // برای دیباگ
+        console.log('Processing file:', file.name, file.type, file.size);
         
         if (file.type.startsWith('audio/')) {
             if (file.size > 5 * 1024 * 1024) {
@@ -1227,27 +1233,17 @@
             try {
                 showSaveStatus('saving', `در حال آپلود ${file.name}...`);
                 
-                // استفاده از timestamp برای نام یکتا
-                const timestamp = Date.now();
-                const fileName = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-                const audioRef = storageRef(storage, `audio/${fileName}`);
-                
-                console.log('Uploading to:', `audio/${fileName}`); // برای دیباگ
-                
-                const snapshot = await uploadBytes(audioRef, file);
-                const downloadURL = await getDownloadURL(snapshot.ref);
-                
-                console.log('Upload successful, URL:', downloadURL); // برای دیباگ
+                // تبدیل فایل به Base64
+                const base64Data = await fileToBase64(file);
                 
                 const audioData = {
                     name: file.name,
-                    url: downloadURL,
+                    data: base64Data,
                     size: file.size,
                     type: file.type,
-                    id: timestamp + '-' + Math.random().toString(36).substr(2, 9)
+                    id: Date.now() + '-' + Math.random().toString(36).substr(2, 9)
                 };
                 
-                // اطمینان از وجود آرایه
                 if (!contentData.contentData.playlist) {
                     contentData.contentData.playlist = {};
                 }
@@ -1256,12 +1252,9 @@
                 }
                 
                 contentData.contentData.playlist.audioFiles.push(audioData);
-                console.log('Audio added to array:', audioData); // برای دیباگ
+                console.log('Audio added to array:', audioData.name);
                 
-                // بروزرسانی فوری UI
                 updatePlaylist();
-                
-                // ذخیره در Firebase
                 await saveToFirebase();
                 
                 showSaveStatus('saved', `${file.name} با موفقیت آپلود شد`);
@@ -1276,7 +1269,6 @@
         }
     }
     
-    // پاک کردن input
     event.target.value = '';
 }
 
@@ -1331,37 +1323,34 @@
     if (!isEditMode) return;
     
     e.preventDefault();
-    e.target.closest('.audio-upload-area').classList.remove('dragover');
+    e.stopPropagation();
+    
+    const uploadArea = e.target.closest('.audio-upload-area');
+    if (uploadArea) {
+        uploadArea.classList.remove('dragover');
+    }
     
     const files = Array.from(e.dataTransfer.files);
-    console.log('Dropped files:', files.length); // برای دیباگ
+    console.log('Dropped files:', files.length);
     
-    // استفاده از همان منطق handleAudioUpload
     for (const file of files) {
-        console.log('Processing dropped file:', file.name, file.type, file.size);
-        
         if (file.type.startsWith('audio/')) {
             if (file.size > 5 * 1024 * 1024) {
-                alert(`فایل ${file.name} بیش از 5MB است و نمی‌تواند آپلود شود.`);
+                alert(`فایل ${file.name} بیش از 5MB است.`);
                 continue;
             }
             
             try {
                 showSaveStatus('saving', `در حال آپلود ${file.name}...`);
                 
-                const timestamp = Date.now();
-                const fileName = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-                const audioRef = storageRef(storage, `audio/${fileName}`);
-                
-                const snapshot = await uploadBytes(audioRef, file);
-                const downloadURL = await getDownloadURL(snapshot.ref);
+                const base64Data = await fileToBase64(file);
                 
                 const audioData = {
                     name: file.name,
-                    url: downloadURL,
+                    data: base64Data,
                     size: file.size,
                     type: file.type,
-                    id: timestamp + '-' + Math.random().toString(36).substr(2, 9)
+                    id: Date.now() + '-' + Math.random().toString(36).substr(2, 9)
                 };
                 
                 if (!contentData.contentData.playlist) {
@@ -1375,15 +1364,12 @@
                 updatePlaylist();
                 await saveToFirebase();
                 
-                showSaveStatus('saved', `${file.name} با موفقیت آپلود شد`);
+                showSaveStatus('saved', `${file.name} آپلود شد`);
                 
             } catch (error) {
                 console.error('خطا در آپلود:', error);
                 showSaveStatus('error', `خطا در آپلود ${file.name}`);
-                alert(`خطا در آپلود ${file.name}: ${error.message}`);
             }
-        } else {
-            alert(`فایل ${file.name} فرمت صوتی نیست.`);
         }
     }
 }
