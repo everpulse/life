@@ -712,15 +712,15 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
-
         // Admin system
         const ADMIN_PASSWORD = "aeon2025";
         let isEditMode = false;
-
+        // Global state variables
+        let isSaving = false;
+        let saveQueue = [];
+        
         // Content data - default values
         let contentData = {
-            let isSaving = false;
-        let saveQueue = [];
             profileName: "Aeon",
             profileDesc: "逐梦未来—智慧为刃˚.ᐟ.",
             profileImage: "",
@@ -731,7 +731,7 @@
                 },
                 tenrules: {
                     title: "Longevity Institutions",
-                    content: "۱. فرمان اول...\n۲. فرمان دوم..."
+                    content: ""
                 },
                 playlist: {
                     title: "PLAYLIST",
@@ -741,6 +741,7 @@
             }
         };
 
+        
         async function saveToFirebase() {
     // اگر در حال ذخیره است، اضافه به صف
     if (isSaving) {
