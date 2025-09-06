@@ -625,18 +625,24 @@
         // Simplified cache system - no timestamps to avoid conflicts
         const cache = new Map();
 
-        // Save status indicator
         function showSaveStatus(status, message) {
-            const saveStatus = document.getElementById('saveStatus');
-            saveStatus.className = `save-status ${status}`;
-            saveStatus.textContent = message;
-            
-            if (status === 'saved' || status === 'error') {
-                setTimeout(() => {
-                    saveStatus.style.display = 'none';
-                }, 2000);
-            }
-        }
+    const saveStatus = document.getElementById('saveStatus');
+    saveStatus.className = `save-status ${status}`;
+    saveStatus.textContent = message;
+    
+    // همیشه نمایش بده
+    saveStatus.style.display = 'block';
+    
+    if (status === 'saved') {
+        setTimeout(() => {
+            saveStatus.style.display = 'none';
+        }, 3000);
+    } else if (status === 'error') {
+        setTimeout(() => {
+            saveStatus.style.display = 'none';
+        }, 5000);
+    }
+}
 
         // Optimized Matrix Animation - Reduced frequency
         const canvas = document.getElementById('matrix');
@@ -713,6 +719,8 @@
 
         // Content data - default values
         let contentData = {
+            let isSaving = false;
+        let saveQueue = [];
             profileName: "Aeon",
             profileDesc: "逐梦未来—智慧为刃˚.ᐟ.",
             profileImage: "",
@@ -733,34 +741,55 @@
             }
         };
 
-        // Reliable Firebase save function with retry mechanism
-        async function saveToFirebase(retryCount = 0) {
-            const maxRetries = 3;
+        async function saveToFirebase() {
+    // اگر در حال ذخیره است، اضافه به صف
+    if (isSaving) {
+        console.log('Already saving, queuing request');
+        return new Promise((resolve) => {
+            saveQueue.push(resolve);
+        });
+    }
+    
+    isSaving = true;
+    showSaveStatus('saving', 'در حال ذخیره...');
+    
+    let attempts = 0;
+    const maxAttempts = 3;
+    
+    while (attempts < maxAttempts) {
+        try {
+            attempts++;
+            console.log(`Save attempt ${attempts}/${maxAttempts}`);
             
-            try {
-                showSaveStatus('saving', 'در حال ذخیره...');
-                
-                // Always save to Firebase, ignore cache
-                await set(ref(database, 'website'), contentData);
-                
-                // Update cache only after successful save
-                cache.set('website', JSON.parse(JSON.stringify(contentData)));
-                
-                showSaveStatus('saved', 'ذخیره شد ✓');
-                console.log('Data saved successfully!');
-                
-            } catch (error) {
-                console.error('Error saving data:', error);
-                
-                if (retryCount < maxRetries) {
-                    console.log(`Retrying save... (${retryCount + 1}/${maxRetries})`);
-                    setTimeout(() => saveToFirebase(retryCount + 1), 1000);
-                } else {
-                    showSaveStatus('error', 'خطا در ذخیره!');
-                    throw error;
-                }
+            await set(ref(database, 'website'), contentData);
+            
+            // موفقیت
+            cache.set('website', JSON.parse(JSON.stringify(contentData)));
+            showSaveStatus('saved', 'ذخیره شد ✓');
+            console.log('Data saved successfully!');
+            
+            // پردازش صف
+            const queueResolvers = [...saveQueue];
+            saveQueue = [];
+            queueResolvers.forEach(resolve => resolve());
+            
+            isSaving = false;
+            return;
+            
+        } catch (error) {
+            console.error(`Save attempt ${attempts} failed:`, error);
+            
+            if (attempts === maxAttempts) {
+                showSaveStatus('error', 'خطا در ذخیره! دوباره تلاش کنید');
+                isSaving = false;
+                throw error;
             }
+            
+            // انتظار قبل از تلاش مجدد
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
+    }
+}
 
         // Reliable loading function - always fetch fresh data
         async function loadFromFirebase() {
@@ -1231,7 +1260,7 @@
             }
             
             try {
-                showSaveStatus('saving', `در حال آپلود ${file.name}...`);
+                console.log(`Starting upload for: ${file.name}`);
                 
                 // تبدیل فایل به Base64
                 const base64Data = await fileToBase64(file);
@@ -1255,12 +1284,21 @@
                 console.log('Audio added to array:', audioData.name);
                 
                 updatePlaylist();
-                await saveToFirebase();
                 
-                showSaveStatus('saved', `${file.name} با موفقیت آپلود شد`);
+                // تلاش برای ذخیره
+                await saveToFirebase();
+                console.log(`Successfully uploaded: ${file.name}`);
                 
             } catch (error) {
-                console.error('خطا در آپلود:', error);
+                console.error(`Failed to upload: ${file.name}`, error);
+                
+                // حذف فایل از آرایه در صورت خطا در ذخیره
+                const lastIndex = contentData.contentData.playlist.audioFiles.length - 1;
+                if (lastIndex >= 0 && contentData.contentData.playlist.audioFiles[lastIndex].name === file.name) {
+                    contentData.contentData.playlist.audioFiles.pop();
+                    updatePlaylist();
+                }
+                
                 showSaveStatus('error', `خطا در آپلود ${file.name}`);
                 alert(`خطا در آپلود ${file.name}: ${error.message}`);
             }
@@ -1334,14 +1372,16 @@
     console.log('Dropped files:', files.length);
     
     for (const file of files) {
+        console.log('Processing dropped file:', file.name, file.type, file.size);
+        
         if (file.type.startsWith('audio/')) {
             if (file.size > 5 * 1024 * 1024) {
-                alert(`فایل ${file.name} بیش از 5MB است.`);
+                alert(`فایل ${file.name} بیش از 5MB است و نمی‌تواند آپلود شود.`);
                 continue;
             }
             
             try {
-                showSaveStatus('saving', `در حال آپلود ${file.name}...`);
+                console.log(`Starting drop upload for: ${file.name}`);
                 
                 const base64Data = await fileToBase64(file);
                 
@@ -1362,14 +1402,25 @@
                 
                 contentData.contentData.playlist.audioFiles.push(audioData);
                 updatePlaylist();
-                await saveToFirebase();
                 
-                showSaveStatus('saved', `${file.name} آپلود شد`);
+                await saveToFirebase();
+                console.log(`Successfully uploaded via drop: ${file.name}`);
                 
             } catch (error) {
-                console.error('خطا در آپلود:', error);
+                console.error(`Failed to drop upload: ${file.name}`, error);
+                
+                // حذف فایل از آرایه در صورت خطا
+                const lastIndex = contentData.contentData.playlist.audioFiles.length - 1;
+                if (lastIndex >= 0 && contentData.contentData.playlist.audioFiles[lastIndex].name === file.name) {
+                    contentData.contentData.playlist.audioFiles.pop();
+                    updatePlaylist();
+                }
+                
                 showSaveStatus('error', `خطا در آپلود ${file.name}`);
+                alert(`خطا در آپلود ${file.name}: ${error.message}`);
             }
+        } else {
+            alert(`فایل ${file.name} فرمت صوتی نیست.`);
         }
     }
 }
@@ -1456,11 +1507,23 @@
         window.handleDragLeave = handleDragLeave;
         window.handleDrop = handleDrop;
 
-        // Initialize app
-        window.addEventListener('load', function() {
-            initMatrix();
-            loadFromFirebase();
-        });
+        // Test function - remove after testing
+window.testSave = async function() {
+    console.log('Testing save function...');
+    try {
+        await saveToFirebase();
+        console.log('Test save successful');
+    } catch (error) {
+        console.error('Test save failed:', error);
+    }
+};
+
+// Initialize app
+window.addEventListener('load', function() {
+    initMatrix();
+    loadFromFirebase();
+});
+        
     </script>
 </body>
 </html>
