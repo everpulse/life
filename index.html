@@ -8,6 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
 
+         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
             background: #000;
@@ -17,7 +23,6 @@
             position: relative;
         }
 
-        /* Matrix Background Animation - Optimized */
         #matrix {
             position: fixed;
             top: 0;
@@ -54,7 +59,6 @@
             margin: 0 auto 20px;
             position: relative;
             border: 3px solid rgba(255, 255, 255, 0.3);
-            cursor: pointer;
             transition: all 0.3s ease;
             overflow: hidden;
             will-change: transform;
@@ -85,7 +89,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             transition: all 0.3s ease;
             will-change: transform;
         }
