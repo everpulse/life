@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه شخصی - همگام‌سازی آنلاین</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        #matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .sync-status {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .sync-status.online {
+            background: rgba(0, 150, 0, 0.8);
+            color: #fff;
+        }
+
+        .sync-status.offline {
+            background: rgba(150, 0, 0, 0.8);
+            color: #fff;
+        }
+
+        .sync-status.syncing {
+            background: rgba(255, 165, 0, 0.8);
+            color: #fff;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .profile-section {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .profile-image:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .edit-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .edit-icon:hover {
+            background: #fff;
+            transform: scale(1.1);
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            direction: ltr;
+            text-align: center;
+            unicode-bidi: plaintext;
+        }
+
+        .profile-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            direction: ltr;
+            text-align: center;
+            unicode-bidi: plaintext;
+        }
+
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .menu-item h3 {
+            font-size: 18px;
+            font-weight: bold;
+            direction: ltr;
+            text-align: center;
+            unicode-bidi: plaintext;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            margin: 5% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            color: rgba(255, 255, 255, 0.7);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #fff;
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #fff;
+            text-align: center;
+            direction: ltr;
+            unicode-bidi: plaintext;
+        }
+
+        .modal-body {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            direction: ltr;
+            text-align: left;
+            unicode-bidi: plaintext;
+            min-height: 200px;
+        }
+
+        .modal-body:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.3);
+            outline-offset: 2px;
+            border-radius: 5px;
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            z-index: 999;
+            display: none;
+        }
+
+        .admin-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .admin-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .password-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .password-content {
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            margin: 20% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .password-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .save-status {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 1001;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .save-status.saving {
+            background: rgba(255, 165, 0, 0.8);
+            color: #fff;
+            display: block;
+        }
+
+        .save-status.saved {
+            background: rgba(0, 255, 0, 0.8);
+            color: #fff;
+            display: block;
+        }
+
+        .save-status.error {
+            background: rgba(255, 0, 0, 0.8);
+            color: #fff;
+            display: block;
+        }
+
+        .editable {
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .editable.edit-mode:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 2px 5px;
+        }
+
+        .editable.edit-mode:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            padding: 2px 5px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .profile-image {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .profile-name {
+                font-size: 20px;
+            }
+            
+            .menu-item {
+                padding: 15px;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="save-status" id="saveStatus">در حال ذخیره...</div>
+
+    <!-- Sync Status -->
+    <div class="sync-status offline" id="syncStatus">
+        <span id="syncIcon">🔴</span>
+        <span id="syncText">در حال اتصال...</span>
+    </div>
+
+    <canvas id="matrix"></canvas>
+    
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <button class="admin-btn" onclick="toggleEditMode()">حالت ویرایش</button>
+        <button class="admin-btn" onclick="syncNow()">همگام‌سازی دستی</button>
+        <button class="admin-btn" onclick="logout()">خروج</button>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-content">
+            <h2>ورود به پنل مدیریت</h2>
+            <input type="password" id="passwordInput" class="password-input" placeholder="رمز عبور را وارد کنید">
+            <br><br>
+            <button class="admin-btn" onclick="checkPassword()">ورود</button>
+            <button class="admin-btn" onclick="closePasswordModal()">انصراف</button>
+        </div>
+    </div>
+    
+    <!-- Hidden file inputs -->
+    <input type="file" id="imageInput" accept="image/*">
+    
+    <div class="container">
+        <div class="profile-section">
+            <div class="profile-image" id="profileImageContainer">
+                <img id="profileImg" src="data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='120' height='120' fill='%23333'/%3E%3Ccircle cx='60' cy='40' r='15' fill='%23666'/%3E%3Cpath d='m35 80c0-15 10-25 25-25s25 10 25 25' fill='%23666'/%3E%3C/svg%3E" alt="Profile">
+                <div class="edit-icon" id="editIcon" style="display: none;">✏️</div>
+            </div>
+            
+            <div class="profile-name editable" id="profileName">Aeon</div>
+            <div class="profile-desc editable" id="profileDesc">逐梦未来—智慧为刃˚.ᐟ.</div>
+        </div>
+
+        <div class="menu-items">
+            <div class="menu-item" onclick="openModal('biography')">
+                <h3 class="editable" data-type="biography">ABOUT ME</h3>
+            </div>
+            
+            <div class="menu-item" onclick="openModal('tenrules')">
+                <h3 class="editable" data-type="tenrules">Longevity Institutions</h3>
+            </div>
+            
+            <div class="menu-item" onclick="openModal('projects')">
+                <h3 class="editable" data-type="projects">PROJECTS</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div class="modal-body" id="modalBody" contenteditable="false">
+                <!-- محتوا اینجا نمایش داده می‌شود -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase imports (CDN)
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase Configuration (از اطلاعات شما)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDowZ-5e48zmJbT5cU7LzBmQpcWcqR5qhM",
+            authDomain: "personal-website-432a5.firebaseapp.com",
+            databaseURL: "https://personal-website-432a5-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "personal-website-432a5",
+            storageBucket: "personal-website-432a5.firebasestorage.app",
+            messagingSenderId: "350992508293",
+            appId: "1:350992508293:web:a693a7235ac29def1290ec"
+        };
+
+        // App Configuration
+        const STORAGE_KEY = 'personal_website_data';
+        const ADMIN_PASSWORD = "aeon2025";
+        
+        let app = null;
+        let database = null;
+        let isEditMode = false;
+        let isOnline = navigator.onLine;
+        
+        // Default content data
+        let contentData = {
+            profileName: "Aeon",
+            profileDesc: "逐梦未来—智慧为刃˚.ᐟ.",
+            profileImage: "",
+            contentData: {
+                biography: {
+                    title: "ABOUT ME",
+                    content: "اینجا بیوگرافی خود را بنویسید..."
+                },
+                tenrules: {
+                    title: "Longevity Institutions", 
+                    content: "اینجا محتوای خود را بنویسید..."
+                },
+                projects: {
+                    title: "PROJECTS",
+                    content: "پروژه‌های خود را اینجا معرفی کنید..."
+                }
+            }
+        };
+
+        // Initialize Firebase
+        function initFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                database = getDatabase(app);
+                
+                // Listen for real-time updates
+                const dataRef = ref(database, 'website-data');
+                onValue(dataRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const serverData = snapshot.val();
+                        if (!isEditMode) {
+                            contentData = { ...contentData, ...serverData };
+                            updateUI();
+                            saveToLocalStorage();
+                        }
+                    }
+                });
+                
+                updateSyncStatus('online', 'آنلاین');
+                syncToServer();
+                return true;
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                updateSyncStatus('offline', 'خطا در اتصال');
+                return false;
+            }
+        }
+
+        // Update Sync Status
+        function updateSyncStatus(status, text) {
+            const syncStatus = document.getElementById('syncStatus');
+            const syncIcon = document.getElementById('syncIcon');
+            const syncText = document.getElementById('syncText');
+            
+            syncStatus.className = `sync-status ${status}`;
+            syncText.textContent = text;
+            
+            switch (status) {
+                case 'online':
+                    syncIcon.textContent = '🟢';
+                    break;
+                case 'syncing':
+                    syncIcon.textContent = '🔄';
+                    break;
+                case 'offline':
+                default:
+                    syncIcon.textContent = '🔴';
+                    break;
+            }
+        }
+
+        // Show Save Status
+        function showSaveStatus(status, message) {
+            const saveStatus = document.getElementById('saveStatus');
+            saveStatus.className = `save-status ${status}`;
+            saveStatus.textContent = message;
+            saveStatus.style.display = 'block';
+            
+            if (status === 'saved') {
+                setTimeout(() => saveStatus.style.display = 'none', 2000);
+            } else if (status === 'error') {
+                setTimeout(() => saveStatus.style.display = 'none', 3000);
+            }
+        }
+
+        // Sync to Server
+        async function syncToServer() {
+            if (!database) return;
+            
+            try {
+                updateSyncStatus('syncing', 'در حال همگام‌سازی...');
+                showSaveStatus('saving', 'در حال ذخیره...');
+                
+                const dataRef = ref(database, 'website-data');
+                await set(dataRef, contentData);
+                
+                updateSyncStatus('online', 'همگام‌سازی شد');
+                showSaveStatus('saved', 'ذخیره شد ✓');
+                setTimeout(() => updateSyncStatus('online', 'آنلاین'), 2000);
+            } catch (error) {
+                console.error('Sync error:', error);
+                updateSyncStatus('offline', 'خطا در همگام‌سازی');
+                showSaveStatus('error', 'خطا در ذخیره!');
+            }
+        }
+
+        // Manual Sync
+        function syncNow() {
+            if (database) {
+                syncToServer();
+            } else {
+                alert('Firebase متصل نیست!');
+            }
+        }
+
+        // Local Storage Functions
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(contentData));
+            } catch (error) {
+                console.error('Local storage error:', error);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const savedData = localStorage.getItem(STORAGE_KEY);
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    contentData = { ...contentData, ...parsedData };
+                }
+            } catch (error) {
+                console.error('Load error:', error);
+            }
+        }
+
+        // UI Functions
+        function updateUI() {
+            document.getElementById('profileName').textContent = contentData.profileName;
+            document.getElementById('profileDesc').textContent = contentData.profileDesc;
+            
+            if (contentData.profileImage) {
+                document.getElementById('profileImg').src = contentData.profileImage;
+            }
+
+            // Update menu titles
+            document.querySelectorAll('.editable[data-type]').forEach(title => {
+                const type = title.dataset.type;
+                if (contentData.contentData[type]?.title) {
+                    title.textContent = contentData.contentData[type].title;
+                }
+            });
+        }
+
+        // Matrix Animation
+        function initMatrix() {
+            const canvas = document.getElementById('matrix');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()";
+            const fontSize = 10;
+            const columns = Math.floor(canvas.width / fontSize);
+            const drops = new Array(columns).fill(1);
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#fff';
+                ctx.font = `${fontSize}px monospace`;
+                
+                drops.forEach((drop, i) => {
+                    const char = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(char, i * fontSize, drop * fontSize);
+                    
+                    if (drop * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                });
+                
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+        }
+
+        // Admin Functions
+        let clickCount = 0;
+        document.getElementById('profileImageContainer').addEventListener('click', function() {
+            if (!isEditMode) {
+                clickCount++;
+                setTimeout(() => {
+                    if (clickCount === 2) {
+                        showPasswordModal();
+                    }
+                    clickCount = 0;
+                }, 400);
+            } else {
+                document.getElementById('imageInput').click();
+            }
+        });
+
+        function showPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'block';
+            document.getElementById('passwordInput').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                isEditMode = true;
+                enableEditMode();
+                closePasswordModal();
+                document.getElementById('adminPanel').style.display = 'block';
+            } else {
+                alert('رمز عبور نادرست است!');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        function enableEditMode() {
+            // Make profile editable
+            document.getElementById('profileName').contentEditable = true;
+            document.getElementById('profileDesc').contentEditable = true;
+            document.getElementById('editIcon').style.display = 'flex';
+            
+            // Add edit-mode class for styling
+            document.querySelectorAll('.editable').forEach(el => {
+                el.classList.add('edit-mode');
+                if (el.dataset.type) {
+                    el.contentEditable = true;
+                }
+            });
+
+            // Auto-save profile changes
+            document.getElementById('profileName').addEventListener('input', function() {
+                contentData.profileName = this.textContent;
+                saveToLocalStorage();
+                if (database) syncToServer();
+            });
+
+            document.getElementById('profileDesc').addEventListener('input', function() {
+                contentData.profileDesc = this.textContent;
+                saveToLocalStorage();
+                if (database) syncToServer();
+            });
+
+            // Auto-save menu titles
+            document.querySelectorAll('.editable[data-type]').forEach(title => {
+                title.addEventListener('input', function() {
+                    const type = this.dataset.type;
+                    contentData.contentData[type].title = this.textContent;
+                    saveToLocalStorage();
+                    if (database) syncToServer();
+                });
+            });
+        }
+
+        function disableEditMode() {
+            document.getElementById('profileName').contentEditable = false;
+            document.getElementById('profileDesc').contentEditable = false;
+            document.getElementById('editIcon').style.display = 'none';
+            
+            document.querySelectorAll('.editable').forEach(el => {
+                el.classList.remove('edit-mode');
+                el.contentEditable = false;
+            });
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            if (isEditMode) {
+                enableEditMode();
+            } else {
+                disableEditMode();
+            }
+        }
+
+        function logout() {
+            isEditMode = false;
+            disableEditMode();
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // Image Upload (Base64)
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                // Check file size (max 2MB for Base64)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('حجم تصویر نباید از 2MB بیشتر باشد!');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    contentData.profileImage = e.target.result;
+                    document.getElementById('profileImg').src = e.target.result;
+                    saveToLocalStorage();
+                    if (database) syncToServer();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Modal Functions
+        let currentModalType = '';
+
+        function openModal(type) {
+            currentModalType = type;
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            
+            title.textContent = contentData.contentData[type].title;
+            body.innerHTML = contentData.contentData[type].content.replace(/\n/g, '<br>');
+            body.contentEditable = isEditMode;
+            modal.style.display = 'block';
+
+            if (isEditMode) {
+                let saveTimeout;
+                body.oninput = function() {
+                    clearTimeout(saveTimeout);
+                    saveTimeout = setTimeout(() => {
+                        const content = this.innerHTML.replace(/<br>/g, '\n').replace(/<div>/g, '\n').replace(/<\/div>/g, '');
+                        contentData.contentData[type].content = content;
+                        saveToLocalStorage();
+                        if (database) syncToServer();
+                    }, 1000);
+                };
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Keyboard shortcuts
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // Network Status
+        window.addEventListener('online', () => {
+            isOnline = true;
+            if (database) {
+                updateSyncStatus('online', 'آنلاین');
+                syncToServer();
+            }
+        });
+
+        window.addEventListener('offline', () => {
+            isOnline = false;
+            updateSyncStatus('offline', 'آفلاین');
+        });
+
+        // Global functions for inline handlers
+        window.syncNow = syncNow;
+        window.toggleEditMode = toggleEditMode;
+        window.logout = logout;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.showPasswordModal = showPasswordModal;
+        window.closePasswordModal = closePasswordModal;
+        window.checkPassword = checkPassword;
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+            updateUI();
+            initMatrix();
+            
+            // Initialize Firebase
+            if (initFirebase()) {
+                console.log('Firebase connected successfully!');
+            } else {
+                console.log('Firebase connection failed, working offline');
+                updateSyncStatus('offline', 'آفلاین');
+            }
+            
+            // Handle window resize for matrix
+            window.addEventListener('resize', () => {
+                const canvas = document.getElementById('matrix');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+            
+            console.log('Personal Website with Firebase Sync Loaded Successfully!');
+        });
+
+        // Click outside modal to close
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            const passwordModal = document.getElementById('passwordModal');
+            
+            if (event.target === modal) {
+                closeModal();
+            }
+            
+            if (event.target === passwordModal) {
+                closePasswordModal();
+            }
+        }
+    </script>
+</body>
+</html>
