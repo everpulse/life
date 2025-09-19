@@ -1320,14 +1320,50 @@
                         <div class="audio-progress">
                             <div class="audio-progress-bar" id="progress-${index}"></div>
                         </div>
-                        <div style="font-size: 12px; opacity: 0.7;">${formatFileSize(audio.size)}</div>
+                        <div style="font-size: 12px; opacity: 0.7;">
+                            ${audio.storage === 'external' ? 'فایل خارجی' : formatFileSize(audio.size)}
+                            ${audio.storage ? ` (${audio.storage})` : ''}
+                        </div>
+                        ${audio.url ? `<div style="font-size: 10px; opacity: 0.5; word-break: break-all;">${audio.url.substring(0, 50)}...</div>` : ''}
                     </div>
                     <div class="audio-controls">
                         <button class="play-btn" onclick="toggleAudio(${index})" id="playBtn-${index}">▶</button>
+                        <button class="play-btn" onclick="testAudioUrl(${index})" style="background: rgba(0,255,0,0.3);" title="تست لینک">🔗</button>
                         ${isEditMode ? `<button class="delete-btn" onclick="deleteAudio(${index})">حذف</button>` : ''}
                     </div>
                 </div>
             `).join('');
+        }
+
+        // تابع تست لینک صوتی
+        function testAudioUrl(index) {
+            const audioFiles = contentData.contentData.playlist.audioFiles || [];
+            const audio = audioFiles[index];
+            
+            if (!audio.url && !audio.data) {
+                alert('فایل صوتی یافت نشد!');
+                return;
+            }
+            
+            console.log('Testing audio URL:', audio.url || 'Base64 data');
+            
+            // تست با fetch برای فایل‌های خارجی
+            if (audio.storage === 'external' && audio.url) {
+                fetch(audio.url, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert(`✅ لینک معتبر است!\nحجم: ${response.headers.get('content-length') || 'نامشخص'} بایت\nنوع: ${response.headers.get('content-type') || 'نامشخص'}`);
+                        } else {
+                            alert(`❌ مشکل در لینک!\nکد خطا: ${response.status}\nپیام: ${response.statusText}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Test error:', error);
+                        alert(`❌ خطا در تست لینک:\n${error.message}\n\nممکن است لینک مستقیم نباشد یا CORS مشکل داشته باشد.`);
+                    });
+            } else if (audio.data) {
+                alert('✅ فایل Base64 موجود است');
+            }
         }
 
         let currentAudio = null;
@@ -1600,7 +1636,8 @@
         window.handleDragEnter = handleDragEnter;
         window.handleDragLeave = handleDragLeave;
         window.handleDrop = handleDrop;
-        window.addExternalAudio = addExternalAudio; // اضافه شدن
+        window.addExternalAudio = addExternalAudio;
+        window.testAudioUrl = testAudioUrl; // اضافه شدن
 
         // Initialize app
         window.addEventListener('load', function() {
