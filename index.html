@@ -1320,15 +1320,9 @@
                         <div class="audio-progress">
                             <div class="audio-progress-bar" id="progress-${index}"></div>
                         </div>
-                        <div style="font-size: 12px; opacity: 0.7;">
-                            ${audio.storage === 'external' ? 'فایل خارجی' : formatFileSize(audio.size)}
-                            ${audio.storage ? ` (${audio.storage})` : ''}
-                        </div>
-                        ${audio.url ? `<div style="font-size: 10px; opacity: 0.5; word-break: break-all;">${audio.url.substring(0, 50)}...</div>` : ''}
                     </div>
                     <div class="audio-controls">
                         <button class="play-btn" onclick="toggleAudio(${index})" id="playBtn-${index}">▶</button>
-                        <button class="play-btn" onclick="testAudioUrl(${index})" style="background: rgba(0,255,0,0.3);" title="تست لینک">🔗</button>
                         ${isEditMode ? `<button class="delete-btn" onclick="deleteAudio(${index})">حذف</button>` : ''}
                     </div>
                 </div>
