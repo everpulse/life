@@ -741,20 +741,33 @@
             }
         }
 
-        function playTrack(index) {
+        async function playTrack(index) {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (index < 0 || index >= audioFiles.length) return;
 
+            // اول کاملا Audio قدیمی رو پاک کن
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
-                cleanupCurrentAudio();
+                
+                // حذف تمام event listener ها
+                const events = ['loadedmetadata', 'timeupdate', 'ended', 'pause', 'play', 'error', 'loadstart', 'canplay'];
+                events.forEach(event => {
+                    currentAudio.removeEventListener(event, currentAudio[`${event}Handler`] || function(){});
+                });
+                
+                currentAudio.src = '';
+                currentAudio.load(); // مهم: reset کامل Audio
+                currentAudio = null;
+                
+                // یه کمی صبر کن تا Audio قدیمی کاملا پاک شه
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
 
             currentIndex = index;
             const audio = audioFiles[index];
             
-            // بررسی صحت لینک قبل از پخش
+            // بررسی صحت لینک
             let audioSource = null;
             if (audio.storage === 'base64' && audio.data) {
                 audioSource = audio.data;
@@ -766,93 +779,100 @@
 
             if (!audioSource || audioSource.trim() === '') {
                 console.error('Invalid audio source for:', audio.name);
-                alert(`فایل صوتی "${audio.name}" معتبر نیست.`);
                 autoPlayNext();
                 return;
-            }
-
-            // بررسی فرمت Base64
-            if (audio.storage === 'base64' && !audioSource.startsWith('data:audio/')) {
-                console.error('Invalid Base64 audio format for:', audio.name);
-                alert(`فرمت فایل "${audio.name}" نامعتبر است.`);
-                autoPlayNext();
-                return;
-            }
-
-            // بررسی فرمت URL
-            if (audio.storage === 'external' || audio.url) {
-                try {
-                    new URL(audioSource);
-                } catch (e) {
-                    console.error('Invalid URL format for:', audio.name, audioSource);
-                    alert(`لینک "${audio.name}" معتبر نیست.`);
-                    autoPlayNext();
-                    return;
-                }
             }
 
             updatePlaylistUI();
             showNowPlaying(audio.name);
 
+            // ساخت Audio جدید
             currentAudio = new Audio();
             currentAudio.preload = 'metadata';
+            currentAudio.crossOrigin = 'anonymous'; // برای مشکلات CORS
             
-            // اضافه کردن Event Listeners قبل از تنظیم src
-            currentAudio.addEventListener('loadedmetadata', () => {
+            // تعریف handler ها به صورت named function
+            const loadedmetadataHandler = () => {
                 console.log(`Audio loaded successfully: ${audio.name}`);
                 currentAudio.play().catch((error) => {
                     console.error('Play error for:', audio.name, error);
-                    alert(`خطا در پخش "${audio.name}"`);
                     autoPlayNext();
                 });
-            });
+            };
 
-            currentAudio.addEventListener('timeupdate', () => {
-                if (currentAudio && currentAudio.duration) {
+            const timeupdateHandler = () => {
+                if (currentAudio && currentAudio.duration && currentIndex !== -1) {
                     const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
                     const progressBar = document.getElementById(`progress-${currentIndex}`);
                     if (progressBar) {
                         progressBar.style.width = progress + '%';
                     }
                 }
-            });
+            };
 
-            currentAudio.addEventListener('ended', () => {
+            const endedHandler = () => {
                 console.log(`Track ended: ${audio.name}`);
                 if (!playHistory.includes(currentIndex)) {
                     playHistory.push(currentIndex);
                 }
                 autoPlayNext();
-            });
+            };
 
-            currentAudio.addEventListener('play', updatePlaylistUI);
-            currentAudio.addEventListener('pause', updatePlaylistUI);
+            const playHandler = () => {
+                updatePlaylistUI();
+            };
 
-            currentAudio.addEventListener('error', (error) => {
+            const pauseHandler = () => {
+                updatePlaylistUI();
+            };
+
+            const errorHandler = (error) => {
                 console.error(`Audio error for "${audio.name}":`, error);
                 console.error('Audio source was:', audioSource);
-                console.error('Audio properties:', {
-                    storage: audio.storage,
-                    hasData: !!audio.data,
-                    hasUrl: !!audio.url,
-                    dataLength: audio.data ? audio.data.length : 0
-                });
                 
-                // حذف آهنگ معیوب از لیست پخش موقت
-                console.log(`Skipping broken track: ${audio.name}`);
-                autoPlayNext();
-            });
+                // فقط اگه این همون Audio فعلی باشه
+                if (currentAudio && currentAudio.src === audioSource) {
+                    console.log(`Skipping broken track: ${audio.name}`);
+                    autoPlayNext();
+                }
+            };
 
-            currentAudio.addEventListener('loadstart', () => {
+            const loadstartHandler = () => {
                 console.log(`Loading started for: ${audio.name}`);
-            });
+            };
 
-            currentAudio.addEventListener('canplay', () => {
+            const canplayHandler = () => {
                 console.log(`Can play: ${audio.name}`);
-            });
+            };
+
+            // اضافه کردن event listener ها
+            currentAudio.addEventListener('loadedmetadata', loadedmetadataHandler);
+            currentAudio.addEventListener('timeupdate', timeupdateHandler);
+            currentAudio.addEventListener('ended', endedHandler);
+            currentAudio.addEventListener('play', playHandler);
+            currentAudio.addEventListener('pause', pauseHandler);
+            currentAudio.addEventListener('error', errorHandler);
+            currentAudio.addEventListener('loadstart', loadstartHandler);
+            currentAudio.addEventListener('canplay', canplayHandler);
+
+            // ذخیره کردن reference ها برای cleanup
+            currentAudio.loadedmetadataHandler = loadedmetadataHandler;
+            currentAudio.timeupdateHandler = timeupdateHandler;
+            currentAudio.endedHandler = endedHandler;
+            currentAudio.playHandler = playHandler;
+            currentAudio.pauseHandler = pauseHandler;
+            currentAudio.errorHandler = errorHandler;
+            currentAudio.loadstartHandler = loadstartHandler;
+            currentAudio.canplayHandler = canplayHandler;
 
             // تنظیم src در انتها
-            currentAudio.src = audioSource;
+            try {
+                currentAudio.src = audioSource;
+            } catch (e) {
+                console.error('Error setting audio source:', e);
+                autoPlayNext();
+                return;
+            }
             
             updateControlsState();
         }
