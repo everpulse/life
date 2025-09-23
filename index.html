@@ -754,27 +754,56 @@
             currentIndex = index;
             const audio = audioFiles[index];
             
+            // بررسی صحت لینک قبل از پخش
+            let audioSource = null;
+            if (audio.storage === 'base64' && audio.data) {
+                audioSource = audio.data;
+            } else if (audio.storage === 'external' && audio.url) {
+                audioSource = audio.url;
+            } else if (audio.url) {
+                audioSource = audio.url;
+            }
+
+            if (!audioSource || audioSource.trim() === '') {
+                console.error('Invalid audio source for:', audio.name);
+                alert(`فایل صوتی "${audio.name}" معتبر نیست.`);
+                autoPlayNext();
+                return;
+            }
+
+            // بررسی فرمت Base64
+            if (audio.storage === 'base64' && !audioSource.startsWith('data:audio/')) {
+                console.error('Invalid Base64 audio format for:', audio.name);
+                alert(`فرمت فایل "${audio.name}" نامعتبر است.`);
+                autoPlayNext();
+                return;
+            }
+
+            // بررسی فرمت URL
+            if (audio.storage === 'external' || audio.url) {
+                try {
+                    new URL(audioSource);
+                } catch (e) {
+                    console.error('Invalid URL format for:', audio.name, audioSource);
+                    alert(`لینک "${audio.name}" معتبر نیست.`);
+                    autoPlayNext();
+                    return;
+                }
+            }
+
             updatePlaylistUI();
             showNowPlaying(audio.name);
 
             currentAudio = new Audio();
+            currentAudio.preload = 'metadata';
             
-            if (audio.storage === 'base64' && audio.data) {
-                currentAudio.src = audio.data;
-            } else if (audio.storage === 'external' && audio.url) {
-                currentAudio.src = audio.url;
-            } else if (audio.url) {
-                currentAudio.src = audio.url;
-            } else {
-                alert('فایل صوتی یافت نشد.');
-                return;
-            }
-
+            // اضافه کردن Event Listeners قبل از تنظیم src
             currentAudio.addEventListener('loadedmetadata', () => {
+                console.log(`Audio loaded successfully: ${audio.name}`);
                 currentAudio.play().catch((error) => {
-                    console.error('Play error:', error);
-                    alert('خطا در پخش آهنگ');
-                    resetCurrentTrack();
+                    console.error('Play error for:', audio.name, error);
+                    alert(`خطا در پخش "${audio.name}"`);
+                    autoPlayNext();
                 });
             });
 
@@ -789,6 +818,7 @@
             });
 
             currentAudio.addEventListener('ended', () => {
+                console.log(`Track ended: ${audio.name}`);
                 if (!playHistory.includes(currentIndex)) {
                     playHistory.push(currentIndex);
                 }
@@ -799,11 +829,31 @@
             currentAudio.addEventListener('pause', updatePlaylistUI);
 
             currentAudio.addEventListener('error', (error) => {
-                console.error('Audio error:', error);
-                alert('خطا در پخش آهنگ. به آهنگ بعدی می‌رویم...');
+                console.error(`Audio error for "${audio.name}":`, error);
+                console.error('Audio source was:', audioSource);
+                console.error('Audio properties:', {
+                    storage: audio.storage,
+                    hasData: !!audio.data,
+                    hasUrl: !!audio.url,
+                    dataLength: audio.data ? audio.data.length : 0
+                });
+                
+                // حذف آهنگ معیوب از لیست پخش موقت
+                console.log(`Skipping broken track: ${audio.name}`);
                 autoPlayNext();
             });
 
+            currentAudio.addEventListener('loadstart', () => {
+                console.log(`Loading started for: ${audio.name}`);
+            });
+
+            currentAudio.addEventListener('canplay', () => {
+                console.log(`Can play: ${audio.name}`);
+            });
+
+            // تنظیم src در انتها
+            currentAudio.src = audioSource;
+            
             updateControlsState();
         }
 
@@ -826,18 +876,28 @@
                 
                 if (availableIndices.length === 0) {
                     playHistory = [];
-                    availableIndices = audioFiles.map((_, i) => i).filter(i => i !== currentIndex);
+                    for (let i = 0; i < audioFiles.length; i++) {
+                        if (i !== currentIndex) availableIndices.push(i);
+                    }
                 }
                 
                 if (availableIndices.length > 0) {
                     nextIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+                } else {
+                    console.log('No more tracks to play');
+                    resetCurrentTrack();
+                    return;
                 }
             } else {
                 nextIndex = (currentIndex + 1) % audioFiles.length;
             }
 
-            if (nextIndex !== -1) {
+            if (nextIndex !== -1 && nextIndex !== currentIndex) {
+                console.log(`Auto-playing next track: ${audioFiles[nextIndex]?.name || 'Unknown'}`);
                 setTimeout(() => playTrack(nextIndex), 1000);
+            } else if (nextIndex === currentIndex && !isRepeatMode) {
+                console.log('Reached end of playlist');
+                resetCurrentTrack();
             }
         }
 
