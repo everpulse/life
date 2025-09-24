@@ -690,7 +690,24 @@
             updateControlsState();
         }
 
-        function renderPlaylist() {
+        function handleTrackButtonClick(index) {
+            // اگه این همون آهنگ فعلی باشه و Audio موجود باشه
+            if (index === currentIndex && currentAudio) {
+                // مثل دکمه اصلی pause/resume کن
+                if (currentAudio.paused) {
+                    currentAudio.play().catch((error) => {
+                        console.error('Play error:', error);
+                        alert('خطا در پخش آهنگ');
+                    });
+                } else {
+                    currentAudio.pause();
+                }
+                updatePlaylistUI();
+            } else {
+                // آهنگ متفاوت است، پس آهنگ جدید پخش کن
+                playTrack(index);
+            }
+        }
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (audioFiles.length === 0) {
                 return `
@@ -720,7 +737,7 @@
                     </div>
                     <div class="audio-controls">
                         <button class="play-btn ${index === currentIndex && currentAudio && !currentAudio.paused ? 'playing' : ''}" 
-                                onclick="playTrack(${index})" id="playBtn-${index}">
+                                onclick="handleTrackButtonClick(${index})" id="playBtn-${index}">
                             ${index === currentIndex && currentAudio && !currentAudio.paused ? '⏸' : '▶'}
                         </button>
                     </div>
@@ -1080,6 +1097,7 @@
         window.openModal = openModal;
         window.closeModal = closeModal;
         window.playTrack = playTrack;
+        window.handleTrackButtonClick = handleTrackButtonClick;
         window.togglePlayPause = togglePlayPause;
         window.nextTrack = nextTrack;
         window.previousTrack = previousTrack;
