@@ -663,12 +663,24 @@
             }
         }
 
-        // Audio Player System with Auto-play
+        // Audio Player System - Fixed for autoplay issues
         let currentAudio = null;
         let currentIndex = -1;
         let isShuffleMode = false;
         let isRepeatMode = false;
         let playHistory = [];
+        let audioContext = null;
+        let userHasInteracted = false;
+
+        // Track user interaction to enable autoplay
+        function enableUserInteraction() {
+            userHasInteracted = true;
+            document.removeEventListener('click', enableUserInteraction);
+            document.removeEventListener('touchstart', enableUserInteraction);
+        }
+
+        document.addEventListener('click', enableUserInteraction);
+        document.addEventListener('touchstart', enableUserInteraction);
 
         function createPlaylistModal(body) {
             body.innerHTML = `
@@ -759,6 +771,9 @@
 
             currentAudio = new Audio();
             
+            // Set preload to none to prevent automatic loading
+            currentAudio.preload = 'none';
+            
             if (audio.storage === 'base64' && audio.data) {
                 currentAudio.src = audio.data;
             } else if (audio.storage === 'external' && audio.url) {
@@ -770,13 +785,19 @@
                 return;
             }
 
-            currentAudio.addEventListener('loadedmetadata', () => {
-                currentAudio.play().catch((error) => {
-                    console.error('Play error:', error);
-                    alert('خطا در پخش آهنگ');
-                    resetCurrentTrack();
-                });
-            });
+            // Load the audio first
+            currentAudio.load();
+
+            currentAudio.addEventListener('canplay', () => {
+                // Only play if user has interacted with the page
+                if (userHasInteracted) {
+                    currentAudio.play().catch((error) => {
+                        console.error('Play error:', error);
+                        // Don't show alert, just log the error
+                        console.log('Cannot autoplay - user interaction required');
+                    });
+                }
+            }, { once: true });
 
             currentAudio.addEventListener('timeupdate', () => {
                 if (currentAudio && currentAudio.duration) {
@@ -792,7 +813,10 @@
                 if (!playHistory.includes(currentIndex)) {
                     playHistory.push(currentIndex);
                 }
-                autoPlayNext();
+                // Only autoplay next if user has interacted
+                if (userHasInteracted) {
+                    autoPlayNext();
+                }
             });
 
             currentAudio.addEventListener('play', updatePlaylistUI);
@@ -800,14 +824,22 @@
 
             currentAudio.addEventListener('error', (error) => {
                 console.error('Audio error:', error);
-                alert('خطا در پخش آهنگ. به آهنگ بعدی می‌رویم...');
-                autoPlayNext();
+                // Only show alert for actual errors, not autoplay restrictions
+                if (error.target.error && error.target.error.code !== 4) {
+                    alert('خطا در پخش آهنگ. به آهنگ بعدی می‌رویم...');
+                    if (userHasInteracted) {
+                        autoPlayNext();
+                    }
+                }
             });
 
             updateControlsState();
         }
 
         function autoPlayNext() {
+            // Only proceed if user has interacted
+            if (!userHasInteracted) return;
+            
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             
             if (audioFiles.length === 0) return;
@@ -853,7 +885,7 @@
             if (currentAudio.paused) {
                 currentAudio.play().catch((error) => {
                     console.error('Play error:', error);
-                    alert('خطا در پخش آهنگ');
+                    console.log('Cannot play - user interaction may be required');
                 });
             } else {
                 currentAudio.pause();
@@ -915,7 +947,7 @@
 
         function cleanupCurrentAudio() {
             if (currentAudio) {
-                const events = ['loadedmetadata', 'timeupdate', 'ended', 'pause', 'play', 'error'];
+                const events = ['loadedmetadata', 'timeupdate', 'ended', 'pause', 'play', 'error', 'canplay'];
                 events.forEach(event => {
                     currentAudio.removeEventListener(event, currentAudio[`${event}Handler`]);
                 });
