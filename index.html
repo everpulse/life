@@ -757,7 +757,21 @@
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (index < 0 || index >= audioFiles.length) return;
 
-            if (currentAudio) {
+            // If clicking on the same track that's already loaded, just toggle play/pause
+            if (currentIndex === index && currentAudio && currentAudio.src) {
+                if (currentAudio.paused) {
+                    currentAudio.play().catch((error) => {
+                        console.error('Play error:', error);
+                    });
+                } else {
+                    currentAudio.pause();
+                }
+                updatePlaylistUI();
+                return;
+            }
+
+            // Only create new audio if switching to different track
+            if (currentAudio && currentIndex !== index) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
                 cleanupCurrentAudio();
@@ -769,71 +783,74 @@
             updatePlaylistUI();
             showNowPlaying(audio.name);
 
-            currentAudio = new Audio();
-            
-            // Set preload to none to prevent automatic loading
-            currentAudio.preload = 'none';
-            
-            if (audio.storage === 'base64' && audio.data) {
-                currentAudio.src = audio.data;
-            } else if (audio.storage === 'external' && audio.url) {
-                currentAudio.src = audio.url;
-            } else if (audio.url) {
-                currentAudio.src = audio.url;
-            } else {
-                alert('فایل صوتی یافت نشد.');
-                return;
-            }
+            // Only create new audio object if we don't have one or switching tracks
+            if (!currentAudio || currentAudio.src === '') {
+                currentAudio = new Audio();
+                
+                // Set preload to none to prevent automatic loading
+                currentAudio.preload = 'none';
+                
+                if (audio.storage === 'base64' && audio.data) {
+                    currentAudio.src = audio.data;
+                } else if (audio.storage === 'external' && audio.url) {
+                    currentAudio.src = audio.url;
+                } else if (audio.url) {
+                    currentAudio.src = audio.url;
+                } else {
+                    alert('فایل صوتی یافت نشد.');
+                    return;
+                }
 
-            // Load the audio first
-            currentAudio.load();
+                // Load the audio first
+                currentAudio.load();
 
-            currentAudio.addEventListener('canplay', () => {
-                // Always try to play, but handle autoplay restrictions gracefully
-                currentAudio.play().catch((error) => {
-                    console.error('Play error:', error);
-                    // If autoplay fails, enable it after first user interaction
-                    if (!userHasInteracted) {
-                        const playAfterInteraction = () => {
-                            currentAudio.play().catch(e => console.log('Still cannot play:', e));
-                            document.removeEventListener('click', playAfterInteraction);
-                            document.removeEventListener('touchstart', playAfterInteraction);
-                        };
-                        document.addEventListener('click', playAfterInteraction, { once: true });
-                        document.addEventListener('touchstart', playAfterInteraction, { once: true });
+                currentAudio.addEventListener('canplay', () => {
+                    // Always try to play, but handle autoplay restrictions gracefully
+                    currentAudio.play().catch((error) => {
+                        console.error('Play error:', error);
+                        // If autoplay fails, enable it after first user interaction
+                        if (!userHasInteracted) {
+                            const playAfterInteraction = () => {
+                                currentAudio.play().catch(e => console.log('Still cannot play:', e));
+                                document.removeEventListener('click', playAfterInteraction);
+                                document.removeEventListener('touchstart', playAfterInteraction);
+                            };
+                            document.addEventListener('click', playAfterInteraction, { once: true });
+                            document.addEventListener('touchstart', playAfterInteraction, { once: true });
+                        }
+                    });
+                }, { once: true });
+
+                currentAudio.addEventListener('timeupdate', () => {
+                    if (currentAudio && currentAudio.duration) {
+                        const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+                        const progressBar = document.getElementById(`progress-${currentIndex}`);
+                        if (progressBar) {
+                            progressBar.style.width = progress + '%';
+                        }
                     }
                 });
-            }, { once: true });
 
-            currentAudio.addEventListener('timeupdate', () => {
-                if (currentAudio && currentAudio.duration) {
-                    const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
-                    const progressBar = document.getElementById(`progress-${currentIndex}`);
-                    if (progressBar) {
-                        progressBar.style.width = progress + '%';
+                currentAudio.addEventListener('ended', () => {
+                    if (!playHistory.includes(currentIndex)) {
+                        playHistory.push(currentIndex);
                     }
-                }
-            });
-
-            currentAudio.addEventListener('ended', () => {
-                if (!playHistory.includes(currentIndex)) {
-                    playHistory.push(currentIndex);
-                }
-                // Always try autoplay next
-                autoPlayNext();
-            });
-
-            currentAudio.addEventListener('play', updatePlaylistUI);
-            currentAudio.addEventListener('pause', updatePlaylistUI);
-
-            currentAudio.addEventListener('error', (error) => {
-                console.error('Audio error:', error);
-                // Only show alert for actual file errors, not autoplay restrictions
-                if (error.target.error && error.target.error.code !== 4) {
-                    alert('خطا در پخش آهنگ. به آهنگ بعدی می‌رویم...');
+                    // Always try autoplay next
                     autoPlayNext();
-                }
-            });
+                });
+
+                currentAudio.addEventListener('play', updatePlaylistUI);
+                currentAudio.addEventListener('pause', updatePlaylistUI);
+
+                currentAudio.addEventListener('error', (error) => {
+                    console.error('Audio error:', error);
+                    // Only show alert for actual file errors, not autoplay restrictions
+                    if (error.target.error && error.target.error.code !== 4) {
+                        alert('خطا در پخش آهنگ. به آهنگ بعدی می‌رویم...');
+                        autoPlayNext();
+                    }
+                });
+            }
 
             updateControlsState();
         }
