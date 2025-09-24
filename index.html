@@ -690,41 +690,10 @@
             updateControlsState();
         }
 
-        function handleTrackButtonClick(index) {
-            // اگه این همون آهنگ فعلی باشه و Audio موجود باشه
-            if (index === currentIndex && currentAudio) {
-                // مثل دکمه اصلی pause/resume کن
-                if (currentAudio.paused) {
-                    currentAudio.play().catch((error) => {
-                        console.error('Play error:', error);
-                        alert('خطا در پخش آهنگ');
-                    });
-                } else {
-                    currentAudio.pause();
-                }
-                updatePlaylistUI();
-            } else {
-                // آهنگ متفاوت است، پس آهنگ جدید پخش کن
-                playTrack(index);
-            }
-        }
+        function renderPlaylist() {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (audioFiles.length === 0) {
-                return `
-                    <div style="text-align: center; opacity: 0.7; padding: 20px;">
-                        <p>پلی‌لیست خالی است</p>
-                        <div style="margin-top: 15px; padding: 15px; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 8px; font-size: 12px;">
-                            <p><strong>💡 راهنمایی برای فایل‌های صوتی:</strong></p>
-                            <ul style="text-align: right; margin: 8px 0; list-style: none;">
-                                <li>• از SoundCloud لینک مستقیم استفاده کنید</li>
-                                <li>• Google Drive (لینک عمومی)</li>
-                                <li>• Dropbox (لینک مستقیم)</li>
-                                <li>• یا سرور شخصی با CORS فعال</li>
-                            </ul>
-                            <p style="font-size: 11px; opacity: 0.8;">GitHub فایل‌ها معمولاً مشکل CORS دارند</p>
-                        </div>
-                    </div>
-                `;
+                return '<p style="text-align: center; opacity: 0.7;">پلی‌لیست خالی است</p>';
             }
 
             return audioFiles.map((audio, index) => `
@@ -737,7 +706,7 @@
                     </div>
                     <div class="audio-controls">
                         <button class="play-btn ${index === currentIndex && currentAudio && !currentAudio.paused ? 'playing' : ''}" 
-                                onclick="handleTrackButtonClick(${index})" id="playBtn-${index}">
+                                onclick="playTrack(${index})" id="playBtn-${index}">
                             ${index === currentIndex && currentAudio && !currentAudio.paused ? '⏸' : '▶'}
                         </button>
                     </div>
@@ -1097,7 +1066,6 @@
         window.openModal = openModal;
         window.closeModal = closeModal;
         window.playTrack = playTrack;
-        window.handleTrackButtonClick = handleTrackButtonClick;
         window.togglePlayPause = togglePlayPause;
         window.nextTrack = nextTrack;
         window.previousTrack = previousTrack;
