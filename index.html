@@ -741,139 +741,69 @@
             }
         }
 
-        async function playTrack(index) {
+        function playTrack(index) {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (index < 0 || index >= audioFiles.length) return;
 
-            // اول کاملا Audio قدیمی رو پاک کن
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
-                
-                // حذف تمام event listener ها
-                const events = ['loadedmetadata', 'timeupdate', 'ended', 'pause', 'play', 'error', 'loadstart', 'canplay'];
-                events.forEach(event => {
-                    currentAudio.removeEventListener(event, currentAudio[`${event}Handler`] || function(){});
-                });
-                
-                currentAudio.src = '';
-                currentAudio.load(); // مهم: reset کامل Audio
-                currentAudio = null;
-                
-                // یه کمی صبر کن تا Audio قدیمی کاملا پاک شه
-                await new Promise(resolve => setTimeout(resolve, 100));
+                cleanupCurrentAudio();
             }
 
             currentIndex = index;
             const audio = audioFiles[index];
             
-            // بررسی صحت لینک
-            let audioSource = null;
-            if (audio.storage === 'base64' && audio.data) {
-                audioSource = audio.data;
-            } else if (audio.storage === 'external' && audio.url) {
-                audioSource = audio.url;
-            } else if (audio.url) {
-                audioSource = audio.url;
-            }
-
-            if (!audioSource || audioSource.trim() === '') {
-                console.error('Invalid audio source for:', audio.name);
-                autoPlayNext();
-                return;
-            }
-
             updatePlaylistUI();
             showNowPlaying(audio.name);
 
-            // ساخت Audio جدید
             currentAudio = new Audio();
-            currentAudio.preload = 'metadata';
-            currentAudio.crossOrigin = 'anonymous'; // برای مشکلات CORS
             
-            // تعریف handler ها به صورت named function
-            const loadedmetadataHandler = () => {
-                console.log(`Audio loaded successfully: ${audio.name}`);
-                currentAudio.play().catch((error) => {
-                    console.error('Play error for:', audio.name, error);
-                    autoPlayNext();
-                });
-            };
+            if (audio.storage === 'base64' && audio.data) {
+                currentAudio.src = audio.data;
+            } else if (audio.storage === 'external' && audio.url) {
+                currentAudio.src = audio.url;
+            } else if (audio.url) {
+                currentAudio.src = audio.url;
+            } else {
+                alert('فایل صوتی یافت نشد.');
+                return;
+            }
 
-            const timeupdateHandler = () => {
-                if (currentAudio && currentAudio.duration && currentIndex !== -1) {
+            currentAudio.addEventListener('loadedmetadata', () => {
+                currentAudio.play().catch((error) => {
+                    console.error('Play error:', error);
+                    alert('خطا در پخش آهنگ');
+                    resetCurrentTrack();
+                });
+            });
+
+            currentAudio.addEventListener('timeupdate', () => {
+                if (currentAudio && currentAudio.duration) {
                     const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
                     const progressBar = document.getElementById(`progress-${currentIndex}`);
                     if (progressBar) {
                         progressBar.style.width = progress + '%';
                     }
                 }
-            };
+            });
 
-            const endedHandler = () => {
-                console.log(`Track ended: ${audio.name}`);
+            currentAudio.addEventListener('ended', () => {
                 if (!playHistory.includes(currentIndex)) {
                     playHistory.push(currentIndex);
                 }
                 autoPlayNext();
-            };
+            });
 
-            const playHandler = () => {
-                updatePlaylistUI();
-            };
+            currentAudio.addEventListener('play', updatePlaylistUI);
+            currentAudio.addEventListener('pause', updatePlaylistUI);
 
-            const pauseHandler = () => {
-                updatePlaylistUI();
-            };
-
-            const errorHandler = (error) => {
-                console.error(`Audio error for "${audio.name}":`, error);
-                console.error('Audio source was:', audioSource);
-                
-                // فقط اگه این همون Audio فعلی باشه
-                if (currentAudio && currentAudio.src === audioSource) {
-                    console.log(`Skipping broken track: ${audio.name}`);
-                    autoPlayNext();
-                }
-            };
-
-            const loadstartHandler = () => {
-                console.log(`Loading started for: ${audio.name}`);
-            };
-
-            const canplayHandler = () => {
-                console.log(`Can play: ${audio.name}`);
-            };
-
-            // اضافه کردن event listener ها
-            currentAudio.addEventListener('loadedmetadata', loadedmetadataHandler);
-            currentAudio.addEventListener('timeupdate', timeupdateHandler);
-            currentAudio.addEventListener('ended', endedHandler);
-            currentAudio.addEventListener('play', playHandler);
-            currentAudio.addEventListener('pause', pauseHandler);
-            currentAudio.addEventListener('error', errorHandler);
-            currentAudio.addEventListener('loadstart', loadstartHandler);
-            currentAudio.addEventListener('canplay', canplayHandler);
-
-            // ذخیره کردن reference ها برای cleanup
-            currentAudio.loadedmetadataHandler = loadedmetadataHandler;
-            currentAudio.timeupdateHandler = timeupdateHandler;
-            currentAudio.endedHandler = endedHandler;
-            currentAudio.playHandler = playHandler;
-            currentAudio.pauseHandler = pauseHandler;
-            currentAudio.errorHandler = errorHandler;
-            currentAudio.loadstartHandler = loadstartHandler;
-            currentAudio.canplayHandler = canplayHandler;
-
-            // تنظیم src در انتها
-            try {
-                currentAudio.src = audioSource;
-            } catch (e) {
-                console.error('Error setting audio source:', e);
+            currentAudio.addEventListener('error', (error) => {
+                console.error('Audio error:', error);
+                alert('خطا در پخش آهنگ. به آهنگ بعدی می‌رویم...');
                 autoPlayNext();
-                return;
-            }
-            
+            });
+
             updateControlsState();
         }
 
@@ -896,28 +826,18 @@
                 
                 if (availableIndices.length === 0) {
                     playHistory = [];
-                    for (let i = 0; i < audioFiles.length; i++) {
-                        if (i !== currentIndex) availableIndices.push(i);
-                    }
+                    availableIndices = audioFiles.map((_, i) => i).filter(i => i !== currentIndex);
                 }
                 
                 if (availableIndices.length > 0) {
                     nextIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-                } else {
-                    console.log('No more tracks to play');
-                    resetCurrentTrack();
-                    return;
                 }
             } else {
                 nextIndex = (currentIndex + 1) % audioFiles.length;
             }
 
-            if (nextIndex !== -1 && nextIndex !== currentIndex) {
-                console.log(`Auto-playing next track: ${audioFiles[nextIndex]?.name || 'Unknown'}`);
+            if (nextIndex !== -1) {
                 setTimeout(() => playTrack(nextIndex), 1000);
-            } else if (nextIndex === currentIndex && !isRepeatMode) {
-                console.log('Reached end of playlist');
-                resetCurrentTrack();
             }
         }
 
