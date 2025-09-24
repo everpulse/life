@@ -789,14 +789,20 @@
             currentAudio.load();
 
             currentAudio.addEventListener('canplay', () => {
-                // Only play if user has interacted with the page
-                if (userHasInteracted) {
-                    currentAudio.play().catch((error) => {
-                        console.error('Play error:', error);
-                        // Don't show alert, just log the error
-                        console.log('Cannot autoplay - user interaction required');
-                    });
-                }
+                // Always try to play, but handle autoplay restrictions gracefully
+                currentAudio.play().catch((error) => {
+                    console.error('Play error:', error);
+                    // If autoplay fails, enable it after first user interaction
+                    if (!userHasInteracted) {
+                        const playAfterInteraction = () => {
+                            currentAudio.play().catch(e => console.log('Still cannot play:', e));
+                            document.removeEventListener('click', playAfterInteraction);
+                            document.removeEventListener('touchstart', playAfterInteraction);
+                        };
+                        document.addEventListener('click', playAfterInteraction, { once: true });
+                        document.addEventListener('touchstart', playAfterInteraction, { once: true });
+                    }
+                });
             }, { once: true });
 
             currentAudio.addEventListener('timeupdate', () => {
@@ -813,10 +819,8 @@
                 if (!playHistory.includes(currentIndex)) {
                     playHistory.push(currentIndex);
                 }
-                // Only autoplay next if user has interacted
-                if (userHasInteracted) {
-                    autoPlayNext();
-                }
+                // Always try autoplay next
+                autoPlayNext();
             });
 
             currentAudio.addEventListener('play', updatePlaylistUI);
@@ -824,12 +828,10 @@
 
             currentAudio.addEventListener('error', (error) => {
                 console.error('Audio error:', error);
-                // Only show alert for actual errors, not autoplay restrictions
+                // Only show alert for actual file errors, not autoplay restrictions
                 if (error.target.error && error.target.error.code !== 4) {
                     alert('خطا در پخش آهنگ. به آهنگ بعدی می‌رویم...');
-                    if (userHasInteracted) {
-                        autoPlayNext();
-                    }
+                    autoPlayNext();
                 }
             });
 
@@ -837,9 +839,6 @@
         }
 
         function autoPlayNext() {
-            // Only proceed if user has interacted
-            if (!userHasInteracted) return;
-            
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             
             if (audioFiles.length === 0) return;
