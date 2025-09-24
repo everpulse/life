@@ -693,7 +693,21 @@
         function renderPlaylist() {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (audioFiles.length === 0) {
-                return '<p style="text-align: center; opacity: 0.7;">پلی‌لیست خالی است</p>';
+                return `
+                    <div style="text-align: center; opacity: 0.7; padding: 20px;">
+                        <p>پلی‌لیست خالی است</p>
+                        <div style="margin-top: 15px; padding: 15px; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 8px; font-size: 12px;">
+                            <p><strong>💡 راهنمایی برای فایل‌های صوتی:</strong></p>
+                            <ul style="text-align: right; margin: 8px 0; list-style: none;">
+                                <li>• از SoundCloud لینک مستقیم استفاده کنید</li>
+                                <li>• Google Drive (لینک عمومی)</li>
+                                <li>• Dropbox (لینک مستقیم)</li>
+                                <li>• یا سرور شخصی با CORS فعال</li>
+                            </ul>
+                            <p style="font-size: 11px; opacity: 0.8;">GitHub فایل‌ها معمولاً مشکل CORS دارند</p>
+                        </div>
+                    </div>
+                `;
             }
 
             return audioFiles.map((audio, index) => `
