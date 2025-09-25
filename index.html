@@ -22,6 +22,135 @@
             position: relative;
         }
 
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .cyber-loader {
+            width: 80px;
+            height: 80px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 2px solid #fff;
+            animation: spin 1s linear infinite;
+            position: relative;
+        }
+
+        .cyber-loader::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top: 2px solid rgba(76, 175, 80, 0.8);
+            animation: spin 2s linear infinite reverse;
+        }
+
+        .cyber-loader::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top: 2px solid rgba(76, 175, 80, 0.4);
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            width: 0%;
+            transition: width 0.3s ease;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .cyber-text {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: rgba(76, 175, 80, 0.8);
+            margin-top: 20px;
+            animation: typewriter 4s steps(50) infinite;
+        }
+
+        @keyframes typewriter {
+            0%, 50% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* Main Content - Initially Hidden */
+        .main-content {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
         /* Matrix Background Animation - Optimized */
         #matrix {
             position: fixed;
@@ -190,16 +319,6 @@
             text-align: right;
         }
 
-        .loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-size: 18px;
-            z-index: 2000;
-        }
-
         /* Audio Player Styles */
         .playlist-container {
             max-height: 400px;
@@ -364,6 +483,19 @@
                 width: 40px;
                 height: 40px;
             }
+
+            .cyber-loader {
+                width: 60px;
+                height: 60px;
+            }
+
+            .loading-text {
+                font-size: 16px;
+            }
+
+            .loading-progress {
+                width: 150px;
+            }
         }
 
         /* Matrix Animation - Optimized */
@@ -403,30 +535,44 @@
     </style>
 </head>
 <body>
-    <div class="loading" id="loading">در حال بارگذاری...</div>
-    <canvas id="matrix"></canvas>
-    
-    <div class="container">
-        <div class="profile-section">
-            <div class="profile-image" id="profileImageContainer">
-                <img id="profileImg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Im0zNSA4MGMwLTE1IDEwLTI1IDI1LTI1czI1IDEwIDI1IDI1IiBmaWxsPSIjNjY2Ii8+Cjwvc3ZnPgo=" alt="Profile" loading="lazy">
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader-container">
+            <div class="cyber-loader"></div>
+            <div class="loading-text" id="loadingText">در حال بارگذاری اطلاعات...</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
             </div>
-            
-            <div class="profile-name" id="profileName">Aeon</div>
-            <div class="profile-desc" id="profileDesc">逐梦未来—智慧为刃˚.ᐟ.</div>
+            <div class="cyber-text">{'> initializing quantum matrix...'}</div>
         </div>
+    </div>
 
-        <div class="menu-items">
-            <div class="menu-item" onclick="openModal('biography')">
-                <h3>ABOUT ME</h3>
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <canvas id="matrix"></canvas>
+        
+        <div class="container">
+            <div class="profile-section">
+                <div class="profile-image" id="profileImageContainer">
+                    <img id="profileImg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Im0zNSA4MGMwLTE1IDEwLTI1IDI1LTI1czI1IDEwIDI1IDI1IiBmaWxsPSIjNjY2Ii8+Cjwvc3ZnPgo=" alt="Profile" loading="lazy">
+                </div>
+                
+                <div class="profile-name" id="profileName">Aeon</div>
+                <div class="profile-desc" id="profileDesc">逐梦未来—智慧为刃˚.ᐟ.</div>
             </div>
-            
-            <div class="menu-item" onclick="openModal('tenrules')">
-                <h3>Longevity Institutions</h3>
-            </div>
-            
-            <div class="menu-item" onclick="openModal('playlist')">
-                <h3>PLAYLIST</h3>
+
+            <div class="menu-items">
+                <div class="menu-item" onclick="openModal('biography')">
+                    <h3>ABOUT ME</h3>
+                </div>
+                
+                <div class="menu-item" onclick="openModal('tenrules')">
+                    <h3>Longevity Institutions</h3>
+                </div>
+                
+                <div class="menu-item" onclick="openModal('playlist')">
+                    <h3>PLAYLIST</h3>
+                </div>
             </div>
         </div>
     </div>
@@ -483,6 +629,61 @@
                 }
             }
         };
+
+        // Loading progress management
+        let loadingProgress = 0;
+        const loadingSteps = [
+            { step: 20, text: "اتصال به سرور..." },
+            { step: 40, text: "بارگذاری اطلاعات پروفایل..." },
+            { step: 60, text: "بارگذاری محتوا..." },
+            { step: 80, text: "بارگذاری تصاویر..." },
+            { step: 100, text: "تکمیل بارگذاری..." }
+        ];
+
+        function updateLoadingProgress(progress, text) {
+            const progressBar = document.getElementById('loadingProgressBar');
+            const loadingText = document.getElementById('loadingText');
+            
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
+            
+            if (loadingText && text) {
+                loadingText.textContent = text;
+            }
+        }
+
+        function simulateLoadingSteps() {
+            return new Promise((resolve) => {
+                let currentStep = 0;
+                
+                function nextStep() {
+                    if (currentStep < loadingSteps.length) {
+                        const { step, text } = loadingSteps[currentStep];
+                        updateLoadingProgress(step, text);
+                        currentStep++;
+                        setTimeout(nextStep, 800); // 800ms per step
+                    } else {
+                        resolve();
+                    }
+                }
+                
+                nextStep();
+            });
+        }
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            // Start matrix animation before showing content
+            initMatrix();
+            
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                mainContent.classList.add('visible');
+            }, 500);
+        }
 
         // Optimized Matrix Animation
         const canvas = document.getElementById('matrix');
@@ -549,15 +750,26 @@
         });
 
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
         });
 
-        // Loading function
+        // Loading function with progress tracking
         async function loadFromFirebase() {
             try {
+                updateLoadingProgress(10, "شروع بارگذاری...");
+                
+                // Simulate network delay for demo
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                updateLoadingProgress(30, "دریافت اطلاعات از سرور...");
+                
                 const snapshot = await get(ref(database, 'website'));
                 const data = snapshot.val();
+                
+                updateLoadingProgress(50, "پردازش اطلاعات...");
                 
                 if (data) {
                     contentData = {
@@ -570,13 +782,27 @@
                     };
                 }
                 
+                updateLoadingProgress(70, "به‌روزرسانی رابط کاربری...");
                 updateBasicUI();
-                document.getElementById('loading').style.display = 'none';
+                
+                updateLoadingProgress(90, "بارگذاری تصاویر...");
                 await loadProfileImage();
+                
+                updateLoadingProgress(100, "آماده‌سازی نهایی...");
+                
+                // Wait a bit before hiding loading screen
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                hideLoadingScreen();
                 
             } catch (error) {
                 console.error('Error loading data:', error);
-                document.getElementById('loading').style.display = 'none';
+                updateLoadingProgress(100, "خطا در بارگذاری - استفاده از اطلاعات پیش‌فرض");
+                
+                // Still show the site even if there's an error
+                setTimeout(() => {
+                    hideLoadingScreen();
+                }, 2000);
             }
         }
 
@@ -1046,9 +1272,9 @@
             }
         });
 
-        // Initialize app
+        // Initialize app with proper loading sequence
         window.addEventListener('load', function() {
-            initMatrix();
+            // Start loading process
             loadFromFirebase();
         });
     </script>
