@@ -663,7 +663,7 @@
             }
         }
 
-        // Audio Player System - Fixed for autoplay issues
+        // Audio Player System - Fixed for pause/resume functionality
         let currentAudio = null;
         let currentIndex = -1;
         let isShuffleMode = false;
@@ -757,6 +757,20 @@
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (index < 0 || index >= audioFiles.length) return;
 
+            // اگر همان آهنگ در حال پخش است، فقط play/pause کن
+            if (index === currentIndex && currentAudio) {
+                if (currentAudio.paused) {
+                    currentAudio.play().catch((error) => {
+                        console.error('Play error:', error);
+                    });
+                } else {
+                    currentAudio.pause();
+                }
+                updatePlaylistUI();
+                return;
+            }
+
+            // اگر آهنگ جدید است، آهنگ قبلی را متوقف کن
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
