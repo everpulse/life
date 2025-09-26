@@ -319,89 +319,104 @@
             text-align: right;
         }
 
-        /* Audio Player Styles */
+        /* Audio Player Styles - Clean Modern Design */
         .playlist-container {
             max-height: 400px;
             overflow-y: auto;
             margin: 20px 0;
+            padding: 10px 0;
         }
 
         .audio-item {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
+            background: rgba(42, 42, 42, 0.8);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 8px 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
             transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-item:hover {
+            background: rgba(52, 52, 52, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .audio-item.playing {
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+        }
+
+        .audio-item.playing:hover {
             background: rgba(76, 175, 80, 0.2);
-            border: 1px solid rgba(76, 175, 80, 0.5);
-        }
-
-        .audio-info {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .audio-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            direction: ltr;
-            text-align: left;
-            unicode-bidi: plaintext;
-        }
-
-        .audio-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .play-btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             color: #fff;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            will-change: transform;
+            font-size: 18px;
+            flex-shrink: 0;
         }
 
         .play-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
         }
 
         .play-btn.playing {
+            background: rgba(76, 175, 80, 0.4);
+            color: #fff;
+        }
+
+        .play-btn.playing:hover {
             background: rgba(76, 175, 80, 0.5);
+        }
+
+        .audio-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .audio-title {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 8px;
+            direction: ltr;
+            text-align: left;
+            unicode-bidi: plaintext;
+            color: rgba(255, 255, 255, 0.95);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .audio-progress {
             width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            margin: 5px 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
             overflow: hidden;
         }
 
         .audio-progress-bar {
             height: 100%;
-            background: #4caf50;
+            background: linear-gradient(90deg, #4caf50, #66bb6a);
             width: 0%;
             transition: width 0.1s ease;
             will-change: width;
+            border-radius: 3px;
         }
 
         .playlist-controls {
@@ -932,22 +947,20 @@
         function renderPlaylist() {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (audioFiles.length === 0) {
-                return '<p style="text-align: center; opacity: 0.7;">پلی‌لیست خالی است</p>';
+                return '<p style="text-align: center; opacity: 0.7; padding: 40px;">پلی‌لیست خالی است</p>';
             }
 
             return audioFiles.map((audio, index) => `
                 <div class="audio-item ${index === currentIndex ? 'playing' : ''}" id="audioItem-${index}">
+                    <button class="play-btn ${index === currentIndex && currentAudio && !currentAudio.paused ? 'playing' : ''}" 
+                            onclick="playTrack(${index})" id="playBtn-${index}">
+                        ${index === currentIndex && currentAudio && !currentAudio.paused ? '⏸' : '▶'}
+                    </button>
                     <div class="audio-info">
                         <div class="audio-title">${audio.name}</div>
                         <div class="audio-progress">
                             <div class="audio-progress-bar" id="progress-${index}"></div>
                         </div>
-                    </div>
-                    <div class="audio-controls">
-                        <button class="play-btn ${index === currentIndex && currentAudio && !currentAudio.paused ? 'playing' : ''}" 
-                                onclick="playTrack(${index})" id="playBtn-${index}">
-                            ${index === currentIndex && currentAudio && !currentAudio.paused ? '⏸' : '▶'}
-                        </button>
                     </div>
                 </div>
             `).join('');
