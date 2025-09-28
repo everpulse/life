@@ -601,6 +601,18 @@
         .modal-body a:hover {
             color: #81d4fa;
         }
+
+        /* Animated Icons in Modal Content */
+        .rotating-icon {
+            display: inline-block;
+            animation: gentle-rotate 4s linear infinite;
+            transform-origin: center center;
+        }
+
+        @keyframes gentle-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         
     </style>
 </head>
@@ -953,10 +965,25 @@
                 
                 body.innerHTML = displayContent;
                 
+                // Add rotation animation to specific emojis
+                animateEmojisInContent(body);
+                
             } catch (error) {
                 console.error('خطا در بارگذاری محتوا:', error);
                 body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,100,100,0.7);">خطا در بارگذاری محتوا</div>';
             }
+        }
+
+        function animateEmojisInContent(container) {
+            const content = container.innerHTML;
+            // Replace specific emojis with animated versions
+            const animatedContent = content
+                .replace(/🤍/g, '<span class="rotating-icon">🤍</span>')
+                .replace(/🌐/g, '<span class="rotating-icon">🌐</span>')
+                .replace(/⚡/g, '<span class="rotating-icon">⚡</span>')
+                .replace(/🔥/g, '<span class="rotating-icon">🔥</span>');
+            
+            container.innerHTML = animatedContent;
         }
 
         // Audio Player System - Fixed for pause/resume functionality
