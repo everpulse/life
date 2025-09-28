@@ -193,31 +193,6 @@
             will-change: transform;
         }
 
-        .profile-image::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -20px;
-            background-image: url("data:image/svg+xml,%3Csvg width='160' height='160' viewBox='0 0 160 160' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%23ffffff' stroke-width='1' opacity='0.6'%3E%3Ccircle cx='80' cy='80' r='70' stroke-dasharray='5 5' fill='none'/%3E%3Ccircle cx='80' cy='80' r='75' stroke-dasharray='3 7' fill='none'/%3E%3Cg transform='translate(10,30)'%3E%3Crect width='25' height='3' rx='1.5' fill='%23ffffff' opacity='0.7'/%3E%3Crect y='6' width='20' height='3' rx='1.5' fill='%23ffffff' opacity='0.5'/%3E%3Crect y='12' width='30' height='3' rx='1.5' fill='%23ffffff' opacity='0.8'/%3E%3Crect y='18' width='15' height='3' rx='1.5' fill='%23ffffff' opacity='0.6'/%3E%3Ccircle cx='35' cy='8' r='2' fill='none' stroke='%23ffffff' opacity='0.7'/%3E%3Ccircle cx='5' cy='25' r='1.5' fill='%23ffffff' opacity='0.5'/%3E%3C/g%3E%3Cg transform='translate(125,100)'%3E%3Crect width='20' height='3' rx='1.5' fill='%23ffffff' opacity='0.7'/%3E%3Crect y='6' width='25' height='3' rx='1.5' fill='%23ffffff' opacity='0.8'/%3E%3Crect y='12' width='15' height='3' rx='1.5' fill='%23ffffff' opacity='0.5'/%3E%3Crect y='18' width='30' height='3' rx='1.5' fill='%23ffffff' opacity='0.6'/%3E%3Ccircle cx='-5' cy='10' r='2' fill='none' stroke='%23ffffff' opacity='0.6'/%3E%3Ccircle cx='32' cy='5' r='1.5' fill='%23ffffff' opacity='0.7'/%3E%3C/g%3E%3Cg transform='translate(15,110)'%3E%3Ccircle cx='0' cy='0' r='1.5' fill='%23ffffff' opacity='0.6'/%3E%3Ccircle cx='8' cy='8' r='1' fill='%23ffffff' opacity='0.4'/%3E%3C/g%3E%3Cg transform='translate(130,35)'%3E%3Ccircle cx='0' cy='0' r='2' fill='none' stroke='%23ffffff' opacity='0.7'/%3E%3Ccircle cx='10' cy='15' r='1' fill='%23ffffff' opacity='0.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            animation: rotateFrame 20s linear infinite;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        @keyframes rotateFrame {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
         .profile-image:hover {
             border-color: rgba(255, 255, 255, 0.6);
             transform: scale(1.05);
