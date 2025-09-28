@@ -613,6 +613,69 @@
             0% { transform: rotateY(0deg); }
             100% { transform: rotateY(360deg); }
         }
+
+        /* Special electric spark effect for ↯ */
+        .spark-icon {
+            display: inline-block;
+            position: relative;
+            animation: electric-pulse 2s ease-in-out infinite;
+        }
+
+        .spark-icon::before,
+        .spark-icon::after {
+            content: '⚡';
+            position: absolute;
+            font-size: 0.6em;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spark-icon::before {
+            top: -8px;
+            left: -10px;
+            animation: spark-1 2s infinite;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .spark-icon::after {
+            bottom: -8px;
+            right: -10px;
+            animation: spark-2 2s infinite 0.5s;
+            color: rgba(200, 200, 255, 0.8);
+        }
+
+        @keyframes electric-pulse {
+            0%, 100% { 
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+                transform: scale(1);
+            }
+            50% { 
+                text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(200, 200, 255, 0.6);
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes spark-1 {
+            0%, 80%, 100% { 
+                opacity: 0;
+                transform: translate(0, 0) scale(0.5);
+            }
+            10%, 20% { 
+                opacity: 1;
+                transform: translate(-3px, -3px) scale(0.8);
+            }
+        }
+
+        @keyframes spark-2 {
+            0%, 80%, 100% { 
+                opacity: 0;
+                transform: translate(0, 0) scale(0.5);
+            }
+            10%, 20% { 
+                opacity: 1;
+                transform: translate(3px, 3px) scale(0.8);
+            }
+        }
         
     </style>
 </head>
@@ -981,7 +1044,8 @@
                 .replace(/🤍/g, '<span class="rotating-icon">🤍</span>')
                 .replace(/🌐/g, '<span class="rotating-icon">🌐</span>')
                 .replace(/⚡/g, '<span class="rotating-icon">⚡</span>')
-                .replace(/🔥/g, '<span class="rotating-icon">🔥</span>');
+                .replace(/🔥/g, '<span class="rotating-icon">🔥</span>')
+                .replace(/↯/g, '<span class="spark-icon">↯</span>');
             
             container.innerHTML = animatedContent;
         }
