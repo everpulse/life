@@ -623,25 +623,24 @@
 
         .spark-icon::before,
         .spark-icon::after {
-            content: '⚡';
+            content: '↯';
             position: absolute;
-            font-size: 0.6em;
+            font-size: 0.5em;
             opacity: 0;
             pointer-events: none;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .spark-icon::before {
             top: -8px;
             left: -10px;
             animation: spark-1 2s infinite;
-            color: rgba(255, 255, 255, 0.9);
         }
 
         .spark-icon::after {
             bottom: -8px;
             right: -10px;
             animation: spark-2 2s infinite 0.5s;
-            color: rgba(200, 200, 200, 0.8);
         }
 
         @keyframes electric-pulse {
