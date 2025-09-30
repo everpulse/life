@@ -1039,15 +1039,41 @@
                 let displayContent = (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
                 displayContent = convertTextToLinks(displayContent);
                 
+                // Add video containers for biography
+                if (type === 'biography') {
+                    displayContent = `
+                        <video src="" style="width: 200px; float: right; margin: 0px 20px 10px 15px; border-radius: 10px; background: #000;" autoplay loop muted playsinline></video>
+                        ${displayContent}
+                        <div style="clear: both;"></div>
+                        <video src="" style="width: 180px; float: right; margin: -50px 30px 10px 15px; border-radius: 10px; background: #000;" autoplay loop muted playsinline></video>
+                    `;
+                }
+                
                 body.innerHTML = displayContent;
                 
                 // Add rotation animation to specific emojis
                 animateEmojisInContent(body);
                 
+                // Process video tags
+                processVideoTags(body);
+                
             } catch (error) {
                 console.error('خطا در بارگذاری محتوا:', error);
                 body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,100,100,0.7);">خطا در بارگذاری محتوا</div>';
             }
+        }
+
+        function processVideoTags(container) {
+            // Find all video elements and set them to autoplay, loop, and muted
+            const videos = container.querySelectorAll('video');
+            videos.forEach(video => {
+                video.setAttribute('autoplay', '');
+                video.setAttribute('loop', '');
+                video.setAttribute('muted', '');
+                video.setAttribute('playsinline', '');
+                // Try to play the video
+                video.play().catch(err => console.log('Video autoplay prevented:', err));
+            });
         }
 
         function animateEmojisInContent(container) {
