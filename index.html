@@ -365,7 +365,6 @@
             direction: ltr;
             text-align: left;
             unicode-bidi: plaintext;
-            min-height: 200px;
         }
 
         .modal-body p:lang(fa),
@@ -388,22 +387,6 @@
             background: transparent;
         }
 
-        /* Loading placeholder for video */
-        .video-loading {
-            width: 180px;
-            height: 180px;
-            background: linear-gradient(135deg, rgba(40, 40, 40, 0.5), rgba(60, 60, 60, 0.5));
-            border-radius: 10px;
-            float: right;
-            margin: 10px 15px 10px 15px;
-            animation: pulse-loading 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse-loading {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.8; }
-        }
-
         /* Video sizing for different screens */
         .bio-video-1 {
             width: 180px;
@@ -411,11 +394,6 @@
             margin: 10px 15px 10px 15px;
             border-radius: 10px;
             background: #000;
-            display: none;
-        }
-
-        .bio-video-1.loaded {
-            display: block;
         }
 
         .bio-video-2 {
@@ -429,12 +407,6 @@
         @media (max-width: 768px) {
             .bio-video-1 {
                 width: 110px;
-                margin: 5px 8px 10px 8px;
-            }
-            
-            .video-loading {
-                width: 110px;
-                height: 110px;
                 margin: 5px 8px 10px 8px;
             }
             
@@ -1099,30 +1071,12 @@
                 // Add video containers for biography
                 if (type === 'biography') {
                     displayContent = `
-                        <div class="video-loading" id="videoPlaceholder"></div>
-                        <video src="https://github.com/everpulse/life/raw/refs/heads/main/video_2025-09-29_22-55-25.mp4" class="bio-video-1" id="bioVideo" autoplay loop muted playsinline preload="auto"></video>
+                        <video src="https://github.com/everpulse/life/raw/refs/heads/main/video_2025-09-29_22-55-25.mp4" class="bio-video-1" autoplay loop muted playsinline></video>
                         ${displayContent}
                     `;
                 }
                 
                 body.innerHTML = displayContent;
-                
-                // Handle video loading
-                const bioVideo = document.getElementById('bioVideo');
-                const placeholder = document.getElementById('videoPlaceholder');
-                
-                if (bioVideo && placeholder) {
-                    bioVideo.addEventListener('loadeddata', () => {
-                        bioVideo.classList.add('loaded');
-                        placeholder.style.display = 'none';
-                    });
-                    
-                    // If video loads quickly, hide placeholder immediately
-                    if (bioVideo.readyState >= 2) {
-                        bioVideo.classList.add('loaded');
-                        placeholder.style.display = 'none';
-                    }
-                }
                 
                 // Add rotation animation to specific emojis
                 animateEmojisInContent(body);
