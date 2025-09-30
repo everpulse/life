@@ -394,6 +394,7 @@
             margin: 10px 15px 10px 15px;
             border-radius: 10px;
             background: #000;
+            will-change: transform;
         }
 
         .bio-video-2 {
@@ -849,7 +850,7 @@
                         const { step, text } = loadingSteps[currentStep];
                         updateLoadingProgress(step, text);
                         currentStep++;
-                        setTimeout(nextStep, 800); // 800ms per step
+                        setTimeout(nextStep, 800);
                     } else {
                         resolve();
                     }
@@ -863,7 +864,6 @@
             const loadingScreen = document.getElementById('loadingScreen');
             const mainContent = document.getElementById('mainContent');
             
-            // Start matrix animation before showing content
             initMatrix();
             
             setTimeout(() => {
@@ -922,7 +922,6 @@
             drawMatrix();
         }
 
-        // Pause matrix when not visible
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 isMatrixRunning = false;
@@ -943,12 +942,10 @@
             }
         });
 
-        // Loading function with progress tracking
         async function loadFromFirebase() {
             try {
                 updateLoadingProgress(10, "شروع بارگذاری...");
                 
-                // Simulate network delay for demo
                 await new Promise(resolve => setTimeout(resolve, 500));
                 
                 updateLoadingProgress(30, "دریافت اطلاعات از سرور...");
@@ -977,7 +974,6 @@
                 
                 updateLoadingProgress(100, "آماده‌سازی نهایی...");
                 
-                // Wait a bit before hiding loading screen
                 await new Promise(resolve => setTimeout(resolve, 800));
                 
                 hideLoadingScreen();
@@ -986,7 +982,6 @@
                 console.error('Error loading data:', error);
                 updateLoadingProgress(100, "خطا در بارگذاری - استفاده از اطلاعات پیش‌فرض");
                 
-                // Still show the site even if there's an error
                 setTimeout(() => {
                     hideLoadingScreen();
                 }, 2000);
@@ -1011,7 +1006,6 @@
             }
         }
 
-        // Modal functions
         let currentModalType = '';
 
         function openModal(type) {
@@ -1068,20 +1062,17 @@
                 let displayContent = (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
                 displayContent = convertTextToLinks(displayContent);
                 
-                // Add video containers for biography
                 if (type === 'biography') {
                     displayContent = `
-                        <video src="https://github.com/everpulse/life/raw/refs/heads/main/video_2025-09-29_22-55-25.mp4" class="bio-video-1" autoplay loop muted playsinline></video>
+                        <video src="https://github.com/everpulse/life/raw/refs/heads/main/video_2025-09-29_22-55-25.mp4" class="bio-video-1" autoplay loop muted playsinline preload="auto"></video>
                         ${displayContent}
                     `;
                 }
                 
                 body.innerHTML = displayContent;
                 
-                // Add rotation animation to specific emojis
                 animateEmojisInContent(body);
                 
-                // Process video tags
                 processVideoTags(body);
                 
             } catch (error) {
@@ -1091,21 +1082,18 @@
         }
 
         function processVideoTags(container) {
-            // Find all video elements and set them to autoplay, loop, and muted
             const videos = container.querySelectorAll('video');
             videos.forEach(video => {
                 video.setAttribute('autoplay', '');
                 video.setAttribute('loop', '');
                 video.setAttribute('muted', '');
                 video.setAttribute('playsinline', '');
-                // Try to play the video
                 video.play().catch(err => console.log('Video autoplay prevented:', err));
             });
         }
 
         function animateEmojisInContent(container) {
             const content = container.innerHTML;
-            // Replace specific emojis with animated versions
             const animatedContent = content
                 .replace(/🤍/g, '<span class="rotating-icon">🤍</span>')
                 .replace(/🌐/g, '<span class="rotating-icon">🌐</span>')
@@ -1116,7 +1104,6 @@
             container.innerHTML = animatedContent;
         }
 
-        // Audio Player System - Fixed for pause/resume functionality
         let currentAudio = null;
         let currentIndex = -1;
         let isShuffleMode = false;
@@ -1125,7 +1112,6 @@
         let audioContext = null;
         let userHasInteracted = false;
 
-        // Track user interaction to enable autoplay
         function enableUserInteraction() {
             userHasInteracted = true;
             document.removeEventListener('click', enableUserInteraction);
@@ -1208,7 +1194,6 @@
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (index < 0 || index >= audioFiles.length) return;
 
-            // اگر همان آهنگ در حال پخش است، فقط play/pause کن
             if (index === currentIndex && currentAudio) {
                 if (currentAudio.paused) {
                     currentAudio.play().catch((error) => {
@@ -1221,7 +1206,6 @@
                 return;
             }
 
-            // اگر آهنگ جدید است، آهنگ قبلی را متوقف کن
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
@@ -1236,7 +1220,6 @@
 
             currentAudio = new Audio();
             
-            // Set preload to none to prevent automatic loading
             currentAudio.preload = 'none';
             
             if (audio.storage === 'base64' && audio.data) {
@@ -1250,15 +1233,12 @@
                 return;
             }
 
-            // Load the audio first
             currentAudio.load();
 
             currentAudio.addEventListener('canplay', () => {
-                // Only play if user has interacted with the page
                 if (userHasInteracted) {
                     currentAudio.play().catch((error) => {
                         console.error('Play error:', error);
-                        // Don't show alert, just log the error
                         console.log('Cannot autoplay - user interaction required');
                     });
                 }
@@ -1278,7 +1258,6 @@
                 if (!playHistory.includes(currentIndex)) {
                     playHistory.push(currentIndex);
                 }
-                // Only autoplay next if user has interacted
                 if (userHasInteracted) {
                     autoPlayNext();
                 }
@@ -1289,7 +1268,6 @@
 
             currentAudio.addEventListener('error', (error) => {
                 console.error('Audio error:', error);
-                // Only show alert for actual errors, not autoplay restrictions
                 if (error.target.error && error.target.error.code !== 4) {
                     alert('خطا در پخش آهنگ. به آهنگ بعدی می‌رویم...');
                     if (userHasInteracted) {
@@ -1302,7 +1280,6 @@
         }
 
         function autoPlayNext() {
-            // Only proceed if user has interacted
             if (!userHasInteracted) return;
             
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
@@ -1479,7 +1456,6 @@
             document.getElementById('modal').style.display = 'none';
         }
 
-        // Make functions global for onclick handlers
         window.openModal = openModal;
         window.closeModal = closeModal;
         window.playTrack = playTrack;
@@ -1489,7 +1465,6 @@
         window.toggleShuffle = toggleShuffle;
         window.toggleRepeat = toggleRepeat;
 
-        // Close modal when clicking outside
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('modal');
             if (event.target === modal) {
@@ -1497,9 +1472,7 @@
             }
         });
 
-        // Initialize app with proper loading sequence
         window.addEventListener('load', function() {
-            // Start loading process
             loadFromFirebase();
         });
     </script>
