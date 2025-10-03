@@ -239,7 +239,7 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(15px);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             will-change: transform;
             z-index: 1;
             box-shadow: 
@@ -249,31 +249,56 @@
                 0 8px 0 rgba(0, 0, 0, 0.15);
         }
 
+        /* Silver wave overlay on hover */
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+            transition: left 0.6s ease;
+            z-index: 2;
+            pointer-events: none;
+            border-radius: 15px;
+        }
+
+        .menu-item:hover::before {
+            left: 100%;
+        }
+
         /* Animated scanning border */
         .menu-item::after {
             content: '';
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
             border-radius: 15px;
             background: linear-gradient(
                 90deg,
-                transparent 0%,
-                transparent 40%,
-                rgba(255, 255, 255, 0.6) 50%,
-                transparent 60%,
-                transparent 100%
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.1) 45%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0.1) 55%,
+                rgba(255, 255, 255, 0.1) 100%
             );
             background-size: 200% 100%;
-            animation: border-scan 3s linear infinite;
-            opacity: 0.5;
+            animation: border-scan 4s linear infinite;
             z-index: -1;
-            mask: linear-gradient(#fff 0 0) content-box, 
-                  linear-gradient(#fff 0 0);
+            mask: 
+                linear-gradient(#fff 0 0) padding-box, 
+                linear-gradient(#fff 0 0);
             mask-composite: exclude;
-            padding: 1px;
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) padding-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
         }
 
         @keyframes border-scan {
@@ -283,27 +308,6 @@
             100% {
                 background-position: -200% 0;
             }
-        }
-
-        /* Silver wave overlay */
-        .menu-item:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(192, 192, 192, 0.15), 
-                transparent);
-            transition: left 0.6s ease;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .menu-item:hover:before {
-            left: 100%;
         }
 
         .menu-item:hover {
