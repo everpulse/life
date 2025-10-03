@@ -930,7 +930,8 @@
                 }
             } else {
                 if (!isMatrixRunning) {
-                    initMatrix();
+                    isMatrixRunning = true;
+                    drawMatrix();
                 }
             }
         });
