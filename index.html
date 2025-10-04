@@ -473,13 +473,22 @@
                 max-width: 580px;
             }
             
+            .biography-layout {
+                display: flex;
+                flex-direction: row-reverse;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            
             .biography-layout .bio-video-1 {
+                float: none !important;
+                margin: 0 !important;
+                flex-shrink: 0;
                 width: 190px;
-                float: right;
-                margin: 10px 0 10px 20px;
             }
             
             .bio-content {
+                flex: 1;
                 direction: ltr;
                 text-align: left;
             }
