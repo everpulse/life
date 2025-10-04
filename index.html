@@ -467,6 +467,30 @@
             background: #000;
         }
 
+        /* بهبود layout برای صفحات بزرگ‌تر */
+        @media (min-width: 769px) {
+            .modal-content {
+                max-width: 800px;
+            }
+            
+            .biography-layout {
+                display: flex;
+                gap: 25px;
+                align-items: flex-start;
+            }
+            
+            .biography-layout .bio-video-1 {
+                float: none !important;
+                margin: 0 !important;
+                flex-shrink: 0;
+                width: 250px;
+            }
+            
+            .bio-content {
+                flex: 1;
+            }
+        }
+
         @media (max-width: 768px) {
             .bio-video-1 {
                 width: 110px;
@@ -1194,8 +1218,10 @@
                 
                 if (type === 'biography') {
                     displayContent = `
-                        <img src="https://i.ibb.co/MDJGvSSn/video-2025-10-02-23-18-08-ezgif-com-optimize.gif" class="bio-video-1" style="object-fit: cover;">
-                        ${displayContent}
+                        <div class="biography-layout">
+                            <img src="https://i.ibb.co/MDJGvSSn/video-2025-10-02-23-18-08-ezgif-com-optimize.gif" class="bio-video-1" style="object-fit: cover;">
+                            <div class="bio-content">${displayContent}</div>
+                        </div>
                     `;
                 }
                 
