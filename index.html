@@ -1,3 +1,5 @@
+بله حتماً! این کد کامل شماست با تمام تغییرات:
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -20,6 +22,135 @@
             overflow-x: hidden;
             min-height: 100vh;
             position: relative;
+        }
+
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .cyber-loader {
+            width: 80px;
+            height: 80px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 2px solid #fff;
+            animation: spin 1s linear infinite;
+            position: relative;
+        }
+
+        .cyber-loader::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top: 2px solid rgba(76, 175, 80, 0.8);
+            animation: spin 2s linear infinite reverse;
+        }
+
+        .cyber-loader::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top: 2px solid rgba(76, 175, 80, 0.4);
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            width: 0%;
+            transition: width 0.3s ease;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .cyber-text {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: rgba(76, 175, 80, 0.8);
+            margin-top: 20px;
+            animation: typewriter 4s steps(50) infinite;
+        }
+
+        @keyframes typewriter {
+            0%, 50% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* Main Content - Initially Hidden */
+        .main-content {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+            visibility: visible;
         }
 
         /* Matrix Background Animation - Optimized */
@@ -48,7 +179,7 @@
         }
 
         .profile-section {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             position: relative;
         }
 
@@ -59,7 +190,6 @@
             margin: 0 auto 20px;
             position: relative;
             border: 3px solid rgba(255, 255, 255, 0.3);
-            cursor: pointer;
             transition: all 0.3s ease;
             overflow: hidden;
             will-change: transform;
@@ -78,32 +208,6 @@
             loading: lazy;
         }
 
-        .edit-icon {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #000;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            will-change: transform;
-        }
-
-        .edit-icon:hover {
-            background: #fff;
-            transform: scale(1.1);
-        }
-
-        #imageInput {
-            display: none;
-        }
-
         .profile-name {
             font-size: 24px;
             font-weight: bold;
@@ -116,7 +220,7 @@
         .profile-desc {
             font-size: 14px;
             color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             direction: ltr;
             text-align: center;
             unicode-bidi: plaintext;
@@ -129,22 +233,107 @@
         }
 
         .menu-item {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(20, 20, 20, 0.8));
+            border: 2px solid transparent;
             border-radius: 15px;
-            padding: 20px;
+            padding: 18px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
             position: relative;
             overflow: hidden;
             will-change: transform;
+            z-index: 1;
+            box-shadow: 
+                0 6px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+                0 8px 0 rgba(0, 0, 0, 0.15);
+            background-clip: padding-box;
+        }
+
+        /* نور متحرک دور کادر */
+        .menu-item::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 15px;
+            padding: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                transparent,
+                rgba(255, 255, 255, 0.9),
+                rgba(255, 255, 255, 0.9),
+                transparent,
+                transparent
+            );
+            background-size: 200% 100%;
+            animation: rotating-glow 3s linear infinite;
+            z-index: -1;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        @keyframes rotating-glow {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Silver wave overlay on hover */
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+            transition: left 0.6s ease;
+            z-index: 2;
+            pointer-events: none;
+            border-radius: 15px;
+        }
+
+        .menu-item:hover::before {
+            left: 100%;
         }
 
         .menu-item:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(50, 50, 50, 0.95), rgba(30, 30, 30, 0.9));
             border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 
+                0 12px 35px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+                0 12px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-item:active {
+            transform: translateY(0) scale(0.99);
+            box-shadow: 
+                0 6px 25px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+                0 4px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes cyber-rotate {
+            0% { 
+                transform: rotate(0deg);
+            }
+            100% { 
+                transform: rotate(360deg);
+            }
         }
 
         .menu-item h3 {
@@ -153,6 +342,34 @@
             direction: ltr;
             text-align: center;
             unicode-bidi: plaintext;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover h3 {
+            animation: glitch 0.3s ease;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-2px, 2px);
+            }
+            40% {
+                transform: translate(-2px, -2px);
+            }
+            60% {
+                transform: translate(2px, 2px);
+            }
+            80% {
+                transform: translate(2px, -2px);
+            }
+            100% {
+                transform: translate(0);
+            }
         }
 
         /* Modal Styles */
@@ -209,6 +426,9 @@
             direction: ltr;
             text-align: left;
             unicode-bidi: plaintext;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
 
         .modal-body p:lang(fa),
@@ -217,292 +437,205 @@
             text-align: right;
         }
 
-        .editable-title {
-            outline: none;
-            border: none;
+        /* Video/GIF support in modal */
+        .modal-body video,
+        .modal-body img.gif-video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: block;
+        }
+
+        .modal-body video {
             background: transparent;
-            cursor: default;
-            transition: all 0.3s ease;
         }
 
-        .editable-title.edit-mode {
-            cursor: text;
-        }
-
-        .editable-title.edit-mode:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            padding: 2px 5px;
-        }
-
-        .editable-title.edit-mode:focus {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            padding: 2px 5px;
-        }
-
-        .admin-panel {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        /* Video sizing for different screens */
+        .bio-video-1 {
+            width: 180px;
+            float: right;
+            margin: 10px 15px 10px 15px;
             border-radius: 10px;
-            padding: 15px;
-            z-index: 999;
-            display: none;
+            background: #000;
+            will-change: transform;
         }
 
-        .admin-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .admin-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .password-modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(5px);
-        }
-
-        .password-content {
-            background: rgba(0, 0, 0, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            margin: 20% auto;
-            padding: 30px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            backdrop-filter: blur(20px);
-        }
-
-        .password-input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        .password-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .edit-indicator {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 255, 0, 0.3);
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            display: none;
-            z-index: 1000;
-        }
-
-        .loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-size: 18px;
-            z-index: 2000;
-        }
-
-        /* Save Status Indicator */
-        .save-status {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            z-index: 1001;
-            display: none;
-            transition: all 0.3s ease;
-        }
-
-        .save-status.saving {
-            background: rgba(255, 165, 0, 0.8);
-            color: #fff;
-            display: block;
-        }
-
-        .save-status.saved {
-            background: rgba(0, 255, 0, 0.8);
-            color: #fff;
-            display: block;
-        }
-
-        .save-status.error {
-            background: rgba(255, 0, 0, 0.8);
-            color: #fff;
-            display: block;
-        }
-
-        /* Audio Player Styles */
-        .audio-upload-area {
-            border: 2px dashed rgba(255, 255, 255, 0.3);
+        .bio-video-2 {
+            width: 160px;
+            float: right;
+            margin: -50px 20px 10px 15px;
             border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            background: #000;
         }
 
-        .audio-upload-area:hover {
-            border-color: rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.05);
+        @media (max-width: 768px) {
+            .bio-video-1 {
+                width: 110px;
+                margin: 5px 8px 10px 8px;
+            }
+            
+            .bio-video-2 {
+                width: 100px;
+                margin: -50px 10px 10px 10px;
+            }
         }
 
-        .audio-upload-area.dragover {
-            border-color: #fff;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
+        /* Audio Player Styles - Clean Modern Design */
         .playlist-container {
             max-height: 400px;
             overflow-y: auto;
             margin: 20px 0;
+            padding: 10px 0;
         }
 
         .audio-item {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
+            background: rgba(42, 42, 42, 0.8);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 8px 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .audio-info {
-            flex: 1;
-            min-width: 200px;
+        .audio-item:hover {
+            background: rgba(52, 52, 52, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
-        .audio-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            direction: ltr;
-            text-align: left;
-            unicode-bidi: plaintext;
+        .audio-item.playing {
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid rgba(76, 175, 80, 0.4);
         }
 
-        .audio-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .audio-item.playing:hover {
+            background: rgba(76, 175, 80, 0.2);
         }
 
         .play-btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             color: #fff;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            will-change: transform;
+            font-size: 18px;
+            flex-shrink: 0;
         }
 
         .play-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
         }
 
-        .delete-btn {
-            background: rgba(255, 0, 0, 0.3);
-            border: none;
-            border-radius: 5px;
+        .play-btn.playing {
+            background: rgba(76, 175, 80, 0.4);
             color: #fff;
-            padding: 5px 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .delete-btn:hover {
-            background: rgba(255, 0, 0, 0.5);
+        .play-btn.playing:hover {
+            background: rgba(76, 175, 80, 0.5);
+        }
+
+        .audio-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .audio-title {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 8px;
+            direction: ltr;
+            text-align: left;
+            unicode-bidi: plaintext;
+            color: rgba(255, 255, 255, 0.95);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .audio-progress {
             width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            margin: 5px 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
             overflow: hidden;
         }
 
         .audio-progress-bar {
             height: 100%;
-            background: #fff;
+            background: linear-gradient(90deg, #4caf50, #66bb6a);
             width: 0%;
             transition: width 0.1s ease;
             will-change: width;
+            border-radius: 3px;
         }
 
-        #audioInput {
-            display: none;
+        .playlist-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
         }
-        
-        .upload-progress {
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            display: none;
-        }
-        
-        .upload-progress-bar {
-            width: 100%;
-            height: 6px;
+
+        .control-btn {
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 5px 0;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
         }
-        
-        .upload-progress-fill {
-            height: 100%;
-            background: #4fc3f7;
-            width: 0%;
-            transition: width 0.3s ease;
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .control-btn.active {
+            background: rgba(76, 175, 80, 0.5);
+        }
+
+        .now-playing {
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0.9;
         }
         
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
+                max-width: 320px;
             }
             
             .profile-image {
@@ -522,6 +655,24 @@
                 margin: 10% auto;
                 padding: 20px;
                 width: 95%;
+            }
+
+            .control-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cyber-loader {
+                width: 60px;
+                height: 60px;
+            }
+
+            .loading-text {
+                font-size: 16px;
+            }
+
+            .loading-progress {
+                width: 150px;
             }
         }
 
@@ -558,57 +709,150 @@
         .modal-body a:hover {
             color: #81d4fa;
         }
+
+        /* Animated Icons in Modal Content */
+        .rotating-icon {
+            display: inline-block;
+            animation: gentle-flip 6s linear infinite;
+            transform-origin: center center;
+        }
+
+        @keyframes gentle-flip {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        /* Special beating heart animation for 🤍 */
+        .beating-heart {
+            display: inline-block;
+            animation: heart-beat-rotate 6s linear infinite;
+            transform-origin: center center;
+        }
+
+        @keyframes heart-beat-rotate {
+            0% { 
+                transform: rotateY(0deg) scale(1);
+            }
+            5% { 
+                transform: rotateY(18deg) scale(1.2);
+            }
+            10% { 
+                transform: rotateY(36deg) scale(1);
+            }
+            15% { 
+                transform: rotateY(54deg) scale(1.15);
+            }
+            20% { 
+                transform: rotateY(72deg) scale(1);
+            }
+            100% { 
+                transform: rotateY(360deg) scale(1);
+            }
+        }
+
+        /* Special electric spark effect for ↯ */
+        .spark-icon {
+            display: inline-block;
+            position: relative;
+            animation: electric-pulse 2s ease-in-out infinite;
+        }
+
+        .spark-icon::before,
+        .spark-icon::after {
+            content: '↯';
+            position: absolute;
+            font-size: 0.6em;
+            opacity: 0;
+            pointer-events: none;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .spark-icon::before {
+            top: -4px;
+            left: -6px;
+            animation: spark-1 2s infinite;
+        }
+
+        .spark-icon::after {
+            bottom: -4px;
+            right: -6px;
+            animation: spark-2 2s infinite 0.5s;
+        }
+
+        @keyframes electric-pulse {
+            0%, 100% { 
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+                transform: scale(1);
+            }
+            50% { 
+                text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.6);
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes spark-1 {
+            0%, 80%, 100% { 
+                opacity: 0;
+                transform: translate(0, 0) scale(0.8);
+            }
+            10%, 20% { 
+                opacity: 1;
+                transform: translate(-2px, -2px) scale(1);
+            }
+        }
+
+        @keyframes spark-2 {
+            0%, 80%, 100% { 
+                opacity: 0;
+                transform: translate(0, 0) scale(0.8);
+            }
+            10%, 20% { 
+                opacity: 1;
+                transform: translate(2px, 2px) scale(1);
+            }
+        }
         
     </style>
 </head>
 <body>
-    <div class="loading" id="loading">در حال بارگذاری...</div>
-    <div class="save-status" id="saveStatus">در حال ذخیره...</div>
-    <canvas id="matrix"></canvas>
-    
-    <!-- Admin Panel -->
-    <div class="admin-panel" id="adminPanel">
-        <button class="admin-btn" onclick="toggleEditMode()">حالت ویرایش</button>
-        <button class="admin-btn" onclick="logout()">خروج</button>
-    </div>
-    
-    <!-- Edit Mode Indicator -->
-    <div class="edit-indicator" id="editIndicator">حالت ویرایش فعال</div>
-    
-    <!-- Password Modal -->
-    <div id="passwordModal" class="password-modal">
-        <div class="password-content">
-            <h2>ورود به پنل مدیریت</h2>
-            <input type="password" id="passwordInput" class="password-input" placeholder="رمز عبور را وارد کنید">
-            <br>
-            <button class="admin-btn" onclick="checkPassword()">ورود</button>
-            <button class="admin-btn" onclick="closePasswordModal()">انصراف</button>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="profile-section">
-            <div class="profile-image" id="profileImageContainer">
-                <img id="profileImg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Im0zNSA4MGMwLTE1IDEwLTI1IDI1LTI1czI1IDEwIDI1IDI1IiBmaWxsPSIjNjY2Ii8+Cjwvc3ZnPgo=" alt="Profile" loading="lazy">
-                <div class="edit-icon" id="editIcon" style="display: none;">✏️</div>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader-container">
+            <div class="cyber-loader"></div>
+            <div class="loading-text" id="loadingText">در حال بارگذاری اطلاعات...</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
             </div>
-            <input type="file" id="imageInput" accept="image/*">
-            
-            <div class="profile-name" id="profileName">Aeon</div>
-            <div class="profile-desc" id="profileDesc">逐梦未来—智慧为刃˚.ᐟ.</div>
+            <div class="cyber-text">{'> initializing quantum matrix...'}</div>
         </div>
+    </div>
 
-        <div class="menu-items">
-            <div class="menu-item" onclick="openModal('biography')">
-                <h3 class="editable-title" data-type="biography">ABOUT ME</h3>
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <canvas id="matrix"></canvas>
+        
+        <div class="container">
+            <div class="profile-section">
+                <div class="profile-image" id="profileImageContainer">
+                    <img id="profileImg" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Im0zNSA4MGMwLTE1IDEwLTI1IDI1LTI1czI1IDEwIDI1IDI1IiBmaWxsPSIjNjY2Ii8+Cjwvc3ZnPgo=" alt="Profile" loading="lazy">
+                </div>
+                
+                <div class="profile-name" id="profileName">Aeon</div>
+                <div class="profile-desc" id="profileDesc">逐梦未来—智慧为刃˚.ᐟ.</div>
             </div>
-            
-            <div class="menu-item" onclick="openModal('tenrules')">
-                <h3 class="editable-title" data-type="tenrules">Longevity Institutions</h3>
-            </div>
-            
-            <div class="menu-item" onclick="openModal('playlist')">
-                <h3 class="editable-title" data-type="playlist">PLAYLIST</h3>
+
+            <div class="menu-items">
+                <div class="menu-item" onclick="openModal('biography')">
+                    <h3>ABOUT ME</h3>
+                </div>
+                
+                <div class="menu-item" onclick="openModal('tenrules')">
+                    <h3>Longevity Institutions</h3>
+                </div>
+                
+                <div class="menu-item" onclick="openModal('playlist')">
+                    <h3>PLAYLIST</h3>
+                </div>
             </div>
         </div>
     </div>
@@ -618,17 +862,16 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
-            <div class="modal-body" id="modalBody" contenteditable="true">
+            <div class="modal-body" id="modalBody">
                 <!-- محتوا اینجا نمایش داده می‌شود -->
             </div>
         </div>
     </div>
 
-    <!-- Optimized Firebase SDK v9 Modular -->
+    <!-- Firebase SDK v9 Modular -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-        import { getDatabase, ref, set, get, child } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js';
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js';
+        import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js';
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -644,10 +887,6 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-        const storage = getStorage(app);
-        
-        // Simplified cache system - no timestamps to avoid conflicts
-        const cache = new Map();
 
         // Content data - default values
         let contentData = {
@@ -671,53 +910,61 @@
             }
         };
 
-        // Save status indicator
-        function showSaveStatus(status, message) {
-            const saveStatus = document.getElementById('saveStatus');
-            saveStatus.className = `save-status ${status}`;
-            saveStatus.textContent = message;
+        // Loading progress management
+        let loadingProgress = 0;
+        const loadingSteps = [
+            { step: 20, text: "اتصال به سرور..." },
+            { step: 40, text: "بارگذاری اطلاعات پروفایل..." },
+            { step: 60, text: "بارگذاری محتوا..." },
+            { step: 80, text: "بارگذاری تصاویر..." },
+            { step: 100, text: "تکمیل بارگذاری..." }
+        ];
+
+        function updateLoadingProgress(progress, text) {
+            const progressBar = document.getElementById('loadingProgressBar');
+            const loadingText = document.getElementById('loadingText');
             
-            saveStatus.style.display = 'block';
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
             
-            if (status === 'saved') {
-                setTimeout(() => {
-                    saveStatus.style.display = 'none';
-                }, 3000);
-            } else if (status === 'error') {
-                setTimeout(() => {
-                    saveStatus.style.display = 'none';
-                }, 5000);
+            if (loadingText && text) {
+                loadingText.textContent = text;
             }
         }
 
-        // Reliable Firebase save function with retry mechanism
-        async function saveToFirebase(retryCount = 0) {
-            const maxRetries = 3;
-            
-            try {
-                showSaveStatus('saving', 'در حال ذخیره...');
-                console.log(`Saving attempt ${retryCount + 1}`);
+        function simulateLoadingSteps() {
+            return new Promise((resolve) => {
+                let currentStep = 0;
                 
-                await set(ref(database, 'website'), contentData);
-                
-                cache.set('website', JSON.parse(JSON.stringify(contentData)));
-                showSaveStatus('saved', 'ذخیره شد ✓');
-                console.log('Data saved successfully!');
-                
-            } catch (error) {
-                console.error('Error saving data:', error);
-                
-                if (retryCount < maxRetries) {
-                    console.log(`Retrying save... (${retryCount + 1}/${maxRetries})`);
-                    setTimeout(() => saveToFirebase(retryCount + 1), 1000);
-                } else {
-                    showSaveStatus('error', 'خطا در ذخیره!');
-                    throw error;
+                function nextStep() {
+                    if (currentStep < loadingSteps.length) {
+                        const { step, text } = loadingSteps[currentStep];
+                        updateLoadingProgress(step, text);
+                        currentStep++;
+                        setTimeout(nextStep, 800);
+                    } else {
+                        resolve();
+                    }
                 }
-            }
+                
+                nextStep();
+            });
         }
 
-        // Optimized Matrix Animation - Reduced frequency
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            initMatrix();
+            
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                mainContent.classList.add('visible');
+            }, 500);
+        }
+
+        // Optimized Matrix Animation
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
 
@@ -767,38 +1014,29 @@
             drawMatrix();
         }
 
-        // Pause matrix when not visible
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                isMatrixRunning = false;
-                if (matrixAnimationId) {
-                    cancelAnimationFrame(matrixAnimationId);
-                }
-            } else {
-                if (!isMatrixRunning) {
-                    initMatrix();
-                }
+
+
+        window.addEventListener('resize', () => {
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
             }
         });
 
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        // Admin system
-        const ADMIN_PASSWORD = "aeon2025";
-        let isEditMode = false;
-
-        // Reliable loading function - always fetch fresh data
         async function loadFromFirebase() {
             try {
-                // Always load fresh data from Firebase, ignore cache on initial load
+                updateLoadingProgress(10, "شروع بارگذاری...");
+                
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                updateLoadingProgress(30, "دریافت اطلاعات از سرور...");
+                
                 const snapshot = await get(ref(database, 'website'));
                 const data = snapshot.val();
                 
+                updateLoadingProgress(50, "پردازش اطلاعات...");
+                
                 if (data) {
-                    // Merge with defaults to ensure all properties exist
                     contentData = {
                         ...contentData,
                         ...data,
@@ -809,32 +1047,33 @@
                     };
                 }
                 
-                // Update cache with fresh data
-                cache.set('website', JSON.parse(JSON.stringify(contentData)));
-                
+                updateLoadingProgress(70, "به‌روزرسانی رابط کاربری...");
                 updateBasicUI();
-                document.getElementById('loading').style.display = 'none';
+                
+                updateLoadingProgress(90, "بارگذاری تصاویر...");
                 await loadProfileImage();
+                
+                updateLoadingProgress(100, "آماده‌سازی نهایی...");
+                
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                hideLoadingScreen();
                 
             } catch (error) {
                 console.error('Error loading data:', error);
-                document.getElementById('loading').style.display = 'none';
+                updateLoadingProgress(100, "خطا در بارگذاری - استفاده از اطلاعات پیش‌فرض");
+                
+                setTimeout(() => {
+                    hideLoadingScreen();
+                }, 2000);
             }
         }
 
         function updateBasicUI() {
             document.getElementById('profileName').textContent = contentData.profileName;
             document.getElementById('profileDesc').textContent = contentData.profileDesc;
-            
-            document.querySelectorAll('.editable-title').forEach(title => {
-                const type = title.dataset.type;
-                if (contentData.contentData[type] && contentData.contentData[type].title) {
-                    title.textContent = contentData.contentData[type].title;
-                }
-            });
         }
 
-        // Reliable image loading
         async function loadProfileImage() {
             try {
                 const snapshot = await get(ref(database, 'website/profileImage'));
@@ -848,325 +1087,6 @@
             }
         }
 
-        // Optimized image compression
-        function compressImage(file, maxWidth = 400, quality = 0.8) {
-            return new Promise((resolve) => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const img = new Image();
-                
-                img.onload = () => {
-                    const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
-                    canvas.width = img.width * ratio;
-                    canvas.height = img.height * ratio;
-                    
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    canvas.toBlob(resolve, 'image/webp', quality);
-                };
-                
-                img.src = URL.createObjectURL(file);
-            });
-        }
-
-        // راه‌حل جایگزین: ذخیره فایل به صورت Base64 در Firebase Database
-        // برای فایل‌های کوچکتر از 1MB
-        async function handleSmallAudioFile(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        // راه‌حل دوم: استفاده از GitHub یا سرویس‌های رایگان دیگر
-        // (نیاز به آپلود دستی فایل‌ها دارد)
-        function createExternalLinkInterface() {
-            return `
-                <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; margin: 20px 0;">
-                    <h3>روش آپلود فایل صوتی:</h3>
-                    <p>1. فایل خود را در یکی از سایت‌های زیر آپلود کنید:</p>
-                    <ul style="text-align: right; margin: 10px 0;">
-                        <li>GitHub (رایگان و مطمئن)</li>
-                        <li>Dropbox</li>
-                        <li>Google Drive (لینک عمومی)</li>
-                        <li>Archive.org</li>
-                    </ul>
-                    <p>2. لینک مستقیم فایل را در کادر زیر وارد کنید:</p>
-                    <input type="url" id="audioUrlInput" placeholder="https://example.com/your-audio-file.mp3" 
-                           style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
-                    <input type="text" id="audioNameInput" placeholder="نام آهنگ" 
-                           style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
-                    <button onclick="addExternalAudio()" class="admin-btn">افزودن آهنگ</button>
-                </div>
-            `;
-        }
-
-        // فشرده سازی صوتی (اختیاری)
-        function compressAudio(file) {
-            return new Promise((resolve) => {
-                // برای فایل‌های کوچکتر از 2MB فشرده‌سازی نکنید
-                if (file.size < 2 * 1024 * 1024) {
-                    resolve(file);
-                    return;
-                }
-                
-                // برای فایل‌های بزرگ‌تر، صرفاً فایل اصلی را برگردانید
-                // چون فشرده‌سازی صوتی پیچیده است و نیاز به کتابخانه‌های خاص دارد
-                resolve(file);
-            });
-        }
-
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        // Progress indicator helper
-        function showUploadProgress(fileName, progress) {
-            showSaveStatus('saving', `آپلود ${fileName}: ${progress}%`);
-        }
-
-        async function handleAudioUpload(event) {
-            if (!isEditMode) return;
-            
-            const files = Array.from(event.target.files);
-            console.log('Files selected:', files.length);
-            
-            for (const file of files) {
-                console.log('Processing file:', file.name, file.type, file.size);
-                
-                if (file.type.startsWith('audio/')) {
-                    try {
-                        let audioData;
-                        
-                        // برای فایل‌های کوچک (زیر 1MB) - ذخیره به صورت Base64
-                        if (file.size < 1024 * 1024) {
-                            console.log(`Using Base64 storage for small file: ${file.name}`);
-                            showUploadProgress(file.name, 50);
-                            
-                            const base64Data = await handleSmallAudioFile(file);
-                            
-                            audioData = {
-                                name: file.name,
-                                data: base64Data, // ذخیره به صورت Base64
-                                size: file.size,
-                                type: file.type,
-                                id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
-                                storage: 'base64'
-                            };
-                            
-                            showUploadProgress(file.name, 100);
-                            
-                        } else {
-                            // برای فایل‌های بزرگ - راهنمایی کاربر
-                            alert(`فایل ${file.name} بزرگتر از 1MB است. لطفاً از بخش "لینک خارجی" استفاده کنید.`);
-                            continue;
-                        }
-                        
-                        // اطمینان از وجود structure مناسب
-                        if (!contentData.contentData.playlist) {
-                            contentData.contentData.playlist = {
-                                title: "PLAYLIST",
-                                content: "آهنگ های خود را آپلود کنید...",
-                                audioFiles: []
-                            };
-                        }
-                        if (!contentData.contentData.playlist.audioFiles) {
-                            contentData.contentData.playlist.audioFiles = [];
-                        }
-                        
-                        contentData.contentData.playlist.audioFiles.push(audioData);
-                        console.log('Audio added to array:', audioData.name);
-                        
-                        updatePlaylist();
-                        
-                        // ذخیره در Firebase Database
-                        await saveToFirebase();
-                        console.log(`Successfully uploaded: ${file.name}`);
-                        showSaveStatus('saved', `${file.name} با موفقیت آپلود شد`);
-                        
-                    } catch (error) {
-                        console.error(`Failed to upload: ${file.name}`, error);
-                        showSaveStatus('error', `خطا در آپلود ${file.name}`);
-                        alert(`خطا در آپلود ${file.name}: ${error.message}`);
-                    }
-                } else {
-                    alert(`فایل ${file.name} فرمت صوتی معتبر نیست. فرمت‌های پشتیبانی شده: MP3, WAV, M4A, OGG`);
-                }
-            }
-            
-            // پاک کردن input برای امکان آپلود دوباره همان فایل
-            event.target.value = '';
-        }
-
-        // تابع اضافه کردن آهنگ از لینک خارجی
-        function addExternalAudio() {
-            if (!isEditMode) return;
-            
-            const urlInput = document.getElementById('audioUrlInput');
-            const nameInput = document.getElementById('audioNameInput');
-            
-            const url = urlInput.value.trim();
-            const name = nameInput.value.trim();
-            
-            if (!url || !name) {
-                alert('لطفاً هم لینک و هم نام آهنگ را وارد کنید.');
-                return;
-            }
-            
-            // بررسی صحت URL
-            try {
-                new URL(url);
-            } catch {
-                alert('لینک وارد شده معتبر نیست.');
-                return;
-            }
-            
-            const audioData = {
-                name: name,
-                url: url,
-                size: 0, // نامشخص برای فایل‌های خارجی
-                type: 'audio/external',
-                id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
-                storage: 'external'
-            };
-            
-            // اطمینان از وجود structure مناسب
-            if (!contentData.contentData.playlist) {
-                contentData.contentData.playlist = {
-                    title: "PLAYLIST",
-                    content: "آهنگ های خود را آپلود کنید...",
-                    audioFiles: []
-                };
-            }
-            if (!contentData.contentData.playlist.audioFiles) {
-                contentData.contentData.playlist.audioFiles = [];
-            }
-            
-            contentData.contentData.playlist.audioFiles.push(audioData);
-            
-            // پاک کردن فیلدها
-            urlInput.value = '';
-            nameInput.value = '';
-            
-            updatePlaylist();
-            saveToFirebase();
-            
-            showSaveStatus('saved', `${name} اضافه شد`);
-        }
-
-        // Double click on profile image for admin access
-        let clickCount = 0;
-        document.getElementById('profileImageContainer').addEventListener('click', function() {
-            if (!isEditMode) {
-                clickCount++;
-                setTimeout(() => {
-                    if (clickCount === 1) {
-                        clickCount = 0;
-                    } else if (clickCount === 2) {
-                        showPasswordModal();
-                        clickCount = 0;
-                    }
-                }, 400);
-            } else {
-                document.getElementById('imageInput').click();
-            }
-        });
-
-        function showPasswordModal() {
-            document.getElementById('passwordModal').style.display = 'block';
-            document.getElementById('passwordInput').focus();
-        }
-
-        function closePasswordModal() {
-            document.getElementById('passwordModal').style.display = 'none';
-            document.getElementById('passwordInput').value = '';
-        }
-
-        function checkPassword() {
-            const password = document.getElementById('passwordInput').value;
-            if (password === ADMIN_PASSWORD) {
-                isEditMode = true;
-                enableEditMode();
-                closePasswordModal();
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('editIndicator').style.display = 'block';
-            } else {
-                alert('رمز عبور نادرست است!');
-                document.getElementById('passwordInput').value = '';
-            }
-        }
-
-        function enableEditMode() {
-            document.getElementById('profileName').contentEditable = true;
-            document.getElementById('profileDesc').contentEditable = true;
-            
-            document.querySelectorAll('.editable-title').forEach(title => {
-                title.contentEditable = true;
-                title.classList.add('edit-mode');
-            });
-            
-            document.getElementById('editIcon').style.display = 'flex';
-        }
-
-        function disableEditMode() {
-            document.getElementById('profileName').contentEditable = false;
-            document.getElementById('profileDesc').contentEditable = false;
-            
-            document.querySelectorAll('.editable-title').forEach(title => {
-                title.contentEditable = false;
-                title.classList.remove('edit-mode');
-            });
-            
-            document.getElementById('editIcon').style.display = 'none';
-        }
-
-        function toggleEditMode() {
-            isEditMode = !isEditMode;
-            if (isEditMode) {
-                enableEditMode();
-                document.getElementById('editIndicator').style.display = 'block';
-            } else {
-                disableEditMode();
-                document.getElementById('editIndicator').style.display = 'none';
-            }
-        }
-
-        function logout() {
-            isEditMode = false;
-            disableEditMode();
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('editIndicator').style.display = 'none';
-        }
-
-        // Password modal enter key
-        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkPassword();
-            }
-        });
-
-        // Immediate save functions - no debouncing for reliability
-        document.getElementById('profileName').addEventListener('blur', function() {
-            if (isEditMode) {
-                contentData.profileName = this.textContent;
-                saveToFirebase();
-            }
-        });
-
-        document.getElementById('profileDesc').addEventListener('blur', function() {
-            if (isEditMode) {
-                contentData.profileDesc = this.textContent;
-                saveToFirebase();
-            }
-        });
-
-        // Modal functions
         let currentModalType = '';
 
         function openModal(type) {
@@ -1183,14 +1103,10 @@
             loadModalContent(type, body);
         }
 
-        // Function to convert URLs in text to clickable links
         function convertTextToLinks(text) {
-            // Split text by lines to process each line separately
             const lines = text.split('<br>');
             
             return lines.map(line => {
-                // Only convert lines that contain the pattern "Text (http://url)"
-                // This allows other text to remain as normal text
                 const linkPattern = /^([^(]+)\s*\(((https?:\/\/[^\s)]+))\)$/;
                 const match = line.match(linkPattern);
                 
@@ -1200,13 +1116,12 @@
                     return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
                 }
                 
-                return line; // Return unchanged if no link pattern found
+                return line;
             }).join('<br>');
         }
 
         async function loadModalContent(type, body) {
             try {
-                // Always load fresh data for modal content
                 const snapshot = await get(ref(database, `website/contentData/${type}`));
                 let data = snapshot.val();
                 
@@ -1225,34 +1140,21 @@
                     return;
                 }
 
-                // For other content types - convert links and display
                 let displayContent = (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
+                displayContent = convertTextToLinks(displayContent);
                 
-                // Convert text links to clickable links only for display
-                if (!isEditMode) {
-                    displayContent = convertTextToLinks(displayContent);
+                if (type === 'biography') {
+                    displayContent = `
+                        <video src="https://res.cloudinary.com/dbyzk4qls/video/upload/video_2025-10-02_23-18-08_q87zdx.mp4" class="bio-video-1" autoplay loop muted playsinline preload="auto"></video>
+                        ${displayContent}
+                    `;
                 }
                 
                 body.innerHTML = displayContent;
-                body.contentEditable = isEditMode;
-
-                if (isEditMode) {
-                    // Show raw text for editing (without converted links)
-                    body.innerHTML = (data.content || 'محتوایی وجود ندارد').replace(/\n/g, '<br>');
-                    
-                    // Immediate save on input - no debouncing
-                    let saveTimeout;
-                    body.oninput = function() {
-                        clearTimeout(saveTimeout);
-                        saveTimeout = setTimeout(() => {
-                            const content = this.innerHTML.replace(/<br>/g, '\n');
-                            contentData.contentData[type].content = content;
-                            saveToFirebase();
-                        }, 500);
-                    };
-                } else {
-                    body.oninput = null;
-                }
+                
+                animateEmojisInContent(body);
+                
+                processVideoTags(body);
                 
             } catch (error) {
                 console.error('خطا در بارگذاری محتوا:', error);
@@ -1260,382 +1162,398 @@
             }
         }
 
-        function createPlaylistModal(body) {
-            body.contentEditable = false;
-            const uploadSection = isEditMode ? `
-                <div class="audio-upload-area" onclick="document.getElementById('audioInput').click()">
-                    <p>🎵 آپلود فایل کوچک (زیر 1MB)</p>
-                    <p style="font-size: 12px; margin-top: 5px; opacity: 0.7;">فرمت های پشتیبانی شده: MP3, WAV, M4A, OGG</p>
-                    <p style="font-size: 10px; margin-top: 3px; opacity: 0.5;">فایل‌های بزرگتر از بخش لینک خارجی استفاده کنید</p>
-                </div>
-                <input type="file" id="audioInput" accept="audio/*" multiple style="display: none;">
-                ${createExternalLinkInterface()}
-                <div class="upload-progress" id="uploadProgress">
-                    <div>در حال آپلود...</div>
-                    <div class="upload-progress-bar">
-                        <div class="upload-progress-fill" id="uploadProgressFill"></div>
-                    </div>
-                </div>
-            ` : '';
+        function processVideoTags(container) {
+            const videos = container.querySelectorAll('video');
+            videos.forEach(video => {
+                video.setAttribute('autoplay', '');
+                video.setAttribute('loop', '');
+                video.setAttribute('muted', '');
+                video.setAttribute('playsinline', '');
+                video.play().catch(err => console.log('Video autoplay prevented:', err));
+            });
+        }
+
+        function animateEmojisInContent(container) {
+            const content = container.innerHTML;
+            const animatedContent = content
+                .replace(/🤍/g, '<span class="beating-heart">🤍</span>')
+                .replace(/🌐/g, '<span class="rotating-icon">🌐</span>')
+                .replace(/⚡/g, '<span class="rotating-icon">⚡</span>')
+                .replace(/🔥/g, '<span class="rotating-icon">🔥</span>')
+                .replace(/↯/g, '<span class="spark-icon">↯</span>');
             
+            container.innerHTML = animatedContent;
+        }
+
+        let currentAudio = null;
+        let currentIndex = -1;
+        let isShuffleMode = false;
+        let isRepeatMode = false;
+        let playHistory = [];
+        let audioContext = null;
+        let userHasInteracted = false;
+
+        function enableUserInteraction() {
+            userHasInteracted = true;
+            document.removeEventListener('click', enableUserInteraction);
+            document.removeEventListener('touchstart', enableUserInteraction);
+        }
+
+        document.addEventListener('click', enableUserInteraction);
+        document.addEventListener('touchstart', enableUserInteraction);
+
+        function createPlaylistModal(body) {
             body.innerHTML = `
-                ${uploadSection}
+                <div class="playlist-controls">
+                    <button class="control-btn" onclick="previousTrack()" id="prevBtn">⏮</button>
+                    <button class="control-btn" onclick="togglePlayPause()" id="playPauseBtn">▶</button>
+                    <button class="control-btn" onclick="nextTrack()" id="nextBtn">⏭</button>
+                    <button class="control-btn" onclick="toggleShuffle()" id="shuffleBtn">🔀</button>
+                    <button class="control-btn" onclick="toggleRepeat()" id="repeatBtn">🔁</button>
+                </div>
+                <div class="now-playing" id="nowPlaying" style="display: none;">
+                    در حال پخش: <span id="currentTrackName">-</span>
+                </div>
                 <div class="playlist-container" id="playlistContainer">
                     ${renderPlaylist()}
                 </div>
             `;
 
-            if (isEditMode) {
-                setTimeout(() => {
-                    const audioInput = document.getElementById('audioInput');
-                    const uploadArea = document.querySelector('.audio-upload-area');
-                    
-                    if (audioInput) {
-                        audioInput.removeEventListener('change', handleAudioUpload);
-                        audioInput.addEventListener('change', handleAudioUpload);
-                        console.log('Audio input event listener added');
-                    }
-                    
-                    if (uploadArea) {
-                        uploadArea.addEventListener('dragover', handleDragOver);
-                        uploadArea.addEventListener('dragenter', handleDragEnter);
-                        uploadArea.addEventListener('dragleave', handleDragLeave);
-                        uploadArea.addEventListener('drop', handleDrop);
-                        console.log('Drag and drop listeners added');
-                    }
-                }, 100);
-            }
+            updateControlsState();
         }
 
         function renderPlaylist() {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
             if (audioFiles.length === 0) {
-                return '<p style="text-align: center; opacity: 0.7;">هنوز آهنگی آپلود نکرده‌اید</p>';
+                return '<p style="text-align: center; opacity: 0.7; padding: 40px;">پلی‌لیست خالی است</p>';
             }
 
             return audioFiles.map((audio, index) => `
-                <div class="audio-item">
+                <div class="audio-item ${index === currentIndex ? 'playing' : ''}" id="audioItem-${index}">
+                    <button class="play-btn ${index === currentIndex && currentAudio && !currentAudio.paused ? 'playing' : ''}" 
+                            onclick="playTrack(${index})" id="playBtn-${index}">
+                        ${index === currentIndex && currentAudio && !currentAudio.paused ? '⏸' : '▶'}
+                    </button>
                     <div class="audio-info">
                         <div class="audio-title">${audio.name}</div>
                         <div class="audio-progress">
                             <div class="audio-progress-bar" id="progress-${index}"></div>
                         </div>
                     </div>
-                    <div class="audio-controls">
-                        <button class="play-btn" onclick="toggleAudio(${index})" id="playBtn-${index}">▶</button>
-                        ${isEditMode ? `<button class="delete-btn" onclick="deleteAudio(${index})">حذف</button>` : ''}
-                    </div>
                 </div>
             `).join('');
         }
 
-        // تابع تست لینک صوتی
-        function testAudioUrl(index) {
+        function updateControlsState() {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
-            const audio = audioFiles[index];
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const shuffleBtn = document.getElementById('shuffleBtn');
+            const repeatBtn = document.getElementById('repeatBtn');
+
+            if (prevBtn) prevBtn.disabled = audioFiles.length === 0;
+            if (nextBtn) nextBtn.disabled = audioFiles.length === 0;
             
-            if (!audio.url && !audio.data) {
-                alert('فایل صوتی یافت نشد!');
-                return;
+            if (shuffleBtn) {
+                if (isShuffleMode) {
+                    shuffleBtn.classList.add('active');
+                } else {
+                    shuffleBtn.classList.remove('active');
+                }
             }
             
-            console.log('Testing audio URL:', audio.url || 'Base64 data');
-            
-            // تست با fetch برای فایل‌های خارجی
-            if (audio.storage === 'external' && audio.url) {
-                fetch(audio.url, { method: 'HEAD' })
-                    .then(response => {
-                        if (response.ok) {
-                            alert(`✅ لینک معتبر است!\nحجم: ${response.headers.get('content-length') || 'نامشخص'} بایت\nنوع: ${response.headers.get('content-type') || 'نامشخص'}`);
-                        } else {
-                            alert(`❌ مشکل در لینک!\nکد خطا: ${response.status}\nپیام: ${response.statusText}`);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Test error:', error);
-                        alert(`❌ خطا در تست لینک:\n${error.message}\n\nممکن است لینک مستقیم نباشد یا CORS مشکل داشته باشد.`);
-                    });
-            } else if (audio.data) {
-                alert('✅ فایل Base64 موجود است');
+            if (repeatBtn) {
+                if (isRepeatMode) {
+                    repeatBtn.classList.add('active');
+                } else {
+                    repeatBtn.classList.remove('active');
+                }
             }
         }
 
-        let currentAudio = null;
-        let currentPlayButton = null;
-
-        function toggleAudio(index) {
+        function playTrack(index) {
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
-            const audio = audioFiles[index];
-            const playBtn = document.getElementById(`playBtn-${index}`);
-            const progressBar = document.getElementById(`progress-${index}`);
+            if (index < 0 || index >= audioFiles.length) return;
 
-            if (currentAudio && currentAudio.getAttribute('data-index') == index) {
+            if (index === currentIndex && currentAudio) {
                 if (currentAudio.paused) {
-                    currentAudio.play().catch(() => {
-                        alert('خطا در پخش آهنگ');
-                        playBtn.textContent = '▶';
+                    currentAudio.play().catch((error) => {
+                        console.error('Play error:', error);
                     });
-                    playBtn.textContent = '⏸';
                 } else {
                     currentAudio.pause();
-                    playBtn.textContent = '▶';
                 }
+                updatePlaylistUI();
                 return;
             }
 
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
-                
-                currentAudio.removeEventListener('loadedmetadata', currentAudio.loadedmetadataHandler);
-                currentAudio.removeEventListener('timeupdate', currentAudio.timeupdateHandler);
-                currentAudio.removeEventListener('ended', currentAudio.endedHandler);
-                currentAudio.removeEventListener('pause', currentAudio.pauseHandler);
-                currentAudio.removeEventListener('play', currentAudio.playHandler);
-                currentAudio.removeEventListener('error', currentAudio.errorHandler);
-                
-                currentAudio.src = '';
-                currentAudio = null;
-                
-                if (currentPlayButton) {
-                    currentPlayButton.textContent = '▶';
-                }
+                cleanupCurrentAudio();
             }
 
-            setTimeout(() => {
-                currentAudio = new Audio();
-                currentAudio.setAttribute('data-index', index);
-                currentPlayButton = playBtn;
+            currentIndex = index;
+            const audio = audioFiles[index];
+            
+            updatePlaylistUI();
+            showNowPlaying(audio.name);
 
-                currentAudio.loadedmetadataHandler = () => {
+            currentAudio = new Audio();
+            
+            currentAudio.preload = 'none';
+            
+            if (audio.storage === 'base64' && audio.data) {
+                currentAudio.src = audio.data;
+            } else if (audio.storage === 'external' && audio.url) {
+                currentAudio.src = audio.url;
+            } else if (audio.url) {
+                currentAudio.src = audio.url;
+            } else {
+                alert('فایل صوتی یافت نشد.');
+                return;
+            }
+
+            currentAudio.load();
+
+            currentAudio.addEventListener('canplay', () => {
+                if (userHasInteracted) {
                     currentAudio.play().catch((error) => {
                         console.error('Play error:', error);
-                        alert('خطا در پخش آهنگ');
-                        playBtn.textContent = '▶';
-                        currentAudio = null;
-                        currentPlayButton = null;
+                        console.log('Cannot autoplay - user interaction required');
                     });
-                    playBtn.textContent = '⏸';
-                };
+                }
+            }, { once: true });
 
-                currentAudio.timeupdateHandler = () => {
-                    if (currentAudio && currentAudio.duration) {
-                        const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+            currentAudio.addEventListener('timeupdate', () => {
+                if (currentAudio && currentAudio.duration) {
+                    const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+                    const progressBar = document.getElementById(`progress-${currentIndex}`);
+                    if (progressBar) {
                         progressBar.style.width = progress + '%';
                     }
-                };
+                }
+            });
 
-                currentAudio.endedHandler = () => {
-                    playBtn.textContent = '▶';
-                    progressBar.style.width = '0%';
-                    currentAudio = null;
-                    currentPlayButton = null;
-                };
+            currentAudio.addEventListener('ended', () => {
+                if (!playHistory.includes(currentIndex)) {
+                    playHistory.push(currentIndex);
+                }
+                if (userHasInteracted) {
+                    autoPlayNext();
+                }
+            });
 
-                currentAudio.pauseHandler = () => {
-                    playBtn.textContent = '▶';
-                };
+            currentAudio.addEventListener('play', updatePlaylistUI);
+            currentAudio.addEventListener('pause', updatePlaylistUI);
 
-                currentAudio.playHandler = () => {
-                    playBtn.textContent = '⏸';
-                };
+            currentAudio.addEventListener('error', (error) => {
+                console.error('Audio error:', error);
+                if (error.target.error && error.target.error.code !== 4) {
+                    alert('خطا در پخش آهنگ. به آهنگ بعدی می‌رویم...');
+                    if (userHasInteracted) {
+                        autoPlayNext();
+                    }
+                }
+            });
 
-                currentAudio.errorHandler = (error) => {
-                    console.error('Audio error:', error);
-                    alert('خطا در پخش آهنگ. لطفاً دوباره تلاش کنید.');
-                    playBtn.textContent = '▶';
-                    currentAudio = null;
-                    currentPlayButton = null;
-                };
+            updateControlsState();
+        }
 
-                currentAudio.addEventListener('loadedmetadata', currentAudio.loadedmetadataHandler);
-                currentAudio.addEventListener('timeupdate', currentAudio.timeupdateHandler);
-                currentAudio.addEventListener('ended', currentAudio.endedHandler);
-                currentAudio.addEventListener('pause', currentAudio.pauseHandler);
-                currentAudio.addEventListener('play', currentAudio.playHandler);
-                currentAudio.addEventListener('error', currentAudio.errorHandler);
+        function autoPlayNext() {
+            if (!userHasInteracted) return;
+            
+            const audioFiles = contentData.contentData.playlist.audioFiles || [];
+            
+            if (audioFiles.length === 0) return;
 
-                // تشخیص نوع ذخیره‌سازی و استفاده از منبع مناسب
-                if (audio.storage === 'base64' && audio.data) {
-                    currentAudio.src = audio.data;
-                } else if (audio.storage === 'external' && audio.url) {
-                    currentAudio.src = audio.url;
-                } else if (audio.url) {
-                    // برای سازگاری با فایل‌های قدیمی
-                    currentAudio.src = audio.url;
+            let nextIndex = -1;
+
+            if (isRepeatMode) {
+                nextIndex = currentIndex;
+            } else if (isShuffleMode) {
+                const availableIndices = [];
+                for (let i = 0; i < audioFiles.length; i++) {
+                    if (i !== currentIndex && !playHistory.slice(-3).includes(i)) {
+                        availableIndices.push(i);
+                    }
+                }
+                
+                if (availableIndices.length === 0) {
+                    playHistory = [];
+                    availableIndices = audioFiles.map((_, i) => i).filter(i => i !== currentIndex);
+                }
+                
+                if (availableIndices.length > 0) {
+                    nextIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+                }
+            } else {
+                nextIndex = (currentIndex + 1) % audioFiles.length;
+            }
+
+            if (nextIndex !== -1) {
+                setTimeout(() => playTrack(nextIndex), 1000);
+            }
+        }
+
+        function togglePlayPause() {
+            if (!currentAudio) {
+                const audioFiles = contentData.contentData.playlist.audioFiles || [];
+                if (audioFiles.length > 0) {
+                    playTrack(0);
+                }
+                return;
+            }
+
+            if (currentAudio.paused) {
+                currentAudio.play().catch((error) => {
+                    console.error('Play error:', error);
+                    console.log('Cannot play - user interaction may be required');
+                });
+            } else {
+                currentAudio.pause();
+            }
+            updatePlaylistUI();
+        }
+
+        function nextTrack() {
+            const audioFiles = contentData.contentData.playlist.audioFiles || [];
+            if (audioFiles.length === 0) return;
+
+            let nextIndex;
+            if (isShuffleMode) {
+                const availableIndices = audioFiles.map((_, i) => i).filter(i => i !== currentIndex);
+                if (availableIndices.length === 0) {
+                    nextIndex = currentIndex;
                 } else {
-                    alert('فایل صوتی یافت نشد.');
-                    playBtn.textContent = '▶';
-                    currentAudio = null;
-                    currentPlayButton = null;
+                    nextIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
                 }
-            }, 100);
+            } else {
+                nextIndex = (currentIndex + 1) % audioFiles.length;
+            }
+
+            playTrack(nextIndex);
         }
 
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        function previousTrack() {
+            const audioFiles = contentData.contentData.playlist.audioFiles || [];
+            if (audioFiles.length === 0) return;
+
+            let prevIndex;
+            if (isShuffleMode) {
+                if (playHistory.length > 1) {
+                    prevIndex = playHistory[playHistory.length - 2];
+                    playHistory.pop();
+                } else {
+                    const availableIndices = audioFiles.map((_, i) => i).filter(i => i !== currentIndex);
+                    prevIndex = availableIndices.length > 0 ? 
+                        availableIndices[Math.floor(Math.random() * availableIndices.length)] : 
+                        currentIndex;
+                }
+            } else {
+                prevIndex = currentIndex > 0 ? currentIndex - 1 : audioFiles.length - 1;
+            }
+
+            playTrack(prevIndex);
         }
 
-        function handleDragEnter(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const uploadArea = e.target.closest('.audio-upload-area');
-            if (uploadArea) {
-                uploadArea.classList.add('dragover');
+        function toggleShuffle() {
+            isShuffleMode = !isShuffleMode;
+            playHistory = [];
+            updateControlsState();
+        }
+
+        function toggleRepeat() {
+            isRepeatMode = !isRepeatMode;
+            updateControlsState();
+        }
+
+        function cleanupCurrentAudio() {
+            if (currentAudio) {
+                const events = ['loadedmetadata', 'timeupdate', 'ended', 'pause', 'play', 'error', 'canplay'];
+                events.forEach(event => {
+                    currentAudio.removeEventListener(event, currentAudio[`${event}Handler`]);
+                });
+                currentAudio.src = '';
             }
         }
 
-        function handleDragLeave(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const uploadArea = e.target.closest('.audio-upload-area');
-            if (uploadArea && !uploadArea.contains(e.relatedTarget)) {
-                uploadArea.classList.remove('dragover');
+        function resetCurrentTrack() {
+            if (currentAudio) {
+                cleanupCurrentAudio();
+                currentAudio = null;
             }
+            currentIndex = -1;
+            updatePlaylistUI();
+            hideNowPlaying();
         }
 
-        async function handleDrop(e) {
-            if (!isEditMode) return;
+        function updatePlaylistUI() {
+            const audioFiles = contentData.contentData.playlist.audioFiles || [];
             
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const uploadArea = e.target.closest('.audio-upload-area');
-            if (uploadArea) {
-                uploadArea.classList.remove('dragover');
-            }
-            
-            const files = Array.from(e.dataTransfer.files);
-            console.log('Dropped files:', files.length);
-            
-            // استفاده از همان تابع handleAudioUpload
-            const fakeEvent = {
-                target: { files: files, value: '' }
-            };
-            await handleAudioUpload(fakeEvent);
-        }
-
-        async function deleteAudio(index) {
-            if (!isEditMode) return;
-            
-            if (confirm('آیا می‌خواهید این آهنگ را حذف کنید؟')) {
-                if (currentAudio && currentAudio.getAttribute('data-index') == index) {
-                    currentAudio.pause();
-                    currentAudio.src = '';
-                    currentAudio = null;
-                    currentPlayButton = null;
+            audioFiles.forEach((_, index) => {
+                const audioItem = document.getElementById(`audioItem-${index}`);
+                const playBtn = document.getElementById(`playBtn-${index}`);
+                
+                if (audioItem) {
+                    audioItem.classList.toggle('playing', index === currentIndex);
                 }
                 
-                contentData.contentData.playlist.audioFiles.splice(index, 1);
-                updatePlaylist();
-                
-                await saveToFirebase();
+                if (playBtn) {
+                    const isCurrentPlaying = index === currentIndex && currentAudio && !currentAudio.paused;
+                    playBtn.classList.toggle('playing', isCurrentPlaying);
+                    playBtn.textContent = isCurrentPlaying ? '⏸' : '▶';
+                }
+            });
+
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            if (playPauseBtn) {
+                if (currentAudio && !currentAudio.paused) {
+                    playPauseBtn.textContent = '⏸';
+                } else {
+                    playPauseBtn.textContent = '▶';
+                }
             }
         }
 
-        function updatePlaylist() {
-            const container = document.getElementById('playlistContainer');
-            if (container) {
-                container.innerHTML = renderPlaylist();
+        function showNowPlaying(trackName) {
+            const nowPlaying = document.getElementById('nowPlaying');
+            const currentTrackName = document.getElementById('currentTrackName');
+            
+            if (nowPlaying && currentTrackName) {
+                currentTrackName.textContent = trackName;
+                nowPlaying.style.display = 'block';
             }
         }
 
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        function hideNowPlaying() {
+            const nowPlaying = document.getElementById('nowPlaying');
+            if (nowPlaying) {
+                nowPlaying.style.display = 'none';
+            }
         }
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
         }
 
-        document.getElementById('imageInput').addEventListener('change', async function(e) {
-            if (!isEditMode) return;
-            
-            const file = e.target.files[0];
-            if (file) {
-                try {
-                    const compressedFile = await compressImage(file);
-                    
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imageData = e.target.result;
-                        
-                        const img = document.getElementById('profileImg');
-                        img.src = imageData;
-                        contentData.profileImage = imageData;
-                        saveToFirebase();
-                    };
-                    reader.readAsDataURL(compressedFile);
-                } catch (error) {
-                    console.error('Error compressing image:', error);
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imageData = e.target.result;
-                        document.getElementById('profileImg').src = imageData;
-                        contentData.profileImage = imageData;
-                        saveToFirebase();
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const editableTitles = document.querySelectorAll('.editable-title');
-            editableTitles.forEach(title => {
-                title.addEventListener('blur', function() {
-                    if (isEditMode) {
-                        const type = this.dataset.type;
-                        contentData.contentData[type].title = this.textContent;
-                        saveToFirebase();
-                    }
-                });
-                
-                title.addEventListener('click', function(e) {
-                    if (isEditMode) {
-                        e.stopPropagation();
-                    }
-                });
-            });
-        });
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.playTrack = playTrack;
+        window.togglePlayPause = togglePlayPause;
+        window.nextTrack = nextTrack;
+        window.previousTrack = previousTrack;
+        window.toggleShuffle = toggleShuffle;
+        window.toggleRepeat = toggleRepeat;
 
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('modal');
-            const passwordModal = document.getElementById('passwordModal');
-            
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
-            
-            if (event.target === passwordModal) {
-                closePasswordModal();
-            }
         });
 
-        // Make functions global for onclick handlers
-        window.toggleEditMode = toggleEditMode;
-        window.logout = logout;
-        window.checkPassword = checkPassword;
-        window.closePasswordModal = closePasswordModal;
-        window.openModal = openModal;
-        window.closeModal = closeModal;
-        window.toggleAudio = toggleAudio;
-        window.deleteAudio = deleteAudio;
-        window.handleDragOver = handleDragOver;
-        window.handleDragEnter = handleDragEnter;
-        window.handleDragLeave = handleDragLeave;
-        window.handleDrop = handleDrop;
-        window.addExternalAudio = addExternalAudio;
-        window.testAudioUrl = testAudioUrl; // اضافه شدن
-
-        // Initialize app
         window.addEventListener('load', function() {
-            initMatrix();
             loadFromFirebase();
         });
     </script>
