@@ -475,7 +475,6 @@
             
             .biography-layout {
                 display: flex;
-                flex-direction: row-reverse;
                 gap: 20px;
                 align-items: flex-start;
             }
@@ -485,12 +484,14 @@
                 margin: 0 !important;
                 flex-shrink: 0;
                 width: 190px;
+                order: 2;
             }
             
             .bio-content {
                 flex: 1;
                 direction: ltr;
                 text-align: left;
+                order: 1;
             }
         }
 
