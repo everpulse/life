@@ -22,7 +22,6 @@
             position: relative;
         }
 
-        /* Loading Screen Styles */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -139,7 +138,6 @@
             100% { width: 100%; }
         }
 
-        /* Main Content - Initially Hidden */
         .main-content {
             opacity: 0;
             visibility: hidden;
@@ -151,7 +149,6 @@
             visibility: visible;
         }
 
-        /* Matrix Background Animation - Optimized */
         #matrix {
             position: fixed;
             top: 0;
@@ -250,7 +247,6 @@
             background-clip: padding-box;
         }
 
-        /* نور متحرک دور کادر */
         .menu-item::after {
             content: '';
             position: absolute;
@@ -283,7 +279,6 @@
             }
         }
 
-        /* Silver wave overlay on hover */
         .menu-item::before {
             content: '';
             position: absolute;
@@ -325,15 +320,6 @@
                 0 4px 0 rgba(0, 0, 0, 0.15);
         }
 
-        @keyframes cyber-rotate {
-            0% { 
-                transform: rotate(0deg);
-            }
-            100% { 
-                transform: rotate(360deg);
-            }
-        }
-
         .menu-item h3 {
             font-size: 18px;
             font-weight: bold;
@@ -350,27 +336,14 @@
         }
 
         @keyframes glitch {
-            0% {
-                transform: translate(0);
-            }
-            20% {
-                transform: translate(-2px, 2px);
-            }
-            40% {
-                transform: translate(-2px, -2px);
-            }
-            60% {
-                transform: translate(2px, 2px);
-            }
-            80% {
-                transform: translate(2px, -2px);
-            }
-            100% {
-                transform: translate(0);
-            }
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -390,7 +363,7 @@
             margin: 5% auto;
             padding: 30px;
             width: 90%;
-            max-width: 600px;
+            max-width: 500px;
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
@@ -435,7 +408,6 @@
             text-align: right;
         }
 
-        /* Video/GIF support in modal */
         .modal-body video,
         .modal-body img.gif-video {
             max-width: 100%;
@@ -449,7 +421,6 @@
             background: transparent;
         }
 
-        /* Video sizing for different screens */
         .bio-video-1 {
             width: 180px;
             float: right;
@@ -479,7 +450,6 @@
             }
         }
 
-        /* Audio Player Styles - Clean Modern Design */
         .playlist-container {
             max-height: 400px;
             overflow-y: auto;
@@ -674,29 +644,6 @@
             }
         }
 
-        /* Matrix Animation - Optimized */
-        .matrix-char {
-            position: absolute;
-            color: #fff;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            animation: matrix-fall linear infinite;
-            opacity: 0.7;
-            will-change: transform;
-        }
-
-        @keyframes matrix-fall {
-            0% {
-                transform: translateY(-100vh);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
-
-        /* Link Styles */
         .modal-body a {
             color: #4fc3f7;
             text-decoration: underline;
@@ -708,7 +655,6 @@
             color: #81d4fa;
         }
 
-        /* Animated Icons in Modal Content */
         .rotating-icon {
             display: inline-block;
             animation: gentle-flip 6s linear infinite;
@@ -720,7 +666,6 @@
             100% { transform: rotateY(360deg); }
         }
 
-        /* Special beating heart animation for 🤍 - 6 beats in 6 seconds */
         .beating-heart {
             display: inline-block;
             animation: heart-beat-rotate 6s linear infinite;
@@ -728,78 +673,27 @@
         }
 
         @keyframes heart-beat-rotate {
-            /* Beat 1 at 0% */
-            0% { 
-                transform: rotateY(0deg) scale(1);
-            }
-            0.8% { 
-                transform: rotateY(4.8deg) scale(1.2);
-            }
-            1.6% { 
-                transform: rotateY(9.6deg) scale(1);
-            }
-            
-            /* Beat 2 at 16.67% */
-            16.67% { 
-                transform: rotateY(60deg) scale(1);
-            }
-            17.47% { 
-                transform: rotateY(64.8deg) scale(1.2);
-            }
-            18.27% { 
-                transform: rotateY(69.6deg) scale(1);
-            }
-            
-            /* Beat 3 at 33.33% */
-            33.33% { 
-                transform: rotateY(120deg) scale(1);
-            }
-            34.13% { 
-                transform: rotateY(124.8deg) scale(1.2);
-            }
-            34.93% { 
-                transform: rotateY(129.6deg) scale(1);
-            }
-            
-            /* Beat 4 at 50% */
-            50% { 
-                transform: rotateY(180deg) scale(1);
-            }
-            50.8% { 
-                transform: rotateY(184.8deg) scale(1.2);
-            }
-            51.6% { 
-                transform: rotateY(189.6deg) scale(1);
-            }
-            
-            /* Beat 5 at 66.67% */
-            66.67% { 
-                transform: rotateY(240deg) scale(1);
-            }
-            67.47% { 
-                transform: rotateY(244.8deg) scale(1.2);
-            }
-            68.27% { 
-                transform: rotateY(249.6deg) scale(1);
-            }
-            
-            /* Beat 6 at 83.33% */
-            83.33% { 
-                transform: rotateY(300deg) scale(1);
-            }
-            84.13% { 
-                transform: rotateY(304.8deg) scale(1.2);
-            }
-            84.93% { 
-                transform: rotateY(309.6deg) scale(1);
-            }
-            
-            100% { 
-                transform: rotateY(360deg) scale(1);
-            }
+            0% { transform: rotateY(0deg) scale(1); }
+            0.8% { transform: rotateY(4.8deg) scale(1.2); }
+            1.6% { transform: rotateY(9.6deg) scale(1); }
+            16.67% { transform: rotateY(60deg) scale(1); }
+            17.47% { transform: rotateY(64.8deg) scale(1.2); }
+            18.27% { transform: rotateY(69.6deg) scale(1); }
+            33.33% { transform: rotateY(120deg) scale(1); }
+            34.13% { transform: rotateY(124.8deg) scale(1.2); }
+            34.93% { transform: rotateY(129.6deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1); }
+            50.8% { transform: rotateY(184.8deg) scale(1.2); }
+            51.6% { transform: rotateY(189.6deg) scale(1); }
+            66.67% { transform: rotateY(240deg) scale(1); }
+            67.47% { transform: rotateY(244.8deg) scale(1.2); }
+            68.27% { transform: rotateY(249.6deg) scale(1); }
+            83.33% { transform: rotateY(300deg) scale(1); }
+            84.13% { transform: rotateY(304.8deg) scale(1.2); }
+            84.93% { transform: rotateY(309.6deg) scale(1); }
+            100% { transform: rotateY(360deg) scale(1); }
         }
 
-        /* Special electric spark effect for ↯ */
         .spark-icon {
             display: inline-block;
             position: relative;
@@ -860,11 +754,9 @@
                 transform: translate(2px, 2px) scale(1);
             }
         }
-        
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loader-container">
             <div class="cyber-loader"></div>
@@ -876,7 +768,6 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content" id="mainContent">
         <canvas id="matrix"></canvas>
         
@@ -906,23 +797,18 @@
         </div>
     </div>
 
-    <!-- Modal -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
-            <div class="modal-body" id="modalBody">
-                <!-- محتوا اینجا نمایش داده می‌شود -->
-            </div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
 
-    <!-- Firebase SDK v9 Modular -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
         import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js';
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDowZ-5e48zmJbT5cU7LzBmQpcWcqR5qhM",
             authDomain: "personal-website-432a5.firebaseapp.com",
@@ -933,34 +819,20 @@
             appId: "1:350992508293:web:a693a7235ac29def1290ec"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // Content data - default values
         let contentData = {
             profileName: "Aeon",
             profileDesc: "逐梦未来—智慧为刃˚.ᐟ.",
             profileImage: "",
             contentData: {
-                biography: {
-                    title: "ABOUT ME",
-                    content: "اینجا بیوگرافی خود را بنویسید..."
-                },
-                tenrules: {
-                    title: "Longevity Institutions",
-                    content: "۱. فرمان اول...\n۲. فرمان دوم..."
-                },
-                playlist: {
-                    title: "PLAYLIST",
-                    content: "آهنگ های خود را آپلود کنید...",
-                    audioFiles: []
-                }
+                biography: { title: "ABOUT ME", content: "اینجا بیوگرافی خود را بنویسید..." },
+                tenrules: { title: "Longevity Institutions", content: "۱. فرمان اول...\n۲. فرمان دوم..." },
+                playlist: { title: "PLAYLIST", content: "آهنگ های خود را آپلود کنید...", audioFiles: [] }
             }
         };
 
-        // Loading progress management
-        let loadingProgress = 0;
         const loadingSteps = [
             { step: 20, text: "اتصال به سرور..." },
             { step: 40, text: "بارگذاری اطلاعات پروفایل..." },
@@ -972,64 +844,32 @@
         function updateLoadingProgress(progress, text) {
             const progressBar = document.getElementById('loadingProgressBar');
             const loadingText = document.getElementById('loadingText');
-            
-            if (progressBar) {
-                progressBar.style.width = progress + '%';
-            }
-            
-            if (loadingText && text) {
-                loadingText.textContent = text;
-            }
-        }
-
-        function simulateLoadingSteps() {
-            return new Promise((resolve) => {
-                let currentStep = 0;
-                
-                function nextStep() {
-                    if (currentStep < loadingSteps.length) {
-                        const { step, text } = loadingSteps[currentStep];
-                        updateLoadingProgress(step, text);
-                        currentStep++;
-                        setTimeout(nextStep, 800);
-                    } else {
-                        resolve();
-                    }
-                }
-                
-                nextStep();
-            });
+            if (progressBar) progressBar.style.width = progress + '%';
+            if (loadingText && text) loadingText.textContent = text;
         }
 
         function hideLoadingScreen() {
             const loadingScreen = document.getElementById('loadingScreen');
             const mainContent = document.getElementById('mainContent');
-            
             initMatrix();
-            
             setTimeout(() => {
                 loadingScreen.classList.add('hidden');
                 mainContent.classList.add('visible');
             }, 500);
         }
 
-        // Optimized Matrix Animation
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
-
         let matrixAnimationId;
         let isMatrixRunning = false;
 
         function initMatrix() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-
             const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()";
             const matrixArray = matrix.split("");
-
             const fontSize = 10;
             const columns = canvas.width / fontSize;
-
             const drops = [];
             for(let x = 0; x < columns; x++) {
                 drops[x] = 1;
@@ -1038,14 +878,12 @@
             function drawMatrix() {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-
                 ctx.fillStyle = '#fff';
                 ctx.font = fontSize + 'px monospace';
 
                 for(let i = 0; i < drops.length; i++) {
                     const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
                     ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
                     if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                         drops[i] = 0;
                     }
@@ -1063,8 +901,6 @@
             drawMatrix();
         }
 
-
-
         window.addEventListener('resize', () => {
             if (canvas) {
                 canvas.width = window.innerWidth;
@@ -1075,9 +911,7 @@
         async function loadFromFirebase() {
             try {
                 updateLoadingProgress(10, "شروع بارگذاری...");
-                
                 await new Promise(resolve => setTimeout(resolve, 500));
-                
                 updateLoadingProgress(30, "دریافت اطلاعات از سرور...");
                 
                 const snapshot = await get(ref(database, 'website'));
@@ -1103,15 +937,12 @@
                 await loadProfileImage();
                 
                 updateLoadingProgress(100, "آماده‌سازی نهایی...");
-                
                 await new Promise(resolve => setTimeout(resolve, 800));
-                
                 hideLoadingScreen();
                 
             } catch (error) {
                 console.error('Error loading data:', error);
                 updateLoadingProgress(100, "خطا در بارگذاری - استفاده از اطلاعات پیش‌فرض");
-                
                 setTimeout(() => {
                     hideLoadingScreen();
                 }, 2000);
@@ -1146,25 +977,20 @@
             
             title.textContent = contentData.contentData[type].title;
             body.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">در حال بارگذاری...</div>';
-            
             modal.style.display = 'block';
-            
             loadModalContent(type, body);
         }
 
         function convertTextToLinks(text) {
             const lines = text.split('<br>');
-            
             return lines.map(line => {
                 const linkPattern = /^([^(]+)\s*\(((https?:\/\/[^\s)]+))\)$/;
                 const match = line.match(linkPattern);
-                
                 if (match) {
                     const cleanText = match[1].trim();
                     const cleanUrl = match[2].trim();
                     return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
                 }
-                
                 return line;
             }).join('<br>');
         }
@@ -1200,9 +1026,7 @@
                 }
                 
                 body.innerHTML = displayContent;
-                
                 animateEmojisInContent(body);
-                
                 processVideoTags(body);
                 
             } catch (error) {
@@ -1230,7 +1054,6 @@
                 .replace(/⚡/g, '<span class="rotating-icon">⚡</span>')
                 .replace(/🔥/g, '<span class="rotating-icon">🔥</span>')
                 .replace(/↯/g, '<span class="spark-icon">↯</span>');
-            
             container.innerHTML = animatedContent;
         }
 
@@ -1239,7 +1062,6 @@
         let isShuffleMode = false;
         let isRepeatMode = false;
         let playHistory = [];
-        let audioContext = null;
         let userHasInteracted = false;
 
         function enableUserInteraction() {
@@ -1267,7 +1089,6 @@
                     ${renderPlaylist()}
                 </div>
             `;
-
             updateControlsState();
         }
 
@@ -1349,7 +1170,6 @@
             showNowPlaying(audio.name);
 
             currentAudio = new Audio();
-            
             currentAudio.preload = 'none';
             
             if (audio.storage === 'base64' && audio.data) {
@@ -1369,7 +1189,6 @@
                 if (userHasInteracted) {
                     currentAudio.play().catch((error) => {
                         console.error('Play error:', error);
-                        console.log('Cannot autoplay - user interaction required');
                     });
                 }
             }, { once: true });
@@ -1411,9 +1230,7 @@
 
         function autoPlayNext() {
             if (!userHasInteracted) return;
-            
             const audioFiles = contentData.contentData.playlist.audioFiles || [];
-            
             if (audioFiles.length === 0) return;
 
             let nextIndex = -1;
@@ -1457,7 +1274,6 @@
             if (currentAudio.paused) {
                 currentAudio.play().catch((error) => {
                     console.error('Play error:', error);
-                    console.log('Cannot play - user interaction may be required');
                 });
             } else {
                 currentAudio.pause();
@@ -1525,16 +1341,6 @@
                 });
                 currentAudio.src = '';
             }
-        }
-
-        function resetCurrentTrack() {
-            if (currentAudio) {
-                cleanupCurrentAudio();
-                currentAudio = null;
-            }
-            currentIndex = -1;
-            updatePlaylistUI();
-            hideNowPlaying();
         }
 
         function updatePlaylistUI() {
