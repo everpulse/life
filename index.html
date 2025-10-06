@@ -452,7 +452,7 @@
         /* Video sizing for different screens */
         .bio-video-1 {
             width: 180px;
-            float: left;
+            float: right;
             margin: 10px 15px 10px 15px;
             border-radius: 10px;
             background: #000;
@@ -465,35 +465,6 @@
             margin: -50px 20px 10px 15px;
             border-radius: 10px;
             background: #000;
-        }
-
-        /* بهبود layout برای صفحات بزرگ‌تر */
-        @media (min-width: 769px) {
-            .modal-content {
-                max-width: 580px;
-            }
-            
-            .biography-layout {
-                display: flex;
-                gap: 20px;
-                align-items: flex-start;
-                flex-direction: row-reverse;
-            }
-            
-            .biography-layout .bio-video-1 {
-                float: none !important;
-                margin: 0 !important;
-                flex-shrink: 0;
-                width: 190px;
-                order: 2;
-            }
-            
-            .bio-content {
-                flex: 1;
-                direction: ltr;
-                text-align: left;
-                order: 1;
-            }
         }
 
         @media (max-width: 768px) {
@@ -1223,24 +1194,8 @@
                 
                 if (type === 'biography') {
                     displayContent = `
-                        <div class="biography-layout">
-                            <img src="https://i.ibb.co/MDJGvSSn/video-2025-10-02-23-18-08-ezgif-com-optimize.gif" class="bio-video-1" style="object-fit: cover;">
-                            <div class="bio-content">
-                                <div style="text-align: center; margin-bottom: 15px;">ᗜˬᗜ</div>
-                                Longevity Explorcr : | 逆天<br>
-                                🧬 ↯↯ #2045<br>
-                                🔺AI Enthusiast :<br>
-                                -<br>
-                                ·.· — .★. — .·.<br>
-                                ↯ Debugging [Humanity]<br>
-                                ↯ Focused in [Isolation]<br>
-                                ↯ Perfectionist in [Progress]<br>
-                                ·.· — .★. — .·.<br>
-                                -<br>
-                                Lahijan 🌹<br>
-                                #Transhumanism
-                            </div>
-                        </div>
+                        <img src="https://i.ibb.co/MDJGvSSn/video-2025-10-02-23-18-08-ezgif-com-optimize.gif" class="bio-video-1" style="object-fit: cover;">
+                        ${displayContent}
                     `;
                 }
                 
